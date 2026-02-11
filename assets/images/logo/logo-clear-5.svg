@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="gold5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Circle Badge with Bag Inside -->
+  <g transform="translate(8, 6)">
+    <!-- Circle -->
+    <circle cx="34" cy="34" r="30" fill="url(#gold5)" opacity="0.1"/>
+    <circle cx="34" cy="34" r="30" fill="none" stroke="url(#gold5)" stroke-width="2.5"/>
+
+    <!-- Simple Bag Inside -->
+    <rect x="18" y="28" width="32" height="26" rx="3" fill="none" stroke="url(#gold5)" stroke-width="2.5"/>
+    <path d="M24 28 L24 20 C24 16 28 14 34 14 C40 14 44 16 44 20 L44 28"
+          fill="none" stroke="url(#gold5)" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="85" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#gold5)" font-weight="700">Bags</tspan></text>
+</svg>

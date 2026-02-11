@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 90" width="360" height="90">
+  <defs>
+    <linearGradient id="goldPremium5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff8dc"/>
+      <stop offset="25%" style="stop-color:#f0d875"/>
+      <stop offset="50%" style="stop-color:#c9a227"/>
+      <stop offset="75%" style="stop-color:#b8960f"/>
+      <stop offset="100%" style="stop-color:#8b7722"/>
+    </linearGradient>
+    <filter id="glow5">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect x="0" y="0" width="360" height="90" rx="6" fill="#0a0a0a"/>
+
+  <!-- THE CONCEPT: Elegant monoline continuous stroke forming SB + bag -->
+  <g transform="translate(10, 8)" filter="url(#glow5)">
+    <!-- Single continuous line art - the mark of a master craftsman -->
+    <path d="M30 12
+             C20 12 14 18 14 26
+             C14 34 20 38 30 40
+             C40 42 46 46 46 54
+             C46 62 40 68 30 68
+             L50 68
+             C58 68 64 62 64 54
+             L64 32
+             C64 24 58 20 50 20
+             L46 20
+             C46 20 46 14 50 10
+             C54 6 60 8 64 12
+             L64 20"
+          fill="none"
+          stroke="url(#goldPremium5)"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+
+    <!-- Accent dot - like a jewel clasp -->
+    <circle cx="30" cy="40" r="4" fill="url(#goldPremium5)"/>
+  </g>
+
+  <!-- Text - Elegant typography -->
+  <text x="95" y="48" font-family="Poppins, sans-serif" font-size="32" font-weight="500" fill="#ffffff" letter-spacing="1">Sagar<tspan fill="url(#goldPremium5)" font-weight="700">Bags</tspan></text>
+
+  <!-- Minimal tagline -->
+  <text x="97" y="68" font-family="Poppins, sans-serif" font-size="8" fill="#666" letter-spacing="3">INDIA'S TRUSTED MANUFACTURER</text>
+</svg>

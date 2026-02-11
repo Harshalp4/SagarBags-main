@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="gold13" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Messenger / Sling Bag -->
+  <g transform="translate(10, 10)">
+    <!-- Bag Body - Flap style -->
+    <rect x="8" y="24" width="48" height="36" rx="4" fill="url(#gold13)" opacity="0.2"/>
+    <rect x="8" y="24" width="48" height="36" rx="4" fill="none" stroke="url(#gold13)" stroke-width="3"/>
+
+    <!-- Flap -->
+    <path d="M8 36 L8 28 C8 24 12 24 32 24 C52 24 56 24 56 28 L56 36"
+          fill="none" stroke="url(#gold13)" stroke-width="3"/>
+
+    <!-- Strap -->
+    <path d="M8 30 C-4 20 -4 10 32 6 C68 10 68 20 56 30"
+          fill="none" stroke="url(#gold13)" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Buckle -->
+    <rect x="28" y="38" width="8" height="6" rx="1" fill="url(#gold13)"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="78" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#gold13)" font-weight="700">Bags</tspan></text>
+</svg>

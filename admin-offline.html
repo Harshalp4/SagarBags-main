@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - Sagar Bags Admin</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      padding: 20px;
+    }
+
+    .offline-container {
+      text-align: center;
+      max-width: 400px;
+    }
+
+    .offline-icon {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 30px;
+      background: rgba(212, 175, 55, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .offline-icon svg {
+      width: 60px;
+      height: 60px;
+      stroke: #d4af37;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 15px;
+      color: #d4af37;
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .retry-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+      color: #1a1a2e;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .retry-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+    }
+
+    .retry-btn:active {
+      transform: translateY(0);
+    }
+
+    .status {
+      margin-top: 30px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .status.online {
+      background: rgba(46, 204, 113, 0.1);
+      color: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+  <div class="offline-container">
+    <div class="offline-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z" />
+      </svg>
+    </div>
+
+    <h1>You're Offline</h1>
+    <p>It looks like you've lost your internet connection. Some features may not be available until you're back online.</p>
+
+    <button class="retry-btn" onclick="checkConnection()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+      </svg>
+      Try Again
+    </button>
+
+    <div class="status" id="status">
+      Waiting for connection...
+    </div>
+  </div>
+
+  <script>
+    function checkConnection() {
+      if (navigator.onLine) {
+        window.location.reload();
+      } else {
+        const status = document.getElementById('status');
+        status.textContent = 'Still offline. Please check your connection.';
+        status.classList.remove('online');
+      }
+    }
+
+    // Auto-reload when back online
+    window.addEventListener('online', () => {
+      const status = document.getElementById('status');
+      status.textContent = 'Connection restored! Reloading...';
+      status.classList.add('online');
+      setTimeout(() => window.location.reload(), 1000);
+    });
+
+    window.addEventListener('offline', () => {
+      const status = document.getElementById('status');
+      status.textContent = 'You are currently offline';
+      status.classList.remove('online');
+    });
+
+    // Initial check
+    if (navigator.onLine) {
+      document.getElementById('status').textContent = 'Connection detected. Click Try Again.';
+    }
+  </script>
+</body>
+</html>

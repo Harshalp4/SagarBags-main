@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="gold10" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Simple Bag Handle Only - Minimal -->
+  <g transform="translate(12, 12)">
+    <!-- Just the iconic handle shape -->
+    <path d="M8 56 L8 24 C8 12 22 4 34 4 C46 4 60 12 60 24 L60 56"
+          fill="none" stroke="url(#gold10)" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Base line -->
+    <line x1="4" y1="56" x2="64" y2="56" stroke="url(#gold10)" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="90" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#gold10)" font-weight="700">Bags</tspan></text>
+</svg>

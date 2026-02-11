@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 90" width="360" height="90">
+  <defs>
+    <linearGradient id="goldPremium6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f9eeb8"/>
+      <stop offset="50%" style="stop-color:#c9a227"/>
+      <stop offset="100%" style="stop-color:#97802b"/>
+    </linearGradient>
+    <linearGradient id="goldReflect6" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff" stop-opacity="0.4"/>
+      <stop offset="50%" style="stop-color:#c9a227" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect x="0" y="0" width="360" height="90" rx="6" fill="#0a0a0a"/>
+
+  <!-- THE CONCEPT: 3D Luxury box/bag with ribbon - Gift premium feel -->
+  <g transform="translate(12, 10)">
+    <!-- Box body - 3D effect -->
+    <path d="M10 30 L35 20 L60 30 L60 60 L35 70 L10 60 Z" fill="#0d0d0d"/>
+    <path d="M10 30 L35 40 L35 70 L10 60 Z" fill="url(#goldPremium6)" opacity="0.15"/>
+    <path d="M35 40 L60 30 L60 60 L35 70 Z" fill="url(#goldPremium6)" opacity="0.25"/>
+    <path d="M10 30 L35 20 L60 30 L35 40 Z" fill="url(#goldPremium6)" opacity="0.35"/>
+
+    <!-- Outlines -->
+    <path d="M10 30 L35 20 L60 30 L60 60 L35 70 L10 60 Z" fill="none" stroke="url(#goldPremium6)" stroke-width="1.5"/>
+    <path d="M10 30 L35 40 L60 30" fill="none" stroke="url(#goldPremium6)" stroke-width="1.5"/>
+    <path d="M35 40 L35 70" stroke="url(#goldPremium6)" stroke-width="1.5"/>
+
+    <!-- Ribbon -->
+    <path d="M35 8 L35 20" stroke="url(#goldPremium6)" stroke-width="3"/>
+    <path d="M25 12 L35 8 L45 12" fill="none" stroke="url(#goldPremium6)" stroke-width="2"/>
+    <circle cx="35" cy="8" r="3" fill="url(#goldPremium6)"/>
+
+    <!-- Ribbon tails -->
+    <path d="M28 14 L22 20 M42 14 L48 20" stroke="url(#goldPremium6)" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Shine effect -->
+    <path d="M20 25 L30 20" stroke="url(#goldReflect6)" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- Text -->
+  <text x="88" y="48" font-family="Poppins, sans-serif" font-size="34" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#goldPremium6)" font-weight="700">Bags</tspan></text>
+
+  <!-- Premium badge -->
+  <g transform="translate(88, 58)">
+    <text font-family="Poppins, sans-serif" font-size="8" fill="url(#goldPremium6)" letter-spacing="1">★ PREMIUM QUALITY ★</text>
+  </g>
+</svg>

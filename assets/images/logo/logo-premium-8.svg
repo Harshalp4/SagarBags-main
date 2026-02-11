@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 90" width="360" height="90">
+  <defs>
+    <linearGradient id="goldPremium8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff5d4"/>
+      <stop offset="30%" style="stop-color:#e8c547"/>
+      <stop offset="70%" style="stop-color:#c9a227"/>
+      <stop offset="100%" style="stop-color:#8b6914"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect x="0" y="0" width="360" height="90" rx="6" fill="#0a0a0a"/>
+
+  <!-- THE CONCEPT: Minimalist Geometric - Modern Luxury (Apple/Tesla style) -->
+  <g transform="translate(15, 12)">
+    <!-- Perfect golden rectangle with handle cutout -->
+    <rect x="8" y="20" width="54" height="48" rx="4" fill="url(#goldPremium8)" opacity="0.1"/>
+    <rect x="8" y="20" width="54" height="48" rx="4" fill="none" stroke="url(#goldPremium8)" stroke-width="2.5"/>
+
+    <!-- Handle - negative space arc -->
+    <path d="M22 20 L22 12 C22 6 28 2 35 2 C42 2 48 6 48 12 L48 20"
+          fill="none" stroke="url(#goldPremium8)" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Inner geometric pattern - subtle -->
+    <rect x="18" y="32" width="34" height="26" rx="2" fill="none" stroke="url(#goldPremium8)" stroke-width="1" opacity="0.3"/>
+
+    <!-- Centered dot - minimal accent -->
+    <circle cx="35" cy="45" r="4" fill="url(#goldPremium8)"/>
+  </g>
+
+  <!-- Text - Clean modern typography -->
+  <text x="92" y="42" font-family="Poppins, sans-serif" font-size="36" font-weight="500" fill="#ffffff" letter-spacing="-0.5">Sagar<tspan fill="url(#goldPremium8)" font-weight="700">Bags</tspan></text>
+
+  <!-- Single line tagline - minimal -->
+  <line x1="92" y1="54" x2="260" y2="54" stroke="url(#goldPremium8)" stroke-width="0.5" opacity="0.4"/>
+  <text x="92" y="70" font-family="Poppins, sans-serif" font-size="10" fill="#555" letter-spacing="4">BAGS REDEFINED</text>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background Circle -->
+  <circle cx="16" cy="16" r="16" fill="#0a0a0a"/>
+
+  <!-- Bag Icon -->
+  <g transform="translate(6, 6)">
+    <!-- Bag Body -->
+    <rect x="2" y="8" width="16" height="12" rx="2" fill="url(#goldGrad)" opacity="0.3"/>
+    <rect x="2" y="8" width="16" height="12" rx="2" fill="none" stroke="url(#goldGrad)" stroke-width="1.5"/>
+
+    <!-- Handle -->
+    <path d="M6 8 L6 5 C6 3 8 2 10 2 C12 2 14 3 14 5 L14 8"
+          fill="none" stroke="url(#goldGrad)" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+</svg>
