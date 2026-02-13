@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="goldC9" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Combo 9: Connected bags with ribbon/flow -->
+  <g transform="translate(4, 12)">
+    <!-- Flowing ribbon connecting bags -->
+    <path d="M10 30 Q25 20 40 30 Q55 40 70 30" fill="none" stroke="url(#goldC9)" stroke-width="2" opacity="0.4"/>
+
+    <!-- Left: Shopping bag -->
+    <rect x="4" y="16" width="26" height="32" rx="3" fill="url(#goldC9)" opacity="0.2"/>
+    <rect x="4" y="16" width="26" height="32" rx="3" fill="none" stroke="url(#goldC9)" stroke-width="2.5"/>
+    <path d="M10 16 L10 8 C10 4 13 2 17 2 C21 2 24 4 24 8 L24 16" fill="none" stroke="url(#goldC9)" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Right: Briefcase -->
+    <rect x="38" y="18" width="32" height="26" rx="3" fill="url(#goldC9)" opacity="0.2"/>
+    <rect x="38" y="18" width="32" height="26" rx="3" fill="none" stroke="url(#goldC9)" stroke-width="2.5"/>
+    <path d="M48 18 L48 10 L60 10 L60 18" fill="none" stroke="url(#goldC9)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="42" y1="32" x2="66" y2="32" stroke="url(#goldC9)" stroke-width="2"/>
+    <circle cx="52" cy="32" r="2" fill="url(#goldC9)"/>
+    <circle cx="56" cy="32" r="2" fill="url(#goldC9)"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="86" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#goldC9)" font-weight="700">Bags</tspan></text>
+</svg>

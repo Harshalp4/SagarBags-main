@@ -78,6 +78,11 @@ service cloud.firestore {
       allow read, write: if true; // Consider adding rate limiting
     }
 
+    // Active carts - Anyone can create/update their cart
+    match /active_carts/{cartId} {
+      allow read, write: if true;
+    }
+
     // Site settings - Public read, Admin write
     match /settings/{settingId} {
       allow read: if true;

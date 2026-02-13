@@ -193,22 +193,26 @@ const Cart = {
     const cart = this.getCart();
     if (cart.length === 0) return '';
 
-    let message = '🛍️ *Quote Request from Sagar Bags Website*\n\n';
+    let message = '🛍️ *Quote Request - Sagar Bags*\n\n';
     message += '📦 *Products I\'m interested in:*\n\n';
 
     cart.forEach((item, index) => {
       const category = getCategoryById(item.category);
-      message += `${index + 1}. *${item.name}*\n`;
-      message += `   Category: ${category ? category.name : item.category}\n`;
+      message += `*${index + 1}. ${item.name}*\n`;
+      message += `   📁 Category: ${category ? category.name : item.category}\n`;
       if (item.minOrder) {
-        message += `   Min Order: ${item.minOrder} pcs\n`;
+        message += `   📦 Min Order: ${item.minOrder} pcs\n`;
+      }
+      if (item.image) {
+        message += `   🖼️ View: ${item.image}\n`;
       }
       message += '\n';
     });
 
-    message += '-------------------\n';
-    message += 'Please share pricing and details for these products.\n';
-    message += 'Looking forward to your response!';
+    message += '━━━━━━━━━━━━━━━━━━━━\n';
+    message += `📊 *Total Products: ${cart.length}*\n\n`;
+    message += '✉️ Please share pricing and details.\n';
+    message += '🙏 Looking forward to your response!';
 
     return encodeURIComponent(message);
   },

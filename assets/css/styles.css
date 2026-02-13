@@ -52,6 +52,31 @@ input, textarea, select {
   font-size: inherit;
 }
 
+/* -------------------- Hide Animated Particles & Orbs -------------------- */
+.hero-particles,
+.hero-particle,
+.work-particles,
+.work-particle,
+.particle,
+.hero-orb,
+.hero-orb-1,
+.hero-orb-2,
+.hero-orb-3,
+.work-orb,
+.work-orb-1,
+.work-orb-2,
+.work-orb-3,
+.about-orb,
+.about-orb-1,
+.about-orb-2,
+.about-orb-3,
+.cta-floating-shapes,
+.hero-mesh-bg,
+.hero-mesh-bg-2,
+.hero-shimmer {
+  display: none !important;
+}
+
 /* -------------------- CSS Variables -------------------- */
 :root {
   /* Primary Colors - Dark Premium */

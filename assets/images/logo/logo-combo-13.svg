@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="goldC13" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="50%" style="stop-color:#c9a227"/>
+      <stop offset="100%" style="stop-color:#8b7355"/>
+    </linearGradient>
+    <linearGradient id="goldShine13" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff" stop-opacity="0.4"/>
+      <stop offset="100%" style="stop-color:#fff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Combo 13: Origami Style Bag -->
+  <g transform="translate(8, 8)">
+    <!-- Origami folded bag -->
+    <polygon points="32,4 56,16 56,56 32,64 8,56 8,16" fill="url(#goldC13)" opacity="0.15"/>
+    <polygon points="32,4 56,16 56,56 32,64 8,56 8,16" fill="none" stroke="url(#goldC13)" stroke-width="2"/>
+
+    <!-- Fold lines -->
+    <line x1="32" y1="4" x2="32" y2="64" stroke="url(#goldC13)" stroke-width="1.5" opacity="0.5"/>
+    <line x1="8" y1="16" x2="56" y2="16" stroke="url(#goldC13)" stroke-width="1.5" opacity="0.5"/>
+
+    <!-- Inner fold detail -->
+    <polygon points="32,16 44,22 44,48 32,52 20,48 20,22" fill="url(#goldC13)" opacity="0.25"/>
+
+    <!-- Handle loops -->
+    <ellipse cx="22" cy="10" rx="6" ry="4" fill="none" stroke="url(#goldC13)" stroke-width="2"/>
+    <ellipse cx="42" cy="10" rx="6" ry="4" fill="none" stroke="url(#goldC13)" stroke-width="2"/>
+
+    <!-- Shine effect -->
+    <polygon points="32,4 44,10 44,20 32,24 20,20 20,10" fill="url(#goldShine13)"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="78" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#goldC13)" font-weight="700">Bags</tspan></text>
+</svg>

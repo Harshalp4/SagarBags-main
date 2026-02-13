@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="goldC18" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Combo 18: Mandala/Circular Pattern with Bag -->
+  <g transform="translate(8, 8)">
+    <!-- Outer decorative circle -->
+    <circle cx="32" cy="32" r="30" fill="none" stroke="url(#goldC18)" stroke-width="1" opacity="0.3"/>
+
+    <!-- Decorative petals -->
+    <g opacity="0.4">
+      <ellipse cx="32" cy="6" rx="4" ry="8" fill="none" stroke="url(#goldC18)" stroke-width="1"/>
+      <ellipse cx="32" cy="58" rx="4" ry="8" fill="none" stroke="url(#goldC18)" stroke-width="1"/>
+      <ellipse cx="6" cy="32" rx="8" ry="4" fill="none" stroke="url(#goldC18)" stroke-width="1"/>
+      <ellipse cx="58" cy="32" rx="8" ry="4" fill="none" stroke="url(#goldC18)" stroke-width="1"/>
+    </g>
+
+    <!-- Diagonal petals -->
+    <g opacity="0.3" transform="rotate(45, 32, 32)">
+      <ellipse cx="32" cy="8" rx="3" ry="6" fill="none" stroke="url(#goldC18)" stroke-width="1"/>
+      <ellipse cx="32" cy="56" rx="3" ry="6" fill="none" stroke="url(#goldC18)" stroke-width="1"/>
+      <ellipse cx="8" cy="32" rx="6" ry="3" fill="none" stroke="url(#goldC18)" stroke-width="1"/>
+      <ellipse cx="56" cy="32" rx="6" ry="3" fill="none" stroke="url(#goldC18)" stroke-width="1"/>
+    </g>
+
+    <!-- Inner circle -->
+    <circle cx="32" cy="32" r="18" fill="none" stroke="url(#goldC18)" stroke-width="1.5" opacity="0.5"/>
+
+    <!-- Center bag icon -->
+    <rect x="22" y="24" width="20" height="20" rx="2" fill="url(#goldC18)" opacity="0.2"/>
+    <rect x="22" y="24" width="20" height="20" rx="2" fill="none" stroke="url(#goldC18)" stroke-width="2"/>
+    <path d="M27 24 L27 18 Q27 16 32 16 Q37 16 37 18 L37 24" fill="none" stroke="url(#goldC18)" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="78" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#goldC18)" font-weight="700">Bags</tspan></text>
+</svg>

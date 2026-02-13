@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="goldC4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Combo 4: Three bags in row (mini versions) -->
+  <g transform="translate(6, 16)">
+    <!-- Bag 1: Small tote -->
+    <rect x="2" y="16" width="18" height="24" rx="2" fill="url(#goldC4)" opacity="0.15"/>
+    <rect x="2" y="16" width="18" height="24" rx="2" fill="none" stroke="url(#goldC4)" stroke-width="2"/>
+    <path d="M6 16 L6 10 C6 7 8 5 11 5 C14 5 16 7 16 10 L16 16" fill="none" stroke="url(#goldC4)" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Bag 2: Briefcase (center, larger) -->
+    <rect x="22" y="12" width="28" height="24" rx="3" fill="url(#goldC4)" opacity="0.25"/>
+    <rect x="22" y="12" width="28" height="24" rx="3" fill="none" stroke="url(#goldC4)" stroke-width="3"/>
+    <path d="M30 12 L30 6 L42 6 L42 12" fill="none" stroke="url(#goldC4)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="26" y1="26" x2="46" y2="26" stroke="url(#goldC4)" stroke-width="2"/>
+    <circle cx="34" cy="26" r="2" fill="url(#goldC4)"/>
+    <circle cx="38" cy="26" r="2" fill="url(#goldC4)"/>
+
+    <!-- Bag 3: Small backpack -->
+    <rect x="52" y="14" width="18" height="26" rx="4" fill="url(#goldC4)" opacity="0.15"/>
+    <rect x="52" y="14" width="18" height="26" rx="4" fill="none" stroke="url(#goldC4)" stroke-width="2"/>
+    <path d="M56 40 L56 44 M64 40 L64 44" stroke="url(#goldC4)" stroke-width="2" stroke-linecap="round"/>
+    <ellipse cx="61" cy="12" rx="5" ry="3" fill="none" stroke="url(#goldC4)" stroke-width="2"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="84" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#goldC4)" font-weight="700">Bags</tspan></text>
+</svg>

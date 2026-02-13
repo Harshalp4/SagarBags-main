@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="goldC16" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Combo 16: Line Art Continuous -->
+  <g transform="translate(6, 10)">
+    <!-- Single continuous line drawing -->
+    <path d="M10 50
+             L10 20 Q10 14 16 14 L48 14 Q54 14 54 20 L54 50 Q54 56 48 56 L16 56 Q10 56 10 50
+             M18 14 L18 6 Q18 2 24 2 L40 2 Q46 2 46 6 L46 14
+             M16 32 L48 32
+             M28 32 L28 42
+             M36 32 L36 42"
+          fill="none" stroke="url(#goldC16)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Artistic flourish -->
+    <path d="M54 36 Q62 36 64 28 Q66 20 62 16" fill="none" stroke="url(#goldC16)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+    <circle cx="62" cy="14" r="2" fill="url(#goldC16)" opacity="0.5"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="86" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#goldC16)" font-weight="700">Bags</tspan></text>
+</svg>
