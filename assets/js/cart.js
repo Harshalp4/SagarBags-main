@@ -139,12 +139,19 @@ const Cart = {
       return false;
     }
 
+    // Safely get first image
+    let productImage = '';
+    if (product.images && product.images.length > 0) {
+      const firstImg = product.images[0];
+      productImage = typeof firstImg === 'string' ? firstImg : (firstImg?.url || firstImg?.preview || '');
+    }
+
     cart.push({
       id: productId,
-      name: product.name,
-      category: product.category,
-      image: product.images[0],
-      minOrder: product.minOrder
+      name: product.name || 'Unknown Product',
+      category: product.category || '',
+      image: productImage,
+      minOrder: product.minOrder || 50
     });
 
     this.saveCart(cart);

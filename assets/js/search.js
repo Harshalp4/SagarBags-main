@@ -74,16 +74,13 @@ const Search = {
     const container = document.getElementById('searchCategories');
     if (!container) return;
 
-    // Wait for categories to load
-    setTimeout(() => {
+    const renderCategories = () => {
       let categories = [];
-      if (typeof FirebaseDB !== 'undefined' && typeof window.categoriesData !== 'undefined') {
-        categories = window.categoriesData || [];
-      } else if (typeof getAllCategories === 'function') {
+      if (typeof getAllCategories === 'function') {
         categories = getAllCategories();
       }
 
-      if (categories.length === 0) return;
+      if (categories.length === 0) return false;
 
       container.innerHTML = `
         <h4>Browse Categories</h4>
@@ -102,7 +99,15 @@ const Search = {
           window.location.href = `products.html?category=${categoryId}`;
         });
       });
-    }, 500);
+      return true;
+    };
+
+    // Try immediately, then retry when data loads
+    if (!renderCategories()) {
+      window.addEventListener('productsDataLoaded', () => renderCategories(), { once: true });
+      // Also retry after a delay as a final fallback
+      setTimeout(() => renderCategories(), 2000);
+    }
   },
 
   bindEvents() {
@@ -213,13 +218,13 @@ const Search = {
       let products = [];
       let categories = [];
 
-      // Get products
-      if (typeof FirebaseDB !== 'undefined') {
-        products = await FirebaseDB.getProducts();
-        categories = await FirebaseDB.getCategories();
-      } else if (typeof getAllProducts === 'function') {
+      // Get products from the shared data store (already loaded from Firebase or fallback)
+      if (typeof getAllProducts === 'function') {
         products = getAllProducts();
         categories = typeof getAllCategories === 'function' ? getAllCategories() : [];
+      } else if (typeof FirebaseDB !== 'undefined') {
+        products = await FirebaseDB.getProducts();
+        categories = await FirebaseDB.getCategories();
       }
 
       // Search products
@@ -279,7 +284,7 @@ const Search = {
       const image = Array.isArray(product.images) ? product.images[0] : product.image;
 
       return `
-        <a href="product.html?id=${product.id}" class="search-result-item">
+        <a href="product-detail.html?id=${product.id}" class="search-result-item">
           <div class="search-result-image">
             <img src="${image || 'assets/images/placeholder.jpg'}" alt="${product.name}" loading="lazy">
           </div>

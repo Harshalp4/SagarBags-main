@@ -90,12 +90,17 @@ const Favorites = {
   updateFavoriteButtons() {
     document.querySelectorAll('.favorite-btn').forEach(btn => {
       const productId = btn.dataset.productId;
+      const svg = btn.querySelector('svg');
       if (this.isFavorite(productId)) {
         btn.classList.add('active');
         btn.setAttribute('aria-label', 'Remove from favorites');
+        // Update SVG fill to show filled heart
+        if (svg) svg.setAttribute('fill', 'currentColor');
       } else {
         btn.classList.remove('active');
         btn.setAttribute('aria-label', 'Add to favorites');
+        // Update SVG fill to show outline heart
+        if (svg) svg.setAttribute('fill', 'none');
       }
     });
   },
@@ -118,11 +123,14 @@ const Favorites = {
   bindEvents() {
     // Favorite button click (delegated)
     document.addEventListener('click', (e) => {
-      if (e.target.closest('.favorite-btn')) {
+      const btn = e.target.closest('.favorite-btn');
+      if (btn) {
         e.preventDefault();
-        const btn = e.target.closest('.favorite-btn');
+        e.stopPropagation(); // Prevent event from bubbling to parent (like card-image-zoom)
         const productId = btn.dataset.productId;
-        this.toggleFavorite(productId);
+        if (productId) {
+          this.toggleFavorite(productId);
+        }
       }
     });
   },

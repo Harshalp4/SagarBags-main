@@ -29,7 +29,31 @@
       background: #0a0a0a;
     }
 
-    /* Background Image Layer with Ken Burns Effect */
+    /* Video Background Layer */
+    .about-video-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .about-video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100vw;
+      height: 100vh;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      opacity: 0.75;
+    }
+
+    /* Background Image Layer with Ken Burns Effect (fallback) */
     .about-bg-image {
       position: absolute;
       top: 0;
@@ -56,9 +80,9 @@
       bottom: 0;
       background: linear-gradient(
         180deg,
-        rgba(10, 10, 10, 0.6) 0%,
-        rgba(10, 10, 10, 0.5) 50%,
-        rgba(26, 26, 26, 0.7) 100%
+        rgba(10, 10, 10, 0.65) 0%,
+        rgba(10, 10, 10, 0.6) 50%,
+        rgba(26, 26, 26, 0.75) 100%
       );
       z-index: 1;
     }
@@ -794,6 +818,128 @@
       line-height: 1.5;
     }
 
+    /* ==================== Trusted By Section ==================== */
+    .trusted-section {
+      padding: 5rem 0;
+      background: #1a1a1a;
+    }
+
+    .trusted-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .trusted-category {
+      background: linear-gradient(135deg, #242424 0%, #1e1e1e 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      transition: all 0.3s ease;
+    }
+
+    .trusted-category:hover {
+      border-color: rgba(201, 162, 39, 0.3);
+      transform: translateY(-5px);
+    }
+
+    .trusted-category h3 {
+      font-size: 1.125rem;
+      color: var(--secondary);
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid rgba(201, 162, 39, 0.2);
+    }
+
+    .trusted-category ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .trusted-category li {
+      color: #b0b0b0;
+      font-size: 0.9375rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .trusted-category li:last-child {
+      border-bottom: none;
+    }
+
+    /* ==================== Leadership Section ==================== */
+    .leadership-section {
+      padding: 5rem 0;
+      background: linear-gradient(180deg, #242424 0%, #1a1a1a 100%);
+    }
+
+    .leadership-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3rem;
+      margin-top: 3rem;
+    }
+
+    .leader-card {
+      background: linear-gradient(135deg, rgba(201, 162, 39, 0.08) 0%, rgba(201, 162, 39, 0.02) 100%);
+      border: 1px solid rgba(201, 162, 39, 0.2);
+      border-radius: var(--radius-xl);
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .leader-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--secondary) 0%, transparent 100%);
+    }
+
+    .leader-card h3 {
+      font-size: 1.5rem;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+    }
+
+    .leader-card .role {
+      font-size: 1rem;
+      color: var(--secondary);
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+    }
+
+    .leader-card p {
+      color: #b0b0b0;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 992px) {
+      .trusted-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .leadership-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .leader-card {
+        padding: 1.75rem;
+      }
+
+      .leader-card h3 {
+        font-size: 1.25rem;
+      }
+    }
+
     /* ==================== CTA Section ==================== */
     .about-cta-section {
       padding: 5rem 0;
@@ -1106,7 +1252,7 @@
   <header class="header">
     <div class="header-container">
       <a href="index.html" class="logo">
-        <div class="logo-text">Sagar<span>Bags</span></div>
+        <img src="assets/images/logo/sagarbags-logo.png" alt="Sagar Bags" class="logo-img">
       </a>
       <nav class="nav-menu">
         <a href="index.html" class="nav-link">Home</a>
@@ -1147,7 +1293,14 @@
   <main>
     <!-- Hero Section -->
     <section class="about-hero-section">
-      <!-- Background Image with Ken Burns Effect -->
+      <!-- Video Background -->
+      <div class="about-video-container">
+        <video autoplay muted loop playsinline class="about-video" id="heroVideo">
+          <source src="assets/videos/hero-bg.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <!-- Background Image with Ken Burns Effect (fallback) -->
       <div class="about-bg-image"></div>
 
       <!-- Dark Overlay for readability -->
@@ -1373,6 +1526,63 @@
       </div>
     </section>
 
+    <!-- Trusted By Section -->
+    <section class="trusted-section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Trusted By Industry Leaders</h2>
+          <p>We're proud to partner with businesses across diverse industries</p>
+        </div>
+        <div class="trusted-grid">
+          <div class="trusted-category">
+            <h3>Industrial & Engineering</h3>
+            <ul>
+              <li>Protech Engineers & Fab Pvt Ltd</li>
+              <li>Tanvi Engineering</li>
+            </ul>
+          </div>
+          <div class="trusted-category">
+            <h3>Corporate & Tech</h3>
+            <ul>
+              <li>AKORD and Company</li>
+              <li>Kromia Lights</li>
+              <li>Shashank Infotech</li>
+            </ul>
+          </div>
+          <div class="trusted-category">
+            <h3>Retail & Education</h3>
+            <ul>
+              <li>Mahalaxmi Jeweller's Pvt Ltd</li>
+              <li>Pankaj Classes</li>
+              <li>P.D. Jewellers</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Leadership Section -->
+    <section class="leadership-section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Our Leadership: The Pillars of Sagar Bags</h2>
+          <p>Meet the visionaries driving our commitment to excellence</p>
+        </div>
+        <div class="leadership-grid">
+          <div class="leader-card">
+            <h3>Shamrao Khot</h3>
+            <div class="role">Founder & Visionary</div>
+            <p>With over 20 years of hands-on experience in the industry, Mr. Shamrao Khot laid the foundation of Sagar Bags. His deep understanding of craftsmanship and his commitment to "quality first" remain the guiding light for our brand. He is the reason we have transitioned successfully from a local retail name to a manufacturing powerhouse.</p>
+          </div>
+          <div class="leader-card">
+            <h3>Sagar Khot</h3>
+            <div class="role">Operations & Growth</div>
+            <p>As the second-generation leader, Sagar brings fresh perspectives and modern business strategies while honoring the legacy built by his father. His focus on operational excellence, digital transformation, and customer-centric approaches has propelled Sagar Bags into new markets and partnerships.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- CTA Section with Animation -->
     <section class="about-cta-section">
       <div class="cta-floating-shapes">
@@ -1406,7 +1616,7 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <div class="logo"><div class="logo-text">Sagar<span>Bags</span></div></div>
+          <div class="logo"><img src="assets/images/logo/sagarbags-logo.png" alt="Sagar Bags" class="logo-img"></div>
           <p>Leading promotional bag manufacturer in India with 20+ years of excellence. Second-generation craftsmen building brand ambassadors.</p>
         </div>
         <div class="footer-column">

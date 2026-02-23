@@ -29,7 +29,31 @@
       text-align: center;
     }
 
-    /* Background Image */
+    /* Video Background Layer */
+    .work-video-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .work-video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100vw;
+      height: 100vh;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      opacity: 0.75;
+    }
+
+    /* Background Image (fallback) */
     .work-hero-bg {
       position: absolute;
       top: 0;
@@ -209,7 +233,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: linear-gradient(180deg, rgba(10,10,10,0.5) 0%, rgba(10,10,10,0.7) 100%);
+      background: linear-gradient(180deg, rgba(10,10,10,0.65) 0%, rgba(10,10,10,0.7) 100%);
       z-index: 2;
     }
 
@@ -954,7 +978,7 @@
   <header class="header">
     <div class="header-container">
       <a href="index.html" class="logo">
-        <div class="logo-text">Sagar<span>Bags</span></div>
+        <img src="assets/images/logo/sagarbags-logo.png" alt="Sagar Bags" class="logo-img">
       </a>
       <nav class="nav-menu">
         <a href="index.html" class="nav-link">Home</a>
@@ -994,7 +1018,14 @@
   <main>
     <!-- Hero Section -->
     <section class="work-hero">
-      <!-- Background Image with Ken Burns -->
+      <!-- Video Background -->
+      <div class="work-video-container">
+        <video autoplay muted loop playsinline class="work-video" id="heroVideo">
+          <source src="assets/videos/hero-bg.mp4" type="video/mp4">
+        </video>
+      </div>
+
+      <!-- Background Image with Ken Burns (fallback) -->
       <div class="work-hero-bg"></div>
 
       <!-- Animated Gradient Mesh Overlay -->
@@ -1449,7 +1480,7 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <div class="logo"><div class="logo-text">Sagar<span>Bags</span></div></div>
+          <div class="logo"><img src="assets/images/logo/sagarbags-logo.png" alt="Sagar Bags" class="logo-img"></div>
           <p>Leading promotional bag manufacturer in India with 20+ years of excellence.</p>
         </div>
         <div class="footer-column">

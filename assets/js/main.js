@@ -11,7 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
   initTestimonialSlider();
   initSmoothScroll();
   initMobileProductCards();
+  initHeroVideo();
 });
+
+// -------------------- Hero Video Speed Control --------------------
+function initHeroVideo() {
+  const heroVideo = document.getElementById('heroVideo');
+  if (heroVideo) {
+    // Slow down video to 50% speed (0.5 = half speed)
+    heroVideo.playbackRate = 0.5;
+  }
+}
 
 // -------------------- Mobile Product Card Tap Behavior --------------------
 function initMobileProductCards() {
@@ -195,8 +205,16 @@ function initTestimonialSlider() {
     goToSlide((currentSlide + 1) % slides.length);
   }
 
-  // Auto-play
-  setInterval(nextSlide, 5000);
+  // Auto-play with visibility awareness (pause when tab is hidden)
+  let autoPlayInterval = setInterval(nextSlide, 5000);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      clearInterval(autoPlayInterval);
+    } else {
+      autoPlayInterval = setInterval(nextSlide, 5000);
+    }
+  });
 }
 
 // -------------------- Smooth Scroll --------------------
@@ -327,8 +345,8 @@ function renderProductCard(product) {
   if (product.badge === 'new') {
     productBadge = '<span class="product-badge product-badge-new">New</span>';
   } else if (product.badge === 'bestseller') {
-    productBadge = '<span class="product-badge product-badge-popular">Popular</span>';
-  } else if (product.featured) {
+    productBadge = '<span class="product-badge product-badge-bestseller">Best Seller</span>';
+  } else if (product.badge === 'featured') {
     productBadge = '<span class="product-badge product-badge-featured">Featured</span>';
   }
 
@@ -351,7 +369,7 @@ function renderProductCard(product) {
       </div>
       <div class="card-body">
         <h3 class="card-title">${product.name}</h3>
-        <p class="card-text">${(product.description || product.shortDesc || '').substring(0, 60)}...</p>
+        <p class="card-text">${(product.fullDesc || product.description || product.shortDesc || '').substring(0, 100)}${(product.fullDesc || product.description || product.shortDesc || '').length > 100 ? '...' : ''}</p>
         <div class="card-meta">
           <span class="min-order">Min Order: ${product.minOrder} pcs</span>
         </div>
@@ -505,7 +523,7 @@ class Viewer360 {
     this.startX = 0;
     this.currentX = 0;
     this.autoRotate = options.autoRotate !== false;
-    this.autoRotateSpeed = options.autoRotateSpeed || 100;
+    this.autoRotateSpeed = options.autoRotateSpeed || 1500; // Default: slow rotation (~12s per cycle)
     this.sensitivity = options.sensitivity || 5;
     this.autoRotateInterval = null;
     this.hasInteracted = false;
@@ -556,21 +574,35 @@ class Viewer360 {
   }
 
   bindEvents() {
+    // Store bound references for cleanup
+    this._boundDragMove = this.onDragMove.bind(this);
+    this._boundDragEnd = this.onDragEnd.bind(this);
+    this._boundTouchMove = this.onTouchMove.bind(this);
+
     // Mouse events
     this.viewerContainer.addEventListener('mousedown', this.onDragStart.bind(this));
-    document.addEventListener('mousemove', this.onDragMove.bind(this));
-    document.addEventListener('mouseup', this.onDragEnd.bind(this));
+    document.addEventListener('mousemove', this._boundDragMove);
+    document.addEventListener('mouseup', this._boundDragEnd);
 
     // Touch events
     this.viewerContainer.addEventListener('touchstart', this.onTouchStart.bind(this), { passive: true });
-    document.addEventListener('touchmove', this.onTouchMove.bind(this), { passive: true });
-    document.addEventListener('touchend', this.onDragEnd.bind(this));
+    document.addEventListener('touchmove', this._boundTouchMove, { passive: true });
+    document.addEventListener('touchend', this._boundDragEnd);
 
     // Pause auto-rotate on hover
     this.viewerContainer.addEventListener('mouseenter', () => this.stopAutoRotate());
     this.viewerContainer.addEventListener('mouseleave', () => {
       if (this.autoRotate && !this.isDragging) this.startAutoRotate();
     });
+  }
+
+  // Cleanup method to remove global listeners
+  destroy() {
+    this.stopAutoRotate();
+    if (this._boundDragMove) document.removeEventListener('mousemove', this._boundDragMove);
+    if (this._boundDragEnd) document.removeEventListener('mouseup', this._boundDragEnd);
+    if (this._boundTouchMove) document.removeEventListener('touchmove', this._boundTouchMove);
+    if (this._boundDragEnd) document.removeEventListener('touchend', this._boundDragEnd);
   }
 
   preloadImages() {

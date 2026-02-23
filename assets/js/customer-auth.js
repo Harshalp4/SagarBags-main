@@ -281,8 +281,8 @@ const CustomerAuthUI = {
     btn.textContent = 'Logging in...';
 
     try {
-      // Get guest cart before login
-      const guestCart = Cart.getCart();
+      // Get guest cart before login (safely check Cart exists)
+      const guestCart = typeof Cart !== 'undefined' ? Cart.getCart() : [];
 
       const result = await CustomerAuth.login(email, password);
 
@@ -299,13 +299,14 @@ const CustomerAuthUI = {
         });
 
         // Save merged cart to Firebase and localStorage
-        localStorage.setItem(Cart.STORAGE_KEY, JSON.stringify(mergedCart));
-        if (mergedCart.length > 0) {
-          await CustomerAuth.saveCart(mergedCart);
+        if (typeof Cart !== 'undefined') {
+          localStorage.setItem(Cart.STORAGE_KEY, JSON.stringify(mergedCart));
+          if (mergedCart.length > 0) {
+            await CustomerAuth.saveCart(mergedCart);
+          }
+          Cart.updateCartCount();
+          Cart.renderCartDrawer();
         }
-
-        Cart.updateCartCount();
-        Cart.renderCartDrawer();
 
         this.closeModal();
         this.updateUIForLoggedInUser();
@@ -438,12 +439,18 @@ const CustomerAuthUI = {
 
   // Check auth state on load
   checkAuthState() {
-    if (typeof CustomerAuth !== 'undefined') {
-      CustomerAuth.onAuthStateChanged(async (user) => {
-        if (user) {
-          this.updateUIForLoggedInUser();
+    if (typeof CustomerAuth === 'undefined') {
+      // Firebase not ready yet, retry after a short delay
+      setTimeout(() => this.checkAuthState(), 200);
+      return;
+    }
 
-          // Load user's cart from Firebase
+    CustomerAuth.onAuthStateChanged(async (user) => {
+      if (user) {
+        this.updateUIForLoggedInUser();
+
+        // Load user's cart from Firebase (safely check Cart exists)
+        if (typeof Cart !== 'undefined') {
           try {
             const userCart = await CustomerAuth.getCart();
             if (userCart && userCart.length > 0) {
@@ -454,17 +461,11 @@ const CustomerAuthUI = {
           } catch (error) {
             console.error('Error loading user cart:', error);
           }
-        } else {
-          this.updateUIForGuest();
-          // Clear cart for guest (logged out state)
-          if (typeof Cart !== 'undefined') {
-            const currentCart = Cart.getCart();
-            // Only clear if there's no active session (fresh page load without login)
-            // This prevents clearing cart added as guest before login
-          }
         }
-      });
-    }
+      } else {
+        this.updateUIForGuest();
+      }
+    });
   },
 
   // Update UI for logged-in user

@@ -27,6 +27,19 @@ const AdminApp = {
     this.updateCartBadge();
   },
 
+  // Sync Firebase cache to localStorage so AdminData stays in sync
+  syncCacheToLocalStorage() {
+    if (this.productsCache.length > 0) {
+      localStorage.setItem('sagarbags_products', JSON.stringify(this.productsCache));
+    }
+    if (this.categoriesCache.length > 0) {
+      localStorage.setItem('sagarbags_categories', JSON.stringify(this.categoriesCache));
+    }
+    if (this.testimonialsCache.length > 0) {
+      localStorage.setItem('sagarbags_testimonials', JSON.stringify(this.testimonialsCache));
+    }
+  },
+
   // Load SAS token from Firebase settings
   async loadSasToken() {
     if (typeof FirebaseDB !== 'undefined') {
@@ -180,6 +193,8 @@ const AdminApp = {
         this.productsCache = products;
         this.categoriesCache = categories;
         this.testimonialsCache = testimonials;
+        // Sync to localStorage for filter functions
+        this.syncCacheToLocalStorage();
       } catch (err) {
         console.log('Firebase fetch failed, using localStorage:', err);
         products = AdminData.getProducts();
@@ -243,13 +258,13 @@ const AdminApp = {
             ${cart.items.slice(0, 4).map(item => `
               <div style="flex-shrink: 0; width: 50px; height: 50px; border-radius: 6px; overflow: hidden; background: var(--bg-elevated); border: 1px solid var(--border-subtle);">
                 ${item.image
-                  ? `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;" title="${item.name}">`
-                  : `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+          ? `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;" title="${item.name}">`
+          : `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5">
                         <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
                       </svg>
                     </div>`
-                }
+        }
               </div>
             `).join('')}
             ${cart.items.length > 4 ? `
@@ -287,27 +302,38 @@ const AdminApp = {
       return;
     }
 
-    container.innerHTML = inquiries.map(inq => `
+    container.innerHTML = inquiries.map(inq => {
+      const productNames = inq.products && inq.products.length > 0
+        ? inq.products.map(p => p.name || p.category || 'Product').join(', ')
+        : 'General inquiry';
+      return `
       <div class="inquiry-item" style="display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid var(--border-subtle);">
         <div>
           <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
             ${inq.status === 'unread' ? '<span class="badge badge-gold">New</span>' : ''}
             <span style="font-weight: 500; color: var(--text-primary);">${inq.name}</span>
           </div>
-          <p style="font-size: 0.875rem; color: var(--text-muted);">${inq.company} - ${inq.products.map(p => p.name).join(', ')}</p>
+          <p style="font-size: 0.875rem; color: var(--text-muted);">${inq.company || ''} - ${productNames}</p>
         </div>
         <span style="font-size: 0.8125rem; color: var(--text-muted);">${AdminData.formatDate(inq.createdAt)}</span>
       </div>
-    `).join('');
+    `}).join('');
   },
+
+  // Cache for inquiries to keep badge and list in sync
+  inquiriesCache: [],
 
   async updateInquiryBadge() {
     let count = 0;
     if (typeof FirebaseDB !== 'undefined') {
       try {
-        const inquiries = await FirebaseDB.getInquiries();
-        count = inquiries.filter(i => i.status === 'unread').length;
+        // Use cached inquiries if available, otherwise fetch fresh
+        if (this.inquiriesCache.length === 0) {
+          this.inquiriesCache = await FirebaseDB.getInquiries();
+        }
+        count = this.inquiriesCache.filter(i => i.status === 'unread').length;
       } catch (err) {
+        console.log('Error fetching inquiries for badge:', err);
         count = AdminData.getUnreadInquiryCount();
       }
     } else {
@@ -350,6 +376,8 @@ const AdminApp = {
         categories = await FirebaseDB.getCategories();
         this.productsCache = products;
         this.categoriesCache = categories;
+        // Sync to localStorage for filter functions
+        this.syncCacheToLocalStorage();
       } catch (err) {
         console.log('Firebase fetch failed, using AdminData:', err);
         products = AdminData.getProducts();
@@ -388,8 +416,8 @@ const AdminApp = {
           <td>
             <div style="width: 50px; height: 50px; background: var(--bg-elevated); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
               ${product.images && product.images[0]
-                ? `<img src="${product.images[0]}" alt="${product.name}" class="table-image" onerror="this.parentElement.innerHTML='📦'">`
-                : '📦'}
+          ? `<img src="${product.images[0]}" alt="${product.name}" class="table-image" onerror="this.parentElement.innerHTML='📦'">`
+          : '📦'}
             </div>
           </td>
           <td>
@@ -424,13 +452,137 @@ const AdminApp = {
   },
 
   populateCategoryFilter(categories) {
-    const select = document.getElementById('productCategoryFilter');
-    if (!select) return;
+    const optionsContainer = document.getElementById('categoryFilterOptions');
+    const hiddenInput = document.getElementById('productCategoryFilter');
+    if (!optionsContainer || !hiddenInput) return;
 
-    select.innerHTML = `
-      <option value="">All Categories</option>
-      ${categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+    // Populate options
+    optionsContainer.innerHTML = `
+      <div class="searchable-select-option selected" data-value="">All Categories</div>
+      ${categories.map(c => `<div class="searchable-select-option" data-value="${c.id}">${c.name}</div>`).join('')}
     `;
+
+    // Initialize searchable dropdown
+    this.initSearchableCategoryFilter();
+  },
+
+  initSearchableCategoryFilter() {
+    const wrapper = document.getElementById('categoryFilterWrapper');
+    const trigger = document.getElementById('categoryFilterTrigger');
+    const dropdown = document.getElementById('categoryFilterDropdown');
+    const searchInput = document.getElementById('categoryFilterSearch');
+    const optionsContainer = document.getElementById('categoryFilterOptions');
+    const hiddenInput = document.getElementById('productCategoryFilter');
+    const valueDisplay = trigger?.querySelector('.searchable-select-value');
+
+    if (!wrapper || !trigger || !dropdown || !searchInput || !optionsContainer) return;
+
+    // Toggle dropdown
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      wrapper.classList.toggle('active');
+      if (wrapper.classList.contains('active')) {
+        searchInput.focus();
+        searchInput.value = '';
+        this.filterCategoryOptions('');
+      }
+    });
+
+    // Search functionality
+    searchInput.addEventListener('input', (e) => {
+      this.filterCategoryOptions(e.target.value);
+    });
+
+    searchInput.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    // Option selection
+    optionsContainer.addEventListener('click', (e) => {
+      const option = e.target.closest('.searchable-select-option');
+      if (option && !option.classList.contains('hidden')) {
+        const value = option.dataset.value;
+        const text = option.textContent;
+
+        // Update hidden input
+        hiddenInput.value = value;
+
+        // Update display
+        if (valueDisplay) valueDisplay.textContent = text;
+
+        // Update selected state
+        optionsContainer.querySelectorAll('.searchable-select-option').forEach(opt => {
+          opt.classList.toggle('selected', opt.dataset.value === value);
+        });
+
+        // Close dropdown
+        wrapper.classList.remove('active');
+
+        // Trigger filter
+        this.filterProducts();
+      }
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      if (!wrapper.contains(e.target)) {
+        wrapper.classList.remove('active');
+      }
+    });
+
+    // Keyboard navigation
+    searchInput.addEventListener('keydown', (e) => {
+      const visibleOptions = optionsContainer.querySelectorAll('.searchable-select-option:not(.hidden)');
+      const currentIndex = Array.from(visibleOptions).findIndex(opt => opt.classList.contains('focused'));
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const nextIndex = currentIndex < visibleOptions.length - 1 ? currentIndex + 1 : 0;
+        visibleOptions.forEach((opt, i) => opt.classList.toggle('focused', i === nextIndex));
+        visibleOptions[nextIndex]?.scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : visibleOptions.length - 1;
+        visibleOptions.forEach((opt, i) => opt.classList.toggle('focused', i === prevIndex));
+        visibleOptions[prevIndex]?.scrollIntoView({ block: 'nearest' });
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const focusedOption = optionsContainer.querySelector('.searchable-select-option.focused');
+        if (focusedOption) focusedOption.click();
+      } else if (e.key === 'Escape') {
+        wrapper.classList.remove('active');
+      }
+    });
+  },
+
+  filterCategoryOptions(query) {
+    const optionsContainer = document.getElementById('categoryFilterOptions');
+    if (!optionsContainer) return;
+
+    const options = optionsContainer.querySelectorAll('.searchable-select-option');
+    const queryLower = query.toLowerCase().trim();
+    let hasVisible = false;
+
+    options.forEach(option => {
+      const text = option.textContent.toLowerCase();
+      const matches = !queryLower || text.includes(queryLower);
+      option.classList.toggle('hidden', !matches);
+      if (matches) hasVisible = true;
+    });
+
+    // Show/hide no results message
+    let noResults = optionsContainer.querySelector('.searchable-select-no-results');
+    if (!hasVisible) {
+      if (!noResults) {
+        noResults = document.createElement('div');
+        noResults.className = 'searchable-select-no-results';
+        noResults.textContent = 'No categories found';
+        optionsContainer.appendChild(noResults);
+      }
+      noResults.style.display = 'block';
+    } else if (noResults) {
+      noResults.style.display = 'none';
+    }
   },
 
   filterProducts() {
@@ -438,8 +590,9 @@ const AdminApp = {
     const categoryFilter = document.getElementById('productCategoryFilter')?.value || '';
     const statusFilter = document.getElementById('productStatusFilter')?.value || '';
 
-    let products = AdminData.getProducts();
-    const categories = AdminData.getCategories();
+    // Use Firebase cache if available, otherwise fall back to AdminData
+    let products = this.productsCache.length > 0 ? [...this.productsCache] : AdminData.getProducts();
+    const categories = this.categoriesCache.length > 0 ? this.categoriesCache : AdminData.getCategories();
 
     if (search) {
       products = products.filter(p =>
@@ -453,7 +606,7 @@ const AdminApp = {
     }
 
     if (statusFilter) {
-      products = products.filter(p => p.status === statusFilter);
+      products = products.filter(p => (p.status || 'active') === statusFilter);
     }
 
     this.renderProductsTable(products, categories);
@@ -503,11 +656,19 @@ const AdminApp = {
         document.getElementById('productName').value = product.name;
         document.getElementById('productCategory').value = product.category;
         document.getElementById('productMinOrder').value = product.minOrder;
+        document.getElementById('productPrice').value = product.price || '';
+        document.getElementById('productDiscount').value = product.discount || '';
         document.getElementById('productBadge').value = product.badge || '';
         document.getElementById('productStatus').value = product.status;
         document.getElementById('productShortDesc').value = product.shortDesc || '';
         document.getElementById('productFullDesc').value = product.fullDesc || '';
         document.getElementById('productFeatures').value = (product.features || []).join('\n');
+
+        // Load existing colors
+        const colorCheckboxes = document.querySelectorAll('input[name="productColors"]');
+        colorCheckboxes.forEach(cb => {
+          cb.checked = (product.colors || []).includes(cb.value);
+        });
 
         // Load existing images
         this.uploadedImages = product.images || [];
@@ -517,6 +678,11 @@ const AdminApp = {
       // Add mode
       title.textContent = 'Add New Product';
       form.reset();
+      // Clear price and discount fields
+      document.getElementById('productPrice').value = '';
+      document.getElementById('productDiscount').value = '';
+      // Clear color checkboxes
+      document.querySelectorAll('input[name="productColors"]').forEach(cb => cb.checked = false);
       this.renderImagePreviews();
     }
 
@@ -557,15 +723,29 @@ const AdminApp = {
       // Combine existing URLs with newly uploaded URLs
       const finalImages = [...existingUrls, ...newUrls];
 
+      // Get selected colors
+      const selectedColors = Array.from(document.querySelectorAll('input[name="productColors"]:checked'))
+        .map(cb => cb.value);
+
+      const shortDesc = document.getElementById('productShortDesc').value;
+      const fullDesc = document.getElementById('productFullDesc').value;
+
+      const priceValue = document.getElementById('productPrice').value;
+      const discountValue = document.getElementById('productDiscount').value;
+
       const productData = {
         name: document.getElementById('productName').value,
         category: document.getElementById('productCategory').value,
         minOrder: parseInt(document.getElementById('productMinOrder').value),
+        price: priceValue ? parseFloat(priceValue) : null,
+        discount: discountValue ? parseInt(discountValue) : 0,
         badge: document.getElementById('productBadge').value,
         status: document.getElementById('productStatus').value,
-        shortDesc: document.getElementById('productShortDesc').value,
-        fullDesc: document.getElementById('productFullDesc').value,
+        shortDesc: shortDesc,
+        fullDesc: fullDesc,
+        description: fullDesc || shortDesc, // For compatibility - use full description if available
         features: document.getElementById('productFeatures').value.split('\n').filter(f => f.trim()),
+        colors: selectedColors,
         images: finalImages
       };
 
@@ -758,6 +938,7 @@ const AdminApp = {
       try {
         categories = await FirebaseDB.getCategories();
         this.categoriesCache = categories;
+        this.syncCacheToLocalStorage();
       } catch (err) {
         console.log('Firebase fetch failed:', err);
         categories = AdminData.getCategories();
@@ -773,7 +954,9 @@ const AdminApp = {
     if (!tbody) return;
 
     tbody.innerHTML = categories.map(category => {
-      const productCount = AdminData.getCategoryProductCount(category.id);
+      // Use Firebase products cache for accurate count, fallback to AdminData
+      const productsSource = this.productsCache.length > 0 ? this.productsCache : AdminData.getProducts();
+      const productCount = productsSource.filter(p => p.category === category.id).length;
       const imagePreview = category.image
         ? `<img src="${category.image}" alt="${category.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;">`
         : `<span style="font-size: 1.5rem;">${category.icon || '📦'}</span>`;
@@ -1054,6 +1237,7 @@ const AdminApp = {
       try {
         testimonials = await FirebaseDB.getTestimonials();
         this.testimonialsCache = testimonials;
+        this.syncCacheToLocalStorage();
       } catch (err) {
         console.log('Firebase fetch failed:', err);
         testimonials = AdminData.getTestimonials();
@@ -1280,7 +1464,11 @@ const AdminApp = {
     if (typeof FirebaseDB !== 'undefined') {
       try {
         const inquiries = await FirebaseDB.getInquiries();
+        // Update cache to keep badge in sync
+        this.inquiriesCache = inquiries;
         this.renderInquiriesList(inquiries);
+        // Update badge to ensure consistency
+        this.updateInquiryBadge();
         return;
       } catch (err) {
         console.log('Firebase inquiry fetch failed, using localStorage:', err);
@@ -1313,8 +1501,8 @@ const AdminApp = {
         <div class="inquiry-header">
           <div class="inquiry-status">
             ${inquiry.status === 'unread'
-              ? '<span class="badge badge-gold">New</span>'
-              : '<span class="badge badge-success">Read</span>'}
+        ? '<span class="badge badge-gold">New</span>'
+        : '<span class="badge badge-success">Read</span>'}
           </div>
           <span class="inquiry-date">${AdminData.formatDateTime(inquiry.createdAt)}</span>
         </div>
@@ -1328,26 +1516,35 @@ const AdminApp = {
         <div class="inquiry-products">
           <h5>Products Requested</h5>
           <ul>
-            ${inquiry.products.map(p => `<li>${p.name} (${p.qty} pcs)</li>`).join('')}
+            ${inquiry.products && inquiry.products.length > 0
+              ? inquiry.products.map(p => `<li>${p.name || p.category || 'Product'} (${p.qty || p.quantity || 'N/A'} pcs)</li>`).join('')
+              : '<li>No specific products requested</li>'}
           </ul>
         </div>
+
+        ${inquiry.requiredDate || inquiry.deadline ? `
+        <div class="inquiry-deadline">
+          <h5>Required By Date</h5>
+          <p style="color: var(--secondary);">${AdminData.formatDate(inquiry.requiredDate || inquiry.deadline)}</p>
+        </div>
+        ` : ''}
 
         ${inquiry.message ? `<p class="inquiry-message">"${inquiry.message}"</p>` : ''}
 
         <div class="inquiry-actions">
           ${inquiry.status === 'unread'
-            ? `<button class="btn btn-secondary btn-sm" onclick="AdminApp.markInquiryRead('${inquiry.id}')">
+        ? `<button class="btn btn-secondary btn-sm" onclick="AdminApp.markInquiryRead('${inquiry.id}')">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
                   <path d="M22 4L12 14.01l-3-3"/>
                 </svg>
                 Mark as Read
               </button>`
-            : `<button class="btn btn-secondary btn-sm" onclick="AdminApp.markInquiryUnread('${inquiry.id}')">
+        : `<button class="btn btn-secondary btn-sm" onclick="AdminApp.markInquiryUnread('${inquiry.id}')">
                 Mark as Unread
               </button>`
-          }
-          <a href="https://wa.me/${inquiry.phone.replace(/\D/g, '')}?text=Hi ${inquiry.name}, thank you for your inquiry about our bags."
+      }
+          <a href="https://wa.me/${inquiry.phone.replace(/\D/g, '')}?text=${encodeURIComponent('Hi ' + (inquiry.name || 'there') + ', thank you for your inquiry about our bags.')}"
              class="btn btn-primary btn-sm" target="_blank">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
@@ -1392,8 +1589,10 @@ const AdminApp = {
     } else {
       AdminData.markInquiryRead(id);
     }
-    this.loadInquiries();
-    this.updateInquiryBadge();
+    // Clear cache to force fresh fetch
+    this.inquiriesCache = [];
+    await this.loadInquiries();
+    await this.updateInquiryBadge();
     this.showToast('Marked as read', 'success');
   },
 
@@ -1403,8 +1602,10 @@ const AdminApp = {
     } else {
       AdminData.markInquiryUnread(id);
     }
-    this.loadInquiries();
-    this.updateInquiryBadge();
+    // Clear cache to force fresh fetch
+    this.inquiriesCache = [];
+    await this.loadInquiries();
+    await this.updateInquiryBadge();
     this.showToast('Marked as unread', 'success');
   },
 
@@ -1415,9 +1616,11 @@ const AdminApp = {
       } else {
         AdminData.deleteInquiry(id);
       }
-      this.loadInquiries();
-      this.updateInquiryBadge();
-      this.loadDashboard();
+      // Clear cache to force fresh fetch
+      this.inquiriesCache = [];
+      await this.loadInquiries();
+      await this.updateInquiryBadge();
+      await this.loadDashboard();
       this.showToast('Inquiry deleted', 'success');
     }
   },
@@ -1488,11 +1691,11 @@ const AdminApp = {
                 <div style="background: var(--bg-elevated); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-subtle);">
                   <div style="aspect-ratio: 1; background: var(--bg-dark); display: flex; align-items: center; justify-content: center;">
                     ${item.image
-                      ? `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;">`
-                      : `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5">
+          ? `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;">`
+          : `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5">
                           <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
                         </svg>`
-                    }
+        }
                   </div>
                   <div style="padding: 0.5rem;">
                     <p style="font-size: 0.75rem; font-weight: 500; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${item.name}">${item.name}</p>
@@ -1846,7 +2049,7 @@ const AdminApp = {
 
     // Search and filters
     document.getElementById('productSearch')?.addEventListener('input', () => this.filterProducts());
-    document.getElementById('productCategoryFilter')?.addEventListener('change', () => this.filterProducts());
+    // Category filter is now handled by initSearchableCategoryFilter()
     document.getElementById('productStatusFilter')?.addEventListener('change', () => this.filterProducts());
     document.getElementById('inquiryStatusFilter')?.addEventListener('change', () => this.filterInquiries());
 

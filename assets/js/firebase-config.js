@@ -16,14 +16,20 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-// Initialize services - disable persistence completely
+// Initialize services
 const db = firebase.firestore();
 db.settings({
   cacheSizeBytes: firebase.firestore.CACHE_SIZE_UNLIMITED
 });
-// Disable offline persistence
-db.enablePersistence({ synchronizeTabs: false }).catch(function(err) {
-  console.log('Persistence error:', err);
+// Enable offline persistence with multi-tab sync
+db.enablePersistence({ synchronizeTabs: true }).catch(function (err) {
+  if (err.code === 'failed-precondition') {
+    console.log('Persistence failed: Multiple tabs open. Data will still sync from server.');
+  } else if (err.code === 'unimplemented') {
+    console.log('Persistence not available in this browser.');
+  } else {
+    console.log('Persistence error:', err);
+  }
 });
 
 const auth = firebase.auth();
@@ -50,6 +56,7 @@ const FirebaseDB = {
         company: data.company || '',
         message: data.message || '',
         products: data.products || [],
+        requiredDate: data.requiredDate || data.deadline || '',
         status: 'unread',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
@@ -275,6 +282,10 @@ const FirebaseDB = {
   // -------------------- CATEGORIES --------------------
   async addCategory(data) {
     try {
+      // Auto-generate slug if not provided
+      if (!data.slug && data.name) {
+        data.slug = data.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      }
       const docRef = await db.collection('categories').add({
         ...data,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -617,7 +628,7 @@ const CustomerAuth = {
         if (cachedDoc.exists) {
           return { uid: user.uid, email: user.email, ...cachedDoc.data() };
         }
-      } catch (e) {}
+      } catch (e) { }
       return { uid: user.uid, email: user.email };
     }
   },

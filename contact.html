@@ -386,7 +386,7 @@
   <header class="header">
     <div class="header-container">
       <a href="index.html" class="logo">
-        <div class="logo-text">Sagar<span>Bags</span></div>
+        <img src="assets/images/logo/sagarbags-logo.png" alt="Sagar Bags" class="logo-img">
       </a>
       <nav class="nav-menu">
         <a href="index.html" class="nav-link">Home</a>
@@ -535,13 +535,7 @@
                 <label for="product">Product Interest</label>
                 <select id="product" name="product" class="form-select">
                   <option value="">Select a product category</option>
-                  <option value="corporate">Corporate Bags</option>
-                  <option value="laptop-school">Laptop & School Bags</option>
-                  <option value="non-woven">Non-Woven Bags</option>
-                  <option value="jute-cotton">Jute & Cotton Bags</option>
-                  <option value="travel">Travel & Duffel Bags</option>
-                  <option value="customised">Customised Bags</option>
-                  <option value="other">Other</option>
+                  <!-- Categories will be loaded dynamically -->
                 </select>
               </div>
 
@@ -623,7 +617,7 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <div class="logo"><div class="logo-text">Sagar<span>Bags</span></div></div>
+          <div class="logo"><img src="assets/images/logo/sagarbags-logo.png" alt="Sagar Bags" class="logo-img"></div>
           <p>Leading promotional bag manufacturer in India with 20+ years of excellence.</p>
         </div>
         <div class="footer-column">
@@ -717,6 +711,50 @@
   <script src="assets/js/lazy-load.js"></script>
 
   <script>
+    // Load categories dynamically
+    async function loadProductCategories() {
+      const select = document.getElementById('product');
+      if (!select) return;
+
+      try {
+        let categories = [];
+
+        // Try to get categories from Firebase
+        if (typeof FirebaseDB !== 'undefined') {
+          categories = await FirebaseDB.getCategories();
+        }
+
+        // Fallback to products-data.js
+        if (categories.length === 0 && typeof getAllCategories === 'function') {
+          categories = getAllCategories();
+        }
+
+        // Clear existing options except first
+        select.innerHTML = '<option value="">Select a product category</option>';
+
+        // Add categories
+        categories.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat.name || cat.id;
+          option.textContent = cat.name;
+          select.appendChild(option);
+        });
+
+        // Add "Other" option at the end
+        const otherOption = document.createElement('option');
+        otherOption.value = 'Other';
+        otherOption.textContent = 'Other';
+        select.appendChild(otherOption);
+
+      } catch (error) {
+        console.error('Error loading categories:', error);
+      }
+    }
+
+    // Load categories when page loads
+    document.addEventListener('DOMContentLoaded', loadProductCategories);
+    window.addEventListener('productsDataLoaded', loadProductCategories);
+
     // Form submission with Firebase
     document.getElementById('contactForm').addEventListener('submit', async function(e) {
       e.preventDefault();
@@ -738,6 +776,7 @@
       const phone = formData.get('phone');
       const product = formData.get('product');
       const quantity = formData.get('quantity');
+      const deadline = formData.get('deadline');
       const message = formData.get('message');
 
       try {
@@ -748,32 +787,36 @@
           phone,
           company,
           message: `Product: ${product || 'Not specified'}\nQuantity: ${quantity || 'Not specified'}\n\n${message}`,
-          products: product ? [{ category: product, quantity: quantity || 'Not specified' }] : []
+          products: product ? [{ category: product, quantity: quantity || 'Not specified' }] : [],
+          requiredDate: deadline || ''
         });
 
         if (result.success) {
           showToast('Message sent successfully! We will contact you soon.', 'success');
           this.reset();
-
-          // Also offer WhatsApp option
-          const whatsappMessage = `*New Quote Request*%0A%0A*Name:* ${name}%0A*Company:* ${company || 'N/A'}%0A*Email:* ${email}%0A*Phone:* ${phone}%0A*Product Interest:* ${product || 'Not specified'}%0A*Quantity:* ${quantity || 'Not specified'}%0A%0A*Message:*%0A${message}`;
-
-          // Show option to also send via WhatsApp
-          setTimeout(() => {
-            if (confirm('Would you also like to send this via WhatsApp for faster response?')) {
-              window.open(`https://wa.me/919869509070?text=${whatsappMessage}`, '_blank');
-            }
-          }, 1000);
         } else {
           throw new Error(result.error);
         }
       } catch (error) {
         console.error('Error submitting form:', error);
-        showToast('Error sending message. Please try WhatsApp instead.', 'error');
+        // Encode user input properly for WhatsApp URL
+        const whatsappMessage = encodeURIComponent(`*New Quote Request*\n\n*Name:* ${name}\n*Company:* ${company || 'N/A'}\n*Email:* ${email}\n*Phone:* ${phone}\n*Product Interest:* ${product || 'Not specified'}\n*Quantity:* ${quantity || 'Not specified'}\n\n*Message:*\n${message}`);
+        showToast('Could not send via our server. You can try WhatsApp instead.', 'error');
 
-        // Fallback to WhatsApp
-        const whatsappMessage = `*New Quote Request*%0A%0A*Name:* ${name}%0A*Company:* ${company || 'N/A'}%0A*Email:* ${email}%0A*Phone:* ${phone}%0A*Product Interest:* ${product || 'Not specified'}%0A*Quantity:* ${quantity || 'Not specified'}%0A%0A*Message:*%0A${message}`;
-        window.open(`https://wa.me/919869509070?text=${whatsappMessage}`, '_blank');
+        // Show a clickable WhatsApp link instead of auto-opening
+        const whatsappLink = document.createElement('a');
+        whatsappLink.href = `https://wa.me/919869509070?text=${whatsappMessage}`;
+        whatsappLink.target = '_blank';
+        whatsappLink.className = 'btn btn-whatsapp';
+        whatsappLink.style.cssText = 'display: inline-block; margin-top: 1rem; text-align: center;';
+        whatsappLink.textContent = 'Send via WhatsApp Instead';
+        const formEl = document.querySelector('.contact-form');
+        if (formEl) {
+          // Remove any previous fallback link
+          const existingLink = formEl.querySelector('.btn-whatsapp');
+          if (existingLink) existingLink.remove();
+          formEl.appendChild(whatsappLink);
+        }
       } finally {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;

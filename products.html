@@ -66,6 +66,97 @@
       outline: none;
     }
 
+    /* Search Autocomplete */
+    .search-autocomplete-wrapper {
+      position: relative;
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .search-autocomplete-wrapper .search-input {
+      width: 100%;
+      min-width: unset;
+    }
+
+    .search-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-top: none;
+      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 100;
+      display: none;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .search-suggestions.active {
+      display: block;
+    }
+
+    .suggestion-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    .suggestion-item:hover,
+    .suggestion-item.active {
+      background: var(--bg-elevated);
+    }
+
+    .suggestion-item img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: var(--radius);
+    }
+
+    .suggestion-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .suggestion-name {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .suggestion-name mark {
+      background: var(--secondary);
+      color: var(--primary-dark);
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+
+    .suggestion-category {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .suggestion-no-results {
+      padding: 1rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+
     /* Desktop: Original wrapped filter buttons */
     .categories-filter {
       display: flex;
@@ -663,7 +754,7 @@
   <header class="header">
     <div class="header-container">
       <a href="index.html" class="logo">
-        <div class="logo-text">Sagar<span>Bags</span></div>
+        <img src="assets/images/logo/sagarbags-logo.png" alt="Sagar Bags" class="logo-img">
       </a>
 
       <nav class="nav-menu">
@@ -732,7 +823,10 @@
         <div class="products-header">
           <p class="products-count"><span id="productCount">0</span> products found</p>
           <div class="products-filters">
-            <input type="search" class="search-input" id="searchInput" placeholder="Search products...">
+            <div class="search-autocomplete-wrapper">
+              <input type="search" class="search-input" id="searchInput" placeholder="Search products..." autocomplete="off">
+              <div class="search-suggestions" id="searchSuggestions"></div>
+            </div>
             <select class="filter-select" id="minOrderFilter">
               <option value="all">All Min Orders</option>
               <option value="50">50+ pcs</option>
@@ -768,7 +862,7 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <div class="logo">
-            <div class="logo-text">Sagar<span>Bags</span></div>
+            <img src="assets/images/logo/sagarbags-logo.png" alt="Sagar Bags" class="logo-img">
           </div>
           <p>Leading promotional bag manufacturer in India with 20+ years of excellence.</p>
           <div class="footer-social">
@@ -1129,12 +1223,120 @@
         }
       });
 
-      // Search input
+      // Search input with autocomplete
       const searchInput = document.getElementById('searchInput');
+      const suggestionsContainer = document.getElementById('searchSuggestions');
+      let selectedSuggestionIndex = -1;
+
       searchInput.addEventListener('input', debounce((e) => {
-        currentSearch = e.target.value;
+        const query = e.target.value.trim();
+        currentSearch = query;
         renderProducts();
-      }, 300));
+
+        // Show autocomplete suggestions
+        if (query.length >= 2) {
+          showSuggestions(query);
+        } else {
+          hideSuggestions();
+        }
+      }, 200));
+
+      searchInput.addEventListener('focus', () => {
+        const query = searchInput.value.trim();
+        if (query.length >= 2) {
+          showSuggestions(query);
+        }
+      });
+
+      searchInput.addEventListener('keydown', (e) => {
+        const suggestions = suggestionsContainer.querySelectorAll('.suggestion-item');
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, suggestions.length - 1);
+          updateSelectedSuggestion(suggestions);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, -1);
+          updateSelectedSuggestion(suggestions);
+        } else if (e.key === 'Enter' && selectedSuggestionIndex >= 0) {
+          e.preventDefault();
+          suggestions[selectedSuggestionIndex]?.click();
+        } else if (e.key === 'Escape') {
+          hideSuggestions();
+        }
+      });
+
+      // Close suggestions when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-autocomplete-wrapper')) {
+          hideSuggestions();
+        }
+      });
+
+      function showSuggestions(query) {
+        const products = getAllProducts();
+        const queryLower = query.toLowerCase();
+
+        const matches = products.filter(p =>
+          p.name.toLowerCase().includes(queryLower) ||
+          (p.description && p.description.toLowerCase().includes(queryLower))
+        ).slice(0, 6); // Limit to 6 suggestions
+
+        if (matches.length === 0) {
+          suggestionsContainer.innerHTML = `
+            <div class="suggestion-no-results">No products found for "${query}"</div>
+          `;
+        } else {
+          suggestionsContainer.innerHTML = matches.map(product => {
+            const category = getCategoryById(product.category);
+            const image = product.images && product.images[0] ?
+              (typeof product.images[0] === 'string' ? product.images[0] : product.images[0].url) :
+              'https://via.placeholder.com/40';
+
+            // Highlight matching text
+            const highlightedName = product.name.replace(
+              new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi'),
+              '<mark>$1</mark>'
+            );
+
+            return `
+              <div class="suggestion-item" data-product-id="${product.id}">
+                <img src="${image}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/40'">
+                <div class="suggestion-info">
+                  <div class="suggestion-name">${highlightedName}</div>
+                  <div class="suggestion-category">${category?.name || product.category}</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          // Bind click events to suggestions
+          suggestionsContainer.querySelectorAll('.suggestion-item').forEach(item => {
+            item.addEventListener('click', () => {
+              const productId = item.dataset.productId;
+              window.location.href = `product-detail.html?id=${productId}`;
+            });
+          });
+        }
+
+        suggestionsContainer.classList.add('active');
+        selectedSuggestionIndex = -1;
+      }
+
+      function hideSuggestions() {
+        suggestionsContainer.classList.remove('active');
+        selectedSuggestionIndex = -1;
+      }
+
+      function updateSelectedSuggestion(suggestions) {
+        suggestions.forEach((s, i) => {
+          s.classList.toggle('active', i === selectedSuggestionIndex);
+        });
+        if (selectedSuggestionIndex >= 0) {
+          suggestions[selectedSuggestionIndex]?.scrollIntoView({ block: 'nearest' });
+        }
+      }
 
       // Sort select
       document.getElementById('sortSelect').addEventListener('change', (e) => {

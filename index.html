@@ -32,7 +32,7 @@
   <header class="header">
     <div class="header-container">
       <a href="index.html" class="logo">
-        <div class="logo-text">Sagar<span>Bags</span></div>
+        <img src="assets/images/logo/sagarbags-logo.png" alt="Sagar Bags" class="logo-img">
       </a>
 
       <nav class="nav-menu">
@@ -82,8 +82,12 @@
 
   <!-- Hero Section - Trust Focused -->
   <section class="hero-trust">
-    <!-- Background Image with Ken Burns -->
-    <div class="hero-bg-image"></div>
+    <!-- Video Background -->
+    <div class="hero-video-container">
+      <video autoplay muted loop playsinline class="hero-video" id="heroVideo">
+        <source src="assets/videos/hero-bg.mp4" type="video/mp4">
+      </video>
+    </div>
 
     <!-- Animated Gradient Mesh Overlay -->
     <div class="hero-mesh-bg"></div>
@@ -485,7 +489,7 @@
       <div class="footer-grid">
         <div class="footer-brand">
           <div class="logo">
-            <div class="logo-text">Sagar<span>Bags</span></div>
+            <img src="assets/images/logo/sagarbags-logo.png" alt="Sagar Bags" class="logo-img">
           </div>
           <p>Leading promotional bag manufacturer in India with 20+ years of excellence. Quality products, on-time delivery, and exceptional customer service.</p>
           <div class="footer-social">
@@ -840,7 +844,7 @@
       if (hero360Container && typeof Viewer360 === 'function') {
         new Viewer360(hero360Container, hero360Images, {
           autoRotate: true,
-          autoRotateSpeed: 120,
+          autoRotateSpeed: 1500, // Slow: ~12 seconds per full rotation
           sensitivity: 4
         });
       }
@@ -850,7 +854,7 @@
       if (featured360Container && typeof Viewer360 === 'function') {
         new Viewer360(featured360Container, featured360Images, {
           autoRotate: true,
-          autoRotateSpeed: 150,
+          autoRotateSpeed: 1500, // Slow: ~12 seconds per full rotation
           sensitivity: 5
         });
       }

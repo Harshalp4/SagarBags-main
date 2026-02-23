@@ -434,10 +434,24 @@ let categoriesData = [];
 let dataLoaded = false;
 let dataLoadPromise = null;
 
+// Fallback to hardcoded data
+function useHardcodedData() {
+  if (productsData.length === 0) {
+    productsData = [...PRODUCTS];
+    console.log('Using hardcoded products data:', productsData.length, 'products');
+  }
+  if (categoriesData.length === 0) {
+    categoriesData = [...CATEGORIES];
+    console.log('Using hardcoded categories data:', categoriesData.length, 'categories');
+  }
+  dataLoaded = true;
+}
+
 // Initialize data from Firebase
 async function initializeDataFromFirebase() {
   if (typeof FirebaseDB === 'undefined') {
-    console.log('Firebase not available');
+    console.log('Firebase not available, using hardcoded data');
+    useHardcodedData();
     return false;
   }
 
@@ -449,11 +463,19 @@ async function initializeDataFromFirebase() {
 
     productsData = products || [];
     categoriesData = categories || [];
+
+    // If Firebase returned empty data, fall back to hardcoded data
+    if (productsData.length === 0 || categoriesData.length === 0) {
+      console.log('Firebase returned empty data, falling back to hardcoded data');
+      useHardcodedData();
+    }
+
     dataLoaded = true;
-    console.log('Loaded', productsData.length, 'products and', categoriesData.length, 'categories from Firebase');
+    console.log('Loaded', productsData.length, 'products and', categoriesData.length, 'categories');
     return true;
   } catch (error) {
-    console.log('Firebase fetch failed:', error);
+    console.log('Firebase fetch failed, using hardcoded data:', error);
+    useHardcodedData();
     return false;
   }
 }
@@ -483,7 +505,12 @@ async function waitForData() {
 
 // Helper functions
 function getProductById(id) {
-  return productsData.find(p => p.id === id);
+  // Search in productsData (includes all products regardless of status)
+  const product = productsData.find(p => p.id === id);
+  if (product) return product;
+
+  // Also check hardcoded PRODUCTS as fallback
+  return PRODUCTS.find(p => p.id === id);
 }
 
 function getProductsByCategory(categoryId) {
@@ -503,7 +530,8 @@ function getFeaturedProducts() {
 }
 
 function getAllProducts() {
-  return productsData;
+  // Only return active products (or products without a status field for backwards compatibility)
+  return productsData.filter(p => !p.status || p.status === 'active');
 }
 
 function getAllCategories() {

@@ -243,9 +243,21 @@
               </svg>
               <input type="text" id="productSearch" placeholder="Search products...">
             </div>
-            <select class="filter-select" id="productCategoryFilter">
-              <option value="">All Categories</option>
-            </select>
+            <div class="searchable-select" id="categoryFilterWrapper">
+              <div class="searchable-select-trigger" id="categoryFilterTrigger">
+                <span class="searchable-select-value">All Categories</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+              <div class="searchable-select-dropdown" id="categoryFilterDropdown">
+                <input type="text" class="searchable-select-search" id="categoryFilterSearch" placeholder="Search categories...">
+                <div class="searchable-select-options" id="categoryFilterOptions">
+                  <div class="searchable-select-option selected" data-value="">All Categories</div>
+                </div>
+              </div>
+              <input type="hidden" id="productCategoryFilter" value="">
+            </div>
             <select class="filter-select" id="productStatusFilter">
               <option value="">All Status</option>
               <option value="active">Active</option>
@@ -600,6 +612,17 @@
 
           <div class="form-row">
             <div class="form-group">
+              <label for="productPrice">Price (₹)</label>
+              <input type="number" id="productPrice" class="form-input" min="0" step="0.01" placeholder="e.g., 299">
+            </div>
+            <div class="form-group">
+              <label for="productDiscount">Discount (%)</label>
+              <input type="number" id="productDiscount" class="form-input" min="0" max="100" step="1" placeholder="e.g., 10">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
               <label for="productBadge">Badge</label>
               <select id="productBadge" class="form-select">
                 <option value="">No Badge</option>
@@ -614,6 +637,85 @@
                 <option value="active">Active</option>
                 <option value="draft">Draft</option>
               </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="productColors">Available Colors</label>
+            <div class="color-selector" id="colorSelector">
+              <div class="color-options">
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="black">
+                  <span class="color-swatch" style="background-color: #000000;"></span>
+                  <span class="color-name">Black</span>
+                </label>
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="white">
+                  <span class="color-swatch" style="background-color: #FFFFFF; border: 1px solid #ccc;"></span>
+                  <span class="color-name">White</span>
+                </label>
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="navy">
+                  <span class="color-swatch" style="background-color: #1a365d;"></span>
+                  <span class="color-name">Navy Blue</span>
+                </label>
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="red">
+                  <span class="color-swatch" style="background-color: #e53e3e;"></span>
+                  <span class="color-name">Red</span>
+                </label>
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="green">
+                  <span class="color-swatch" style="background-color: #38a169;"></span>
+                  <span class="color-name">Green</span>
+                </label>
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="blue">
+                  <span class="color-swatch" style="background-color: #3182ce;"></span>
+                  <span class="color-name">Blue</span>
+                </label>
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="yellow">
+                  <span class="color-swatch" style="background-color: #ecc94b;"></span>
+                  <span class="color-name">Yellow</span>
+                </label>
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="orange">
+                  <span class="color-swatch" style="background-color: #ed8936;"></span>
+                  <span class="color-name">Orange</span>
+                </label>
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="pink">
+                  <span class="color-swatch" style="background-color: #ed64a6;"></span>
+                  <span class="color-name">Pink</span>
+                </label>
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="purple">
+                  <span class="color-swatch" style="background-color: #805ad5;"></span>
+                  <span class="color-name">Purple</span>
+                </label>
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="brown">
+                  <span class="color-swatch" style="background-color: #8b5a2b;"></span>
+                  <span class="color-name">Brown</span>
+                </label>
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="grey">
+                  <span class="color-swatch" style="background-color: #718096;"></span>
+                  <span class="color-name">Grey</span>
+                </label>
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="beige">
+                  <span class="color-swatch" style="background-color: #d4a574;"></span>
+                  <span class="color-name">Beige</span>
+                </label>
+                <label class="color-option">
+                  <input type="checkbox" name="productColors" value="maroon">
+                  <span class="color-swatch" style="background-color: #800000;"></span>
+                  <span class="color-name">Maroon</span>
+                </label>
+              </div>
+              <p class="form-hint">Select all available colors for this product</p>
             </div>
           </div>
 
@@ -842,6 +944,172 @@
       margin-top: 1rem;
       color: white;
       font-size: 1rem;
+    }
+
+    /* Color Selector Styles */
+    .color-selector {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+    }
+    .color-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .color-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: var(--bg-card);
+    }
+    .color-option:hover {
+      border-color: var(--secondary);
+    }
+    .color-option input[type="checkbox"] {
+      display: none;
+    }
+    .color-option input[type="checkbox"]:checked + .color-swatch {
+      box-shadow: 0 0 0 2px var(--secondary);
+    }
+    .color-option input[type="checkbox"]:checked ~ .color-name {
+      color: var(--secondary);
+      font-weight: 600;
+    }
+    .color-option:has(input:checked) {
+      border-color: var(--secondary);
+      background: rgba(212, 175, 55, 0.1);
+    }
+    .color-swatch {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .color-name {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+    .form-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.75rem;
+    }
+
+    /* Searchable Select Dropdown */
+    .searchable-select {
+      position: relative;
+      min-width: 180px;
+    }
+
+    .searchable-select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+    }
+
+    .searchable-select-trigger:hover {
+      border-color: var(--secondary);
+    }
+
+    .searchable-select.active .searchable-select-trigger {
+      border-color: var(--secondary);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .searchable-select-value {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .searchable-select-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--secondary);
+      border-top: none;
+      border-radius: 0 0 var(--radius) var(--radius);
+      z-index: 1000;
+      display: none;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .searchable-select.active .searchable-select-dropdown {
+      display: block;
+    }
+
+    .searchable-select-search {
+      width: 100%;
+      padding: 0.625rem 0.75rem;
+      border: none;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-elevated);
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .searchable-select-search::placeholder {
+      color: var(--text-muted);
+    }
+
+    .searchable-select-options {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .searchable-select-option {
+      padding: 0.625rem 0.75rem;
+      cursor: pointer;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      transition: all 0.15s ease;
+    }
+
+    .searchable-select-option:hover {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+
+    .searchable-select-option.selected {
+      background: rgba(212, 175, 55, 0.15);
+      color: var(--secondary);
+      font-weight: 500;
+    }
+
+    .searchable-select-option.focused {
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+
+    .searchable-select-option.hidden {
+      display: none;
+    }
+
+    .searchable-select-no-results {
+      padding: 0.75rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8125rem;
     }
   </style>
 

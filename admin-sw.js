@@ -3,9 +3,9 @@
    PWA offline support and caching
    ======================================== */
 
-const CACHE_NAME = 'sagar-bags-admin-v1';
-const STATIC_CACHE = 'sagar-bags-admin-static-v1';
-const DYNAMIC_CACHE = 'sagar-bags-admin-dynamic-v1';
+const CACHE_NAME = 'sagar-bags-admin-v2';
+const STATIC_CACHE = 'sagar-bags-admin-static-v2';
+const DYNAMIC_CACHE = 'sagar-bags-admin-dynamic-v2';
 
 // Static assets to cache on install
 const STATIC_ASSETS = [
@@ -67,8 +67,8 @@ self.addEventListener('fetch', (event) => {
 
   // Skip Firebase/external API requests - always go to network
   if (url.hostname.includes('firebase') ||
-      url.hostname.includes('googleapis') ||
-      url.hostname.includes('gstatic')) {
+    url.hostname.includes('googleapis') ||
+    url.hostname.includes('gstatic')) {
     return;
   }
 
@@ -78,10 +78,15 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // For static assets - cache first strategy
-  if (request.destination === 'style' ||
-      request.destination === 'script' ||
-      request.destination === 'image') {
+  // For scripts and styles - network first to ensure latest code
+  if (request.destination === 'script' ||
+    request.destination === 'style') {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  // For images only - cache first strategy (images rarely change)
+  if (request.destination === 'image') {
     event.respondWith(cacheFirst(request));
     return;
   }
