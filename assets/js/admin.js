@@ -20,6 +20,7 @@ const AdminApp = {
     this.setupMobileMenu();
     this.setupImageUpload();
     this.setupCategoryImageUpload();
+    this.initCustomColorInputs();
     await this.loadSasToken();
     await this.loadDashboard();
     this.setupEventListeners();
@@ -667,8 +668,21 @@ const AdminApp = {
         // Load existing colors
         const colorCheckboxes = document.querySelectorAll('input[name="productColors"]');
         colorCheckboxes.forEach(cb => {
-          cb.checked = (product.colors || []).includes(cb.value);
+          cb.checked = false; // Reset first
+          const productColors = product.colors || [];
+          // Check if this color name exists in product colors
+          productColors.forEach(pc => {
+            if (typeof pc === 'string' && pc === cb.value) {
+              cb.checked = true;
+            } else if (typeof pc === 'object' && pc.name && pc.name.toLowerCase() === cb.value.toLowerCase()) {
+              cb.checked = true;
+            }
+          });
         });
+
+        // Load custom colors
+        this.customColors = (product.colors || []).filter(c => typeof c === 'object' && c.hex);
+        this.renderCustomColors();
 
         // Load existing images
         this.uploadedImages = product.images || [];
@@ -683,6 +697,9 @@ const AdminApp = {
       document.getElementById('productDiscount').value = '';
       // Clear color checkboxes
       document.querySelectorAll('input[name="productColors"]').forEach(cb => cb.checked = false);
+      // Clear custom colors
+      this.customColors = [];
+      this.renderCustomColors();
       this.renderImagePreviews();
     }
 
@@ -723,9 +740,32 @@ const AdminApp = {
       // Combine existing URLs with newly uploaded URLs
       const finalImages = [...existingUrls, ...newUrls];
 
-      // Get selected colors
-      const selectedColors = Array.from(document.querySelectorAll('input[name="productColors"]:checked'))
-        .map(cb => cb.value);
+      // Get selected preset colors with their hex values
+      const presetColorMap = {
+        'black': '#000000',
+        'white': '#FFFFFF',
+        'navy': '#1a365d',
+        'red': '#e53e3e',
+        'green': '#38a169',
+        'blue': '#3182ce',
+        'yellow': '#ecc94b',
+        'orange': '#ed8936',
+        'pink': '#ed64a6',
+        'purple': '#805ad5',
+        'brown': '#8b5a2b',
+        'grey': '#718096',
+        'beige': '#d4a574',
+        'maroon': '#800000'
+      };
+
+      const selectedPresetColors = Array.from(document.querySelectorAll('input[name="productColors"]:checked'))
+        .map(cb => ({
+          name: cb.value.charAt(0).toUpperCase() + cb.value.slice(1),
+          hex: presetColorMap[cb.value] || '#000000'
+        }));
+
+      // Combine preset colors with custom colors
+      const selectedColors = [...selectedPresetColors, ...(this.customColors || [])];
 
       const shortDesc = document.getElementById('productShortDesc').value;
       const fullDesc = document.getElementById('productFullDesc').value;
@@ -907,6 +947,92 @@ const AdminApp = {
     this.uploadedImages.splice(index, 1);
     this.renderImagePreviews();
     this.showToast('Image removed', 'info');
+  },
+
+  // Custom Colors Management
+  customColors: [],
+
+  initCustomColorInputs() {
+    const colorPicker = document.getElementById('customColorPicker');
+    const hexInput = document.getElementById('customColorHex');
+
+    if (colorPicker && hexInput) {
+      // Sync color picker to hex input
+      colorPicker.addEventListener('input', (e) => {
+        hexInput.value = e.target.value.replace('#', '');
+      });
+
+      // Sync hex input to color picker
+      hexInput.addEventListener('input', (e) => {
+        let hex = e.target.value.replace(/[^0-9A-Fa-f]/g, '');
+        if (hex.length === 6) {
+          colorPicker.value = '#' + hex;
+        }
+      });
+
+      // Initialize hex input with picker value
+      hexInput.value = colorPicker.value.replace('#', '');
+    }
+  },
+
+  addCustomColor() {
+    const colorPicker = document.getElementById('customColorPicker');
+    const colorNameInput = document.getElementById('customColorName');
+    const hexInput = document.getElementById('customColorHex');
+
+    // Get hex value from hex input or color picker
+    let hex = colorPicker.value;
+    if (hexInput && hexInput.value.trim()) {
+      const hexValue = hexInput.value.trim().replace(/[^0-9A-Fa-f]/g, '');
+      if (hexValue.length === 6) {
+        hex = '#' + hexValue;
+      }
+    }
+
+    const name = colorNameInput.value.trim();
+
+    if (!name) {
+      this.showToast('Please enter a color name', 'error');
+      return;
+    }
+
+    // Check if color already exists
+    if (this.customColors.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+      this.showToast('Color with this name already exists', 'error');
+      return;
+    }
+
+    this.customColors.push({ name, hex });
+    this.renderCustomColors();
+
+    // Reset inputs
+    colorNameInput.value = '';
+    if (hexInput) hexInput.value = 'c9a227';
+    colorPicker.value = '#c9a227';
+    this.showToast(`Color "${name}" added`, 'success');
+  },
+
+  removeCustomColor(index) {
+    this.customColors.splice(index, 1);
+    this.renderCustomColors();
+  },
+
+  renderCustomColors() {
+    const container = document.getElementById('addedCustomColors');
+    if (!container) return;
+
+    if (this.customColors.length === 0) {
+      container.innerHTML = '';
+      return;
+    }
+
+    container.innerHTML = this.customColors.map((color, index) => `
+      <span class="added-color-tag">
+        <span class="color-dot" style="background-color: ${color.hex};"></span>
+        ${color.name}
+        <button type="button" class="remove-color" onclick="AdminApp.removeCustomColor(${index})">×</button>
+      </span>
+    `).join('');
   },
 
   editProduct(id) {
