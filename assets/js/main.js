@@ -370,6 +370,17 @@ function renderProductCard(product) {
       <div class="card-body">
         <h3 class="card-title">${product.name}</h3>
         <p class="card-text">${(product.fullDesc || product.description || product.shortDesc || '').substring(0, 100)}${(product.fullDesc || product.description || product.shortDesc || '').length > 100 ? '...' : ''}</p>
+        ${product.price ? `
+        <div class="card-price">
+          ${product.discount && product.discount > 0 ? `
+            <span class="card-price-original">₹${product.price}</span>
+            <span class="card-price-current">₹${(product.price * (1 - product.discount / 100)).toFixed(0)}</span>
+            <span class="card-discount-badge">${product.discount}% OFF</span>
+          ` : `
+            <span class="card-price-current">₹${product.price}</span>
+          `}
+        </div>
+        ` : ''}
         <div class="card-meta">
           <span class="min-order">Min Order: ${product.minOrder} pcs</span>
         </div>

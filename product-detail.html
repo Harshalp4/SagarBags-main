@@ -139,6 +139,50 @@
       margin-bottom: 1rem;
     }
 
+    /* Price Section */
+    .product-price-section {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      padding: 1rem 1.25rem;
+      background: linear-gradient(135deg, rgba(201, 162, 39, 0.1) 0%, rgba(201, 162, 39, 0.05) 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(201, 162, 39, 0.2);
+    }
+
+    .product-price-original {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+
+    .product-price-current {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--secondary);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .product-discount-badge {
+      background: linear-gradient(135deg, #e53e3e, #c53030);
+      color: white;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .product-price-note {
+      width: 100%;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
     .product-description-section {
       background: var(--gray-50);
       border-radius: var(--radius-lg);
@@ -811,9 +855,31 @@
 
       // Product info
       const productInfoEl = document.getElementById('productInfo');
+
+      // Build price display
+      let priceHTML = '';
+      if (currentProduct.price) {
+        const hasDiscount = currentProduct.discount && currentProduct.discount > 0;
+        const discountedPrice = hasDiscount ? (currentProduct.price * (1 - currentProduct.discount / 100)).toFixed(0) : null;
+
+        priceHTML = `
+        <div class="product-price-section">
+          ${hasDiscount ? `
+            <span class="product-price-original">₹${currentProduct.price}</span>
+            <span class="product-price-current">₹${discountedPrice}</span>
+            <span class="product-discount-badge">${currentProduct.discount}% OFF</span>
+          ` : `
+            <span class="product-price-current">₹${currentProduct.price}</span>
+          `}
+          <span class="product-price-note">per piece (MOQ: ${currentProduct.minOrder || 50} pcs)</span>
+        </div>
+        `;
+      }
+
       productInfoEl.innerHTML = `
         <span class="product-category">${category?.name || currentProduct.category}</span>
         <h1 class="product-title">${currentProduct.name}</h1>
+        ${priceHTML}
 
         <!-- Product Description Section -->
         <div class="product-description-section">

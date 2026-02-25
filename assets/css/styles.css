@@ -467,6 +467,40 @@ p {
   flex-direction: column;
 }
 
+/* Product Card Price */
+.product-card .card-price {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--gray-100);
+}
+
+.product-card .card-price-original {
+  font-size: 0.875rem;
+  color: var(--gray-400);
+  text-decoration: line-through;
+}
+
+.product-card .card-price-current {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--secondary);
+  font-family: 'Poppins', sans-serif;
+}
+
+.product-card .card-discount-badge {
+  background: linear-gradient(135deg, #e53e3e, #c53030);
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
 .product-card .card-meta {
   margin-top: auto;
   padding-top: 0.75rem;
