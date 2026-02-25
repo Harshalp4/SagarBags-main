@@ -1580,6 +1580,31 @@ input, textarea, select {
   font-style: italic;
 }
 
+.inquiry-deadline {
+  background: rgba(201, 162, 39, 0.1);
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.inquiry-deadline h5 {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.inquiry-deadline p {
+  margin: 0;
+  font-weight: 600;
+}
+
 .inquiry-actions {
   display: flex;
   gap: 0.75rem;

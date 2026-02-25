@@ -1654,9 +1654,15 @@ const AdminApp = {
           </ul>
         </div>
 
-        ${inquiry.requiredDate || inquiry.deadline ? `
+        ${(inquiry.requiredDate && inquiry.requiredDate !== '') || (inquiry.deadline && inquiry.deadline !== '') ? `
         <div class="inquiry-deadline">
-          <h5>Required By Date</h5>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--secondary)" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <h5>Required By:</h5>
           <p style="color: var(--secondary);">${AdminData.formatDate(inquiry.requiredDate || inquiry.deadline)}</p>
         </div>
         ` : ''}
