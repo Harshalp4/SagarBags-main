@@ -1430,13 +1430,19 @@ const AdminApp = {
       return;
     }
 
+    // Sort by order number
+    testimonials.sort((a, b) => (a.order || 99) - (b.order || 99));
+
     container.innerHTML = testimonials.map(testimonial => `
       <div class="admin-card" style="margin-bottom: 1rem;">
         <div class="card-body">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-            <div>
-              <p style="font-style: italic; color: var(--text-secondary); margin-bottom: 0.5rem;">"${testimonial.quote}"</p>
-              <div style="color: var(--secondary);">${'★'.repeat(testimonial.rating)}${'☆'.repeat(5 - testimonial.rating)}</div>
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <span style="background: var(--secondary); color: #000; font-weight: 700; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem;">#${testimonial.order || '-'}</span>
+              <div>
+                <p style="font-style: italic; color: var(--text-secondary); margin-bottom: 0.5rem;">"${testimonial.quote}"</p>
+                <div style="color: var(--secondary);">${'★'.repeat(testimonial.rating)}${'☆'.repeat(5 - testimonial.rating)}</div>
+              </div>
             </div>
             <span class="badge ${testimonial.status === 'published' ? 'badge-success' : 'badge-warning'}">
               ${testimonial.status === 'published' ? 'Published' : 'Draft'}
@@ -1504,6 +1510,7 @@ const AdminApp = {
         document.getElementById('testimonialCompany').value = testimonial.company;
         document.getElementById('testimonialImage').value = testimonial.image || '';
         document.getElementById('testimonialRating').value = testimonial.rating;
+        document.getElementById('testimonialOrder').value = testimonial.order || 1;
         document.getElementById('testimonialStatus').value = testimonial.status;
         charCount.textContent = testimonial.quote.length;
 
@@ -1520,6 +1527,7 @@ const AdminApp = {
       form.reset();
       document.getElementById('testimonialImage').value = '';
       document.getElementById('testimonialRating').value = '5';
+      document.getElementById('testimonialOrder').value = '1';
       document.getElementById('testimonialStatus').value = 'published';
       previewImg.style.display = 'none';
       charCount.textContent = '0';
@@ -1639,6 +1647,7 @@ const AdminApp = {
         company: company,
         image: imageUrl,
         rating: parseInt(document.getElementById('testimonialRating').value),
+        order: parseInt(document.getElementById('testimonialOrder').value) || 1,
         status: document.getElementById('testimonialStatus').value
       };
 

@@ -932,6 +932,9 @@
         testimonials = defaultTestimonials;
       }
 
+      // Sort by order number (lower number first)
+      testimonials.sort((a, b) => (a.order || 99) - (b.order || 99));
+
       // Render testimonials
       carousel.innerHTML = testimonials.map(t => `
         <div class="testimonial-item">

@@ -911,12 +911,18 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="testimonialStatus">Status</label>
-              <select id="testimonialStatus" class="form-select">
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
-              </select>
+              <label for="testimonialOrder">Display Order</label>
+              <input type="number" id="testimonialOrder" class="form-input" min="1" max="99" value="1" placeholder="1">
+              <small style="color: var(--text-muted); font-size: 0.75rem;">Lower number = shows first</small>
             </div>
+          </div>
+
+          <div class="form-group">
+            <label for="testimonialStatus">Status</label>
+            <select id="testimonialStatus" class="form-select">
+              <option value="published">Published</option>
+              <option value="draft">Draft</option>
+            </select>
           </div>
         </form>
       </div>
