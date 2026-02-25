@@ -790,7 +790,7 @@ const AdminApp = {
         shortDesc: shortDesc,
         fullDesc: fullDesc,
         description: fullDesc || shortDesc, // For compatibility - use full description if available
-        features: document.getElementById('productFeatures').value.split('\n').filter(f => f.trim()),
+        features: document.getElementById('productFeatures').value.split('\n').map(f => f.trim()).filter(f => f.length > 0),
         colors: selectedColors,
         images: finalImages
       };

@@ -204,19 +204,46 @@
       margin-bottom: 0;
     }
 
-    .product-features {
-      margin: 1rem 0 0 0;
-      padding-left: 1.25rem;
+    /* Key Features Section */
+    .product-features-section {
+      margin-bottom: 1.5rem;
+      padding: 1.25rem;
+      background: linear-gradient(135deg, rgba(201, 162, 39, 0.08) 0%, rgba(201, 162, 39, 0.03) 100%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(201, 162, 39, 0.2);
     }
 
-    .product-features li {
-      color: var(--text-secondary);
-      margin-bottom: 0.5rem;
+    .product-features-section h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--secondary);
+      margin-bottom: 1rem;
+    }
+
+    .product-features-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .product-features-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
       line-height: 1.5;
     }
 
-    .product-features li::marker {
-      color: var(--secondary);
+    .product-features-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .feature-check {
+      color: #10b981;
+      font-weight: bold;
+      flex-shrink: 0;
     }
 
     /* Product Colors Section */
@@ -885,12 +912,17 @@
         <div class="product-description-section">
           <h3>About This Product</h3>
           <p class="product-description">${currentProduct.fullDesc || currentProduct.description || currentProduct.shortDesc || 'No description available'}</p>
-          ${currentProduct.features && currentProduct.features.length > 0 ? `
-            <ul class="product-features">
-              ${currentProduct.features.map(f => `<li>${f}</li>`).join('')}
-            </ul>
-          ` : ''}
         </div>
+
+        ${(currentProduct.features && currentProduct.features.length > 0) ? `
+        <!-- Key Features Section -->
+        <div class="product-features-section">
+          <h4>Key Features</h4>
+          <ul class="product-features-list">
+            ${currentProduct.features.map(f => `<li><span class="feature-check">✓</span> ${f}</li>`).join('')}
+          </ul>
+        </div>
+        ` : ''}
 
         ${(currentProduct.colors && currentProduct.colors.length > 0) ? `
         <div class="product-colors-section">
