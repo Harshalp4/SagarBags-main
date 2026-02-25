@@ -164,7 +164,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   --container-padding: 1.5rem;
 
   /* Header Height */
-  --header-height: 140px;
+  --header-height: 70px;
 }
 
 /* -------------------- Typography -------------------- */
@@ -690,7 +690,7 @@ p {
 }
 
 .header.scrolled {
-  height: 70px;
+  height: 60px;
   background-color: rgba(20, 20, 20, 0.95);
   backdrop-filter: blur(10px);
   box-shadow: var(--shadow-lg);
@@ -715,7 +715,8 @@ p {
 }
 
 .logo-img {
-  height: 124px;
+  height: 45px !important;
+  max-height: 45px !important;
   width: auto;
   object-fit: contain;
 }
