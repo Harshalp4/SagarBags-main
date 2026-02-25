@@ -452,6 +452,8 @@ const AdminApp = {
     }).join('');
   },
 
+  categoryFilterInitialized: false,
+
   populateCategoryFilter(categories) {
     const optionsContainer = document.getElementById('categoryFilterOptions');
     const hiddenInput = document.getElementById('productCategoryFilter');
@@ -463,8 +465,11 @@ const AdminApp = {
       ${categories.map(c => `<div class="searchable-select-option" data-value="${c.id}">${c.name}</div>`).join('')}
     `;
 
-    // Initialize searchable dropdown
-    this.initSearchableCategoryFilter();
+    // Initialize searchable dropdown only once
+    if (!this.categoryFilterInitialized) {
+      this.initSearchableCategoryFilter();
+      this.categoryFilterInitialized = true;
+    }
   },
 
   initSearchableCategoryFilter() {
@@ -498,12 +503,12 @@ const AdminApp = {
       e.stopPropagation();
     });
 
-    // Option selection
+    // Option selection - use event delegation
     optionsContainer.addEventListener('click', (e) => {
       const option = e.target.closest('.searchable-select-option');
-      if (option && !option.classList.contains('hidden')) {
+      if (option && option.style.display !== 'none') {
         const value = option.dataset.value;
-        const text = option.textContent;
+        const text = option.textContent.trim();
 
         // Update hidden input
         hiddenInput.value = value;
@@ -533,7 +538,7 @@ const AdminApp = {
 
     // Keyboard navigation
     searchInput.addEventListener('keydown', (e) => {
-      const visibleOptions = optionsContainer.querySelectorAll('.searchable-select-option:not(.hidden)');
+      const visibleOptions = optionsContainer.querySelectorAll('.searchable-select-option:not([style*="display: none"])');
       const currentIndex = Array.from(visibleOptions).findIndex(opt => opt.classList.contains('focused'));
 
       if (e.key === 'ArrowDown') {
@@ -565,9 +570,10 @@ const AdminApp = {
     let hasVisible = false;
 
     options.forEach(option => {
-      const text = option.textContent.toLowerCase();
+      const text = option.textContent.toLowerCase().trim();
       const matches = !queryLower || text.includes(queryLower);
-      option.classList.toggle('hidden', !matches);
+      // Use inline style for hiding instead of class
+      option.style.display = matches ? '' : 'none';
       if (matches) hasVisible = true;
     });
 
