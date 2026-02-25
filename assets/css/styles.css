@@ -3783,7 +3783,8 @@ p {
   margin-bottom: 0.25rem;
 }
 
-.testimonial-role {
+.testimonial-role,
+.testimonial-company {
   color: var(--text-muted);
   font-size: 0.8rem;
   margin-bottom: 0.75rem;

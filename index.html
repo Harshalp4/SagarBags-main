@@ -373,90 +373,7 @@
 
       <div class="testimonials-carousel-wrapper">
         <div class="testimonials-carousel" id="testimonialsCarousel">
-          <!-- Testimonial 1 - Mr. Sunil Shinde -->
-          <div class="testimonial-item">
-            <div class="testimonial-avatar-wrapper">
-              <img src="assets/images/testimonials/sunil-shinde.jpg" alt="Mr. Sunil Shinde">
-            </div>
-            <div class="testimonial-card-v2">
-              <h4 class="testimonial-name">Mr. Sunil Shinde</h4>
-              <p class="testimonial-text">"Outstanding quality and exceptional service! Sagar Bags has been our trusted partner. Attention to detail and timely delivery - the best!"</p>
-              <div class="testimonial-stars">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Testimonial 2 -->
-          <div class="testimonial-item">
-            <div class="testimonial-avatar-wrapper">
-              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face" alt="Rajesh Kumar">
-            </div>
-            <div class="testimonial-card-v2">
-              <h4 class="testimonial-name">Rajesh Kumar</h4>
-              <p class="testimonial-text">"The bags look gorgeous, really nice quality. Sagar Bags met our tight deadline and the printing was exactly as per the proof. Highly recommended!"</p>
-              <div class="testimonial-stars">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Testimonial 2 -->
-          <div class="testimonial-item">
-            <div class="testimonial-avatar-wrapper">
-              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face" alt="Priya Sharma">
-            </div>
-            <div class="testimonial-card-v2">
-              <h4 class="testimonial-name">Priya Sharma</h4>
-              <p class="testimonial-text">"We've been ordering for 5 years now. Their jute bags are perfect for our eco-friendly initiative. Fast production and consistent quality every time!"</p>
-              <div class="testimonial-stars">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Testimonial 3 -->
-          <div class="testimonial-item">
-            <div class="testimonial-avatar-wrapper">
-              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" alt="Amit Patel">
-            </div>
-            <div class="testimonial-card-v2">
-              <h4 class="testimonial-name">Amit Patel</h4>
-              <p class="testimonial-text">"Outstanding service! They supplied custom school bags for 2000 students in just 2 weeks. Quality exceeded expectations. Will order again!"</p>
-              <div class="testimonial-stars">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Testimonial 4 -->
-          <div class="testimonial-item">
-            <div class="testimonial-avatar-wrapper">
-              <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face" alt="Vikram Singh">
-            </div>
-            <div class="testimonial-card-v2">
-              <h4 class="testimonial-name">Vikram Singh</h4>
-              <p class="testimonial-text">"Exceptional quality! The laptop bags for our company event were a huge hit. Great attention to detail in the branding. Highly professional team!"</p>
-              <div class="testimonial-stars">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Testimonial 5 -->
-          <div class="testimonial-item">
-            <div class="testimonial-avatar-wrapper">
-              <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=150&h=150&fit=crop&crop=face" alt="Sneha Reddy">
-            </div>
-            <div class="testimonial-card-v2">
-              <h4 class="testimonial-name">Sneha Reddy</h4>
-              <p class="testimonial-text">"Best bag manufacturer we've worked with. Their cotton bags for our retail stores are loved by customers. Sustainable and stylish!"</p>
-              <div class="testimonial-stars">
-                <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-              </div>
-            </div>
-          </div>
-
+          <!-- Testimonials will be loaded dynamically from Firebase -->
         </div>
       </div>
 
@@ -967,8 +884,80 @@
       startAutoScroll();
     }
 
-    // Initialize testimonials carousel after DOM load
-    document.addEventListener('DOMContentLoaded', initTestimonialsCarousel);
+    // Load testimonials from Firebase and initialize carousel
+    async function loadTestimonials() {
+      const carousel = document.getElementById('testimonialsCarousel');
+      if (!carousel) return;
+
+      // Default testimonials (fallback)
+      const defaultTestimonials = [
+        {
+          name: 'Mr. Sunil Shinde',
+          company: 'Business Owner',
+          quote: 'Outstanding quality and exceptional service! Sagar Bags has been our trusted partner. Attention to detail and timely delivery - the best!',
+          rating: 5,
+          image: 'assets/images/testimonials/sunil-shinde.jpg'
+        },
+        {
+          name: 'Rajesh Kumar',
+          company: 'Corporate Client',
+          quote: 'The bags look gorgeous, really nice quality. Sagar Bags met our tight deadline and the printing was exactly as per the proof. Highly recommended!',
+          rating: 5,
+          image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'
+        },
+        {
+          name: 'Priya Sharma',
+          company: 'Retail Business',
+          quote: 'We\'ve been ordering for 5 years now. Their jute bags are perfect for our eco-friendly initiative. Fast production and consistent quality every time!',
+          rating: 5,
+          image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face'
+        }
+      ];
+
+      let testimonials = [];
+
+      try {
+        // Try to load from Firebase
+        if (typeof FirebaseDB !== 'undefined') {
+          const firebaseTestimonials = await FirebaseDB.getTestimonials();
+          // Filter only published testimonials
+          testimonials = firebaseTestimonials.filter(t => t.status === 'published');
+        }
+      } catch (error) {
+        console.error('Error loading testimonials:', error);
+      }
+
+      // Use default testimonials if none from Firebase
+      if (testimonials.length === 0) {
+        testimonials = defaultTestimonials;
+      }
+
+      // Render testimonials
+      carousel.innerHTML = testimonials.map(t => `
+        <div class="testimonial-item">
+          <div class="testimonial-avatar-wrapper">
+            <img src="${t.image || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'}" alt="${t.name}">
+          </div>
+          <div class="testimonial-card-v2">
+            <h4 class="testimonial-name">${t.name}</h4>
+            ${t.company ? `<p class="testimonial-company">${t.company}</p>` : ''}
+            <p class="testimonial-text">"${t.quote}"</p>
+            <div class="testimonial-stars">
+              ${'<span>★</span>'.repeat(t.rating || 5)}${'<span class="empty">☆</span>'.repeat(5 - (t.rating || 5))}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Initialize carousel after loading testimonials
+      initTestimonialsCarousel();
+    }
+
+    // Initialize testimonials after DOM and Firebase are ready
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wait a bit for Firebase to initialize
+      setTimeout(loadTestimonials, 500);
+    });
 
     // Mobile FAB Toggle
     document.addEventListener('DOMContentLoaded', function() {

@@ -1488,12 +1488,14 @@ const AdminApp = {
         document.getElementById('testimonialQuote').value = testimonial.quote;
         document.getElementById('testimonialName').value = testimonial.name;
         document.getElementById('testimonialCompany').value = testimonial.company;
+        document.getElementById('testimonialImage').value = testimonial.image || '';
         document.getElementById('testimonialRating').value = testimonial.rating;
         document.getElementById('testimonialStatus').value = testimonial.status;
       }
     } else {
       title.textContent = 'Add New Testimonial';
       form.reset();
+      document.getElementById('testimonialImage').value = '';
       document.getElementById('testimonialRating').value = '5';
       document.getElementById('testimonialStatus').value = 'published';
     }
@@ -1513,6 +1515,7 @@ const AdminApp = {
       quote: document.getElementById('testimonialQuote').value,
       name: document.getElementById('testimonialName').value,
       company: document.getElementById('testimonialCompany').value,
+      image: document.getElementById('testimonialImage').value || '',
       rating: parseInt(document.getElementById('testimonialRating').value),
       status: document.getElementById('testimonialStatus').value
     };
