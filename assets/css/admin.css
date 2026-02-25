@@ -845,8 +845,11 @@ input, textarea, select {
 }
 
 .color-swatch {
+  display: block;
   width: 44px;
   height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 50%;
   flex-shrink: 0;
   border: 3px solid rgba(0,0,0,0.08);
