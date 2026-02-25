@@ -55,10 +55,21 @@ input, textarea, select {
 /* Date input calendar icon fix for dark theme */
 input[type="date"] {
   color-scheme: dark;
+  position: relative;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
+  filter: invert(1) brightness(2);
+  cursor: pointer;
+  opacity: 1;
+  padding: 5px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Firefox date input */
+input[type="date"]::-moz-calendar-picker-indicator {
+  filter: invert(1) brightness(2);
   cursor: pointer;
 }
 
