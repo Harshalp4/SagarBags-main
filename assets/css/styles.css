@@ -597,19 +597,20 @@ p {
   color: var(--secondary);
 }
 
-/* Product Badges (New/Bestseller/Featured) */
+/* Product Badges (New/Bestseller/Featured) - Ribbon Style */
 .product-badge {
   position: absolute;
-  top: 1rem;
-  left: 1rem;
+  top: 0;
+  left: 0;
   z-index: 20;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.25rem 0.5rem 0.75rem;
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-radius: var(--radius);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-radius: 0 0 var(--radius) 0;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+  clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
 }
 
 .product-badge-new {
