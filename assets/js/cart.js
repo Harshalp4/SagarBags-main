@@ -5,7 +5,7 @@
 const Cart = {
   STORAGE_KEY: 'sagarbags_cart',
   ACTIVE_CARTS_KEY: 'sagarbags_active_carts',
-  WHATSAPP_NUMBER: '919869509070',
+  WHATSAPP_NUMBER: '919870792636',
 
   // Initialize cart
   init() {

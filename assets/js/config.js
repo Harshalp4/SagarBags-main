@@ -18,9 +18,9 @@ const APP_CONFIG = {
   company: {
     name: 'Sagar Bags',
     tagline: 'Premium Bag Manufacturer',
-    phone: ['+91 98695 09070', '+91 86930 00756', '+91 98707 92636'],
+    phone: ['+91 98707 92636', '+91 86930 00756'],
     email: 'info@sagarbags.com',
-    whatsapp: '+919869509070',
+    whatsapp: '+919870792636',
     address: {
       line1: 'Sagar Compound, M. Phule Road',
       line2: 'Mulund West',
