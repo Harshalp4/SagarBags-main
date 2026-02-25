@@ -204,6 +204,42 @@
       margin-bottom: 0;
     }
 
+    .product-description.collapsed {
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .read-more-btn {
+      background: none;
+      border: none;
+      color: var(--secondary);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.5rem 0;
+      margin-top: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all var(--transition);
+    }
+
+    .read-more-btn:hover {
+      color: var(--secondary-dark);
+    }
+
+    .read-more-btn svg {
+      width: 16px;
+      height: 16px;
+      transition: transform var(--transition);
+    }
+
+    .read-more-btn.expanded svg {
+      transform: rotate(180deg);
+    }
+
     /* Key Features Section */
     .product-features-section {
       margin-bottom: 1.5rem;
@@ -911,7 +947,13 @@
         <!-- Product Description Section -->
         <div class="product-description-section">
           <h3>About This Product</h3>
-          <p class="product-description">${currentProduct.fullDesc || currentProduct.description || currentProduct.shortDesc || 'No description available'}</p>
+          <p class="product-description" id="productDescription">${currentProduct.fullDesc || currentProduct.description || currentProduct.shortDesc || 'No description available'}</p>
+          <button class="read-more-btn" id="readMoreBtn" style="display: none;">
+            <span>Read More</span>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
         </div>
 
         ${(currentProduct.features && currentProduct.features.length > 0) ? `
@@ -1056,6 +1098,44 @@
           if (e.key === 'ArrowRight') nextImage();
         }
       });
+
+      // Read More/Less functionality for description
+      setupReadMore();
+    }
+
+    function setupReadMore() {
+      const description = document.getElementById('productDescription');
+      const readMoreBtn = document.getElementById('readMoreBtn');
+
+      if (!description || !readMoreBtn) return;
+
+      // Check if description is long enough to need truncation (more than 4 lines)
+      const lineHeight = parseFloat(getComputedStyle(description).lineHeight);
+      const maxHeight = lineHeight * 4; // 4 lines
+
+      // Temporarily remove collapsed class to measure full height
+      description.classList.remove('collapsed');
+      const fullHeight = description.scrollHeight;
+
+      if (fullHeight > maxHeight + 10) { // Add small buffer
+        // Description is long, show the button and collapse
+        description.classList.add('collapsed');
+        readMoreBtn.style.display = 'inline-flex';
+
+        readMoreBtn.addEventListener('click', function() {
+          const isCollapsed = description.classList.contains('collapsed');
+
+          if (isCollapsed) {
+            description.classList.remove('collapsed');
+            readMoreBtn.classList.add('expanded');
+            readMoreBtn.querySelector('span').textContent = 'Read Less';
+          } else {
+            description.classList.add('collapsed');
+            readMoreBtn.classList.remove('expanded');
+            readMoreBtn.querySelector('span').textContent = 'Read More';
+          }
+        });
+      }
     }
 
     function setActiveImage(index) {
