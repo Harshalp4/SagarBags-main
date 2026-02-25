@@ -1507,6 +1507,7 @@ const AdminApp = {
       if (testimonial) {
         document.getElementById('testimonialQuote').value = testimonial.quote;
         document.getElementById('testimonialName').value = testimonial.name;
+        document.getElementById('testimonialPosition').value = testimonial.position || '';
         document.getElementById('testimonialCompany').value = testimonial.company;
         document.getElementById('testimonialImage').value = testimonial.image || '';
         document.getElementById('testimonialRating').value = testimonial.rating;
@@ -1526,6 +1527,7 @@ const AdminApp = {
       title.textContent = 'Add New Testimonial';
       form.reset();
       document.getElementById('testimonialImage').value = '';
+      document.getElementById('testimonialPosition').value = '';
       document.getElementById('testimonialRating').value = '5';
       document.getElementById('testimonialOrder').value = '1';
       document.getElementById('testimonialStatus').value = 'published';
@@ -1611,6 +1613,7 @@ const AdminApp = {
     // Validate required fields
     const quote = document.getElementById('testimonialQuote').value.trim();
     const name = document.getElementById('testimonialName').value.trim();
+    const position = document.getElementById('testimonialPosition').value.trim();
     const company = document.getElementById('testimonialCompany').value.trim();
 
     if (!quote) {
@@ -1644,6 +1647,7 @@ const AdminApp = {
       const testimonialData = {
         quote: quote,
         name: name,
+        position: position,
         company: company,
         image: imageUrl,
         rating: parseInt(document.getElementById('testimonialRating').value),

@@ -3729,6 +3729,7 @@ p {
   display: flex;
   flex-direction: column;
   align-items: center;
+  align-self: stretch;
 }
 
 /* Avatar with Circular Ring */
@@ -3763,10 +3764,12 @@ p {
   text-align: center;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   width: 100%;
-  min-height: 240px;
+  min-height: 280px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   border: 1px solid var(--border-subtle);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -3780,6 +3783,13 @@ p {
   color: var(--secondary);
   font-size: 1.125rem;
   font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.testimonial-position {
+  color: var(--secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
   margin-bottom: 0.25rem;
 }
 
@@ -3797,6 +3807,7 @@ p {
   font-style: italic;
   margin-bottom: 1rem;
   flex-grow: 1;
+  min-height: 80px;
 }
 
 .testimonial-stars {
@@ -3864,7 +3875,7 @@ p {
 
   .testimonial-card-v2 {
     padding: 60px 1.25rem 1.25rem;
-    min-height: 220px;
+    min-height: 260px;
   }
 }
 
@@ -3876,7 +3887,7 @@ p {
 
   .testimonial-card-v2 {
     padding: 70px 1.5rem 1.5rem;
-    min-height: auto;
+    min-height: 280px;
   }
 }
 
@@ -4059,6 +4070,21 @@ p {
   color: var(--secondary);
   flex-shrink: 0;
   margin-top: 2px;
+}
+
+.footer-contact-item.gstin-item {
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.footer-contact-item.gstin-item span {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.footer-contact-item.gstin-item strong {
+  color: var(--secondary);
 }
 
 .footer-bottom {

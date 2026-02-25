@@ -706,8 +706,8 @@
 
 /* -------------------- Click-to-Call Phone Numbers -------------------- */
 @media (max-width: 768px) {
-  /* Style phone numbers as tappable buttons */
-  a[href^="tel:"] {
+  /* Style phone numbers as tappable buttons - exclude quick contact cards */
+  a[href^="tel:"]:not(.quick-contact-card) {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -720,12 +720,12 @@
     transition: background 0.3s ease;
   }
 
-  a[href^="tel:"]:active {
+  a[href^="tel:"]:not(.quick-contact-card):active {
     background: rgba(201, 162, 39, 0.2);
   }
 
-  /* Phone icon for tel links */
-  a[href^="tel:"]::before {
+  /* Phone icon for tel links - exclude quick contact cards */
+  a[href^="tel:"]:not(.quick-contact-card)::before {
     content: '';
     width: 18px;
     height: 18px;
