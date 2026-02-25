@@ -350,10 +350,17 @@ function renderProductCard(product) {
     productBadge = '<span class="product-badge product-badge-featured">Featured</span>';
   }
 
+  // Discount badge on image
+  let discountBadge = '';
+  if (product.discount && product.discount > 0) {
+    discountBadge = `<span class="product-badge product-badge-discount">${product.discount}% OFF</span>`;
+  }
+
   return `
     <div class="product-card card" data-category="${product.category}" data-product-id="${product.id}">
       <div class="card-image card-image-zoom" data-product-id="${product.id}">
         ${productBadge}
+        ${discountBadge}
         <img src="${productImage}" alt="${product.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
         <div class="zoom-icon">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
