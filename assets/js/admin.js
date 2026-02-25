@@ -1743,17 +1743,30 @@ const AdminApp = {
 
   async deleteInquiry(id) {
     if (confirm('Are you sure you want to delete this inquiry?')) {
-      if (typeof FirebaseDB !== 'undefined') {
-        await FirebaseDB.deleteInquiry(id);
-      } else {
-        AdminData.deleteInquiry(id);
+      try {
+        this.showLoading();
+
+        if (typeof FirebaseDB !== 'undefined') {
+          await FirebaseDB.deleteInquiry(id);
+        } else {
+          AdminData.deleteInquiry(id);
+        }
+
+        // Clear cache to force fresh fetch
+        this.inquiriesCache = [];
+
+        // Reload inquiries list
+        await this.loadInquiries();
+        await this.updateInquiryBadge();
+        await this.loadDashboard();
+
+        this.showToast('Inquiry deleted successfully', 'success');
+      } catch (error) {
+        console.error('Error deleting inquiry:', error);
+        this.showToast('Failed to delete inquiry', 'error');
+      } finally {
+        this.hideLoading();
       }
-      // Clear cache to force fresh fetch
-      this.inquiriesCache = [];
-      await this.loadInquiries();
-      await this.updateInquiryBadge();
-      await this.loadDashboard();
-      this.showToast('Inquiry deleted', 'success');
     }
   },
 
@@ -1938,15 +1951,27 @@ const AdminApp = {
 
   async deleteCart(sessionId) {
     if (confirm('Are you sure you want to delete this cart?')) {
-      if (typeof FirebaseDB !== 'undefined') {
-        await FirebaseDB.deleteCart(sessionId);
-      } else {
-        AdminData.deleteActiveCart(sessionId);
+      try {
+        this.showLoading();
+
+        if (typeof FirebaseDB !== 'undefined') {
+          await FirebaseDB.deleteCart(sessionId);
+        } else {
+          AdminData.deleteActiveCart(sessionId);
+        }
+
+        // Reload cart list
+        await this.loadActiveCarts();
+        await this.updateCartBadge();
+        await this.loadDashboard();
+
+        this.showToast('Cart deleted successfully', 'success');
+      } catch (error) {
+        console.error('Error deleting cart:', error);
+        this.showToast('Failed to delete cart', 'error');
+      } finally {
+        this.hideLoading();
       }
-      this.loadActiveCarts();
-      this.updateCartBadge();
-      this.loadDashboard();
-      this.showToast('Cart deleted', 'success');
     }
   },
 
