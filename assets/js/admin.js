@@ -721,6 +721,40 @@ const AdminApp = {
   async saveProduct(e) {
     e.preventDefault();
 
+    // Validate required fields
+    const name = document.getElementById('productName').value.trim();
+    const category = document.getElementById('productCategory').value;
+    const minOrder = document.getElementById('productMinOrder').value;
+
+    // Check if there are any images (existing URLs or new uploads)
+    const existingImages = this.uploadedImages.filter(img => typeof img === 'string' && !img.startsWith('blob:'));
+    const hasNewImages = this.uploadedImageFiles && this.uploadedImageFiles.length > 0;
+    const hasImages = existingImages.length > 0 || hasNewImages;
+
+    // Validation checks
+    if (!name) {
+      this.showToast('Product name is required', 'error');
+      document.getElementById('productName').focus();
+      return;
+    }
+
+    if (!category) {
+      this.showToast('Please select a category', 'error');
+      document.getElementById('productCategory').focus();
+      return;
+    }
+
+    if (!minOrder || parseInt(minOrder) < 1) {
+      this.showToast('Minimum order quantity is required', 'error');
+      document.getElementById('productMinOrder').focus();
+      return;
+    }
+
+    if (!hasImages) {
+      this.showToast('Please upload at least one product image', 'error');
+      return;
+    }
+
     // Show loading overlay
     this.showLoading('Uploading images and saving product...');
 
@@ -780,9 +814,9 @@ const AdminApp = {
       const discountValue = document.getElementById('productDiscount').value;
 
       const productData = {
-        name: document.getElementById('productName').value,
-        category: document.getElementById('productCategory').value,
-        minOrder: parseInt(document.getElementById('productMinOrder').value),
+        name: name,
+        category: category,
+        minOrder: parseInt(minOrder),
         price: priceValue ? parseFloat(priceValue) : null,
         discount: discountValue ? parseInt(discountValue) : 0,
         badge: document.getElementById('productBadge').value,
