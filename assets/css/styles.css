@@ -59,17 +59,19 @@ input[type="date"] {
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-  background-color: #ffffff;
+  background-color: var(--secondary);
   border-radius: 4px;
   padding: 4px;
   cursor: pointer;
   opacity: 1;
   width: 22px;
   height: 22px;
+  filter: invert(1);
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator:hover {
-  background-color: var(--secondary);
+  background-color: #b8942e;
+  filter: invert(1);
 }
 
 /* -------------------- Hide Animated Particles & Orbs -------------------- */
