@@ -868,26 +868,35 @@
       </div>
       <div class="modal-body">
         <form id="testimonialForm">
+          <!-- Customer Photo Upload -->
+          <div class="form-group">
+            <label>Customer Photo</label>
+            <div class="testimonial-image-upload" id="testimonialImageUpload" style="border: 2px dashed var(--border-subtle); border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s ease;">
+              <div id="testimonialImagePreview" style="margin-bottom: 1rem;">
+                <img id="testimonialPreviewImg" src="" alt="" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; display: none; margin: 0 auto;">
+              </div>
+              <input type="file" id="testimonialImageInput" accept="image/*" style="display: none;">
+              <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">Click to upload photo or drag & drop</p>
+              <small style="color: var(--text-muted); font-size: 0.75rem;">Recommended: Square image, max 2MB</small>
+            </div>
+            <input type="hidden" id="testimonialImage" value="">
+          </div>
+
           <div class="form-group">
             <label for="testimonialQuote">Quote <span class="required">*</span></label>
-            <textarea id="testimonialQuote" class="form-textarea" rows="4" required placeholder="Customer testimonial..."></textarea>
+            <textarea id="testimonialQuote" class="form-textarea" rows="4" required maxlength="250" placeholder="Customer testimonial (max 250 characters)..."></textarea>
+            <small style="color: var(--text-muted); font-size: 0.75rem;"><span id="quoteCharCount">0</span>/250 characters</small>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label for="testimonialName">Customer Name <span class="required">*</span></label>
-              <input type="text" id="testimonialName" class="form-input" required>
+              <input type="text" id="testimonialName" class="form-input" required maxlength="50">
             </div>
             <div class="form-group">
               <label for="testimonialCompany">Company <span class="required">*</span></label>
-              <input type="text" id="testimonialCompany" class="form-input" required>
+              <input type="text" id="testimonialCompany" class="form-input" required maxlength="50">
             </div>
-          </div>
-
-          <div class="form-group">
-            <label for="testimonialImage">Customer Photo URL</label>
-            <input type="url" id="testimonialImage" class="form-input" placeholder="https://example.com/photo.jpg (optional)">
-            <small style="color: var(--text-muted); font-size: 0.75rem;">Leave empty to use default avatar</small>
           </div>
 
           <div class="form-row">

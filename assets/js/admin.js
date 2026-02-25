@@ -1466,11 +1466,25 @@ const AdminApp = {
     `).join('');
   },
 
+  testimonialImageFile: null,
+
   async openTestimonialModal(testimonialId = null) {
     this.editingItem = testimonialId;
+    this.testimonialImageFile = null;
     const modal = document.getElementById('testimonialModal');
     const title = document.getElementById('testimonialModalTitle');
     const form = document.getElementById('testimonialForm');
+    const previewImg = document.getElementById('testimonialPreviewImg');
+    const charCount = document.getElementById('quoteCharCount');
+
+    // Setup image upload
+    this.setupTestimonialImageUpload();
+
+    // Setup character counter
+    const quoteField = document.getElementById('testimonialQuote');
+    quoteField.addEventListener('input', () => {
+      charCount.textContent = quoteField.value.length;
+    });
 
     if (testimonialId) {
       title.textContent = 'Edit Testimonial';
@@ -1491,6 +1505,15 @@ const AdminApp = {
         document.getElementById('testimonialImage').value = testimonial.image || '';
         document.getElementById('testimonialRating').value = testimonial.rating;
         document.getElementById('testimonialStatus').value = testimonial.status;
+        charCount.textContent = testimonial.quote.length;
+
+        // Show existing image
+        if (testimonial.image) {
+          previewImg.src = testimonial.image;
+          previewImg.style.display = 'block';
+        } else {
+          previewImg.style.display = 'none';
+        }
       }
     } else {
       title.textContent = 'Add New Testimonial';
@@ -1498,35 +1521,135 @@ const AdminApp = {
       document.getElementById('testimonialImage').value = '';
       document.getElementById('testimonialRating').value = '5';
       document.getElementById('testimonialStatus').value = 'published';
+      previewImg.style.display = 'none';
+      charCount.textContent = '0';
     }
 
     modal.classList.add('active');
   },
 
+  setupTestimonialImageUpload() {
+    const uploadArea = document.getElementById('testimonialImageUpload');
+    const fileInput = document.getElementById('testimonialImageInput');
+    const previewImg = document.getElementById('testimonialPreviewImg');
+
+    if (!uploadArea || !fileInput) return;
+
+    // Click to upload
+    uploadArea.onclick = () => fileInput.click();
+
+    // File selected
+    fileInput.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 2 * 1024 * 1024) {
+          this.showToast('Image size must be less than 2MB', 'error');
+          return;
+        }
+        this.testimonialImageFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImg.src = e.target.result;
+          previewImg.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    // Drag & drop
+    uploadArea.ondragover = (e) => {
+      e.preventDefault();
+      uploadArea.style.borderColor = 'var(--secondary)';
+      uploadArea.style.background = 'rgba(201, 162, 39, 0.1)';
+    };
+
+    uploadArea.ondragleave = () => {
+      uploadArea.style.borderColor = 'var(--border-subtle)';
+      uploadArea.style.background = 'transparent';
+    };
+
+    uploadArea.ondrop = (e) => {
+      e.preventDefault();
+      uploadArea.style.borderColor = 'var(--border-subtle)';
+      uploadArea.style.background = 'transparent';
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        if (file.size > 2 * 1024 * 1024) {
+          this.showToast('Image size must be less than 2MB', 'error');
+          return;
+        }
+        this.testimonialImageFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImg.src = e.target.result;
+          previewImg.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+  },
+
   closeTestimonialModal() {
     document.getElementById('testimonialModal')?.classList.remove('active');
     this.editingItem = null;
+    this.testimonialImageFile = null;
+    const previewImg = document.getElementById('testimonialPreviewImg');
+    if (previewImg) previewImg.style.display = 'none';
   },
 
   async saveTestimonial(e) {
     e.preventDefault();
 
-    const testimonialData = {
-      quote: document.getElementById('testimonialQuote').value,
-      name: document.getElementById('testimonialName').value,
-      company: document.getElementById('testimonialCompany').value,
-      image: document.getElementById('testimonialImage').value || '',
-      rating: parseInt(document.getElementById('testimonialRating').value),
-      status: document.getElementById('testimonialStatus').value
-    };
+    // Validate required fields
+    const quote = document.getElementById('testimonialQuote').value.trim();
+    const name = document.getElementById('testimonialName').value.trim();
+    const company = document.getElementById('testimonialCompany').value.trim();
+
+    if (!quote) {
+      this.showToast('Please enter a testimonial quote', 'error');
+      return;
+    }
+    if (!name) {
+      this.showToast('Please enter customer name', 'error');
+      return;
+    }
+    if (!company) {
+      this.showToast('Please enter company name', 'error');
+      return;
+    }
+
+    this.showLoading('Saving testimonial...');
 
     try {
+      let imageUrl = document.getElementById('testimonialImage').value || '';
+
+      // Upload image if new file selected
+      if (this.testimonialImageFile && this.sasToken && typeof AzureStorage !== 'undefined') {
+        const result = await AzureStorage.uploadImage(this.testimonialImageFile, this.sasToken);
+        if (result.success) {
+          imageUrl = result.url;
+        } else {
+          this.showToast('Failed to upload image, saving without image', 'warning');
+        }
+      }
+
+      const testimonialData = {
+        quote: quote,
+        name: name,
+        company: company,
+        image: imageUrl,
+        rating: parseInt(document.getElementById('testimonialRating').value),
+        status: document.getElementById('testimonialStatus').value
+      };
+
       if (typeof FirebaseDB !== 'undefined') {
         if (this.editingItem) {
-          await FirebaseDB.updateTestimonial(this.editingItem, testimonialData);
+          const result = await FirebaseDB.updateTestimonial(this.editingItem, testimonialData);
+          if (result.success === false) throw new Error(result.error);
           this.showToast('Testimonial updated successfully', 'success');
         } else {
-          await FirebaseDB.addTestimonial(testimonialData);
+          const result = await FirebaseDB.addTestimonial(testimonialData);
+          if (result.success === false) throw new Error(result.error);
           this.showToast('Testimonial added successfully', 'success');
         }
       } else {
@@ -1539,12 +1662,15 @@ const AdminApp = {
         }
       }
 
+      this.testimonialImageFile = null;
       this.closeTestimonialModal();
       this.loadTestimonials();
       this.loadDashboard();
     } catch (error) {
       console.error('Error saving testimonial:', error);
-      this.showToast('Failed to save testimonial', 'error');
+      this.showToast('Failed to save testimonial: ' + error.message, 'error');
+    } finally {
+      this.hideLoading();
     }
   },
 
