@@ -175,6 +175,61 @@
       color: var(--secondary);
     }
 
+    /* Product Colors Section */
+    .product-colors-section {
+      margin-bottom: 1.5rem;
+      padding: 1.25rem;
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+    }
+
+    .product-colors-section h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+
+    .product-color-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .product-color-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 60px;
+    }
+
+    .product-color-item:hover {
+      border-color: var(--secondary);
+      transform: translateY(-2px);
+    }
+
+    .product-color-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .product-color-name {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-align: center;
+      text-transform: capitalize;
+    }
+
     .product-meta {
       display: grid;
       gap: 1.5rem;
@@ -647,6 +702,27 @@
     let currentProduct = null;
     let currentImageIndex = 0;
 
+    // Helper function to get hex color from color name
+    function getColorHex(colorName) {
+      const colorMap = {
+        'black': '#000000',
+        'white': '#FFFFFF',
+        'navy': '#1a365d',
+        'red': '#e53e3e',
+        'green': '#38a169',
+        'blue': '#3182ce',
+        'yellow': '#ecc94b',
+        'orange': '#ed8936',
+        'pink': '#ed64a6',
+        'purple': '#805ad5',
+        'brown': '#8b5a2b',
+        'grey': '#718096',
+        'beige': '#d4a574',
+        'maroon': '#800000'
+      };
+      return colorMap[colorName.toLowerCase()] || '#666666';
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
       const params = getURLParams();
       const productId = params.id;
@@ -749,6 +825,24 @@
             </ul>
           ` : ''}
         </div>
+
+        ${(currentProduct.colors && currentProduct.colors.length > 0) ? `
+        <div class="product-colors-section">
+          <h4>Available Colors</h4>
+          <div class="product-color-options">
+            ${currentProduct.colors.map(color => {
+              const colorName = typeof color === 'object' ? color.name : color;
+              const colorHex = typeof color === 'object' ? color.hex : getColorHex(color);
+              return `
+                <div class="product-color-item" title="${colorName}">
+                  <span class="product-color-swatch" style="background-color: ${colorHex};"></span>
+                  <span class="product-color-name">${colorName}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+        ` : ''}
 
         <div class="product-meta">
           <div class="meta-item">
