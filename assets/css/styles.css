@@ -59,19 +59,18 @@ input[type="date"] {
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
-  background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
+  background-color: var(--secondary);
   border-radius: 4px;
   padding: 5px;
   cursor: pointer;
-  opacity: 1;
   width: 24px;
   height: 24px;
-  filter: invert(1) brightness(0.3);
+  filter: brightness(0);
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator:hover {
-  background: linear-gradient(135deg, var(--secondary-light) 0%, var(--secondary) 100%);
-  filter: invert(1) brightness(0.2);
+  background-color: var(--secondary-light);
+  filter: brightness(0);
 }
 
 /* -------------------- Hide Animated Particles & Orbs -------------------- */
