@@ -1746,10 +1746,15 @@ const AdminApp = {
       try {
         this.showLoading();
 
+        let result = { success: true };
         if (typeof FirebaseDB !== 'undefined') {
-          await FirebaseDB.deleteInquiry(id);
+          result = await FirebaseDB.deleteInquiry(id);
         } else {
           AdminData.deleteInquiry(id);
+        }
+
+        if (result && result.success === false) {
+          throw new Error(result.error || 'Failed to delete inquiry');
         }
 
         // Clear cache to force fresh fetch
@@ -1763,7 +1768,7 @@ const AdminApp = {
         this.showToast('Inquiry deleted successfully', 'success');
       } catch (error) {
         console.error('Error deleting inquiry:', error);
-        this.showToast('Failed to delete inquiry', 'error');
+        this.showToast('Failed to delete inquiry: ' + error.message, 'error');
       } finally {
         this.hideLoading();
       }
@@ -1954,10 +1959,15 @@ const AdminApp = {
       try {
         this.showLoading();
 
+        let result = { success: true };
         if (typeof FirebaseDB !== 'undefined') {
-          await FirebaseDB.deleteCart(sessionId);
+          result = await FirebaseDB.deleteCart(sessionId);
         } else {
           AdminData.deleteActiveCart(sessionId);
+        }
+
+        if (result && result.success === false) {
+          throw new Error(result.error || 'Failed to delete cart');
         }
 
         // Reload cart list
@@ -1968,7 +1978,7 @@ const AdminApp = {
         this.showToast('Cart deleted successfully', 'success');
       } catch (error) {
         console.error('Error deleting cart:', error);
-        this.showToast('Failed to delete cart', 'error');
+        this.showToast('Failed to delete cart: ' + error.message, 'error');
       } finally {
         this.hideLoading();
       }

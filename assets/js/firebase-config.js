@@ -96,11 +96,13 @@ const FirebaseDB = {
 
   async deleteInquiry(id) {
     try {
+      console.log('Deleting inquiry with ID:', id);
       await db.collection('inquiries').doc(id).delete();
+      console.log('Inquiry deleted successfully from Firebase');
       return { success: true };
     } catch (error) {
       console.error('Error deleting inquiry:', error);
-      return { success: false, error: error.message };
+      throw error;
     }
   },
 
@@ -163,11 +165,13 @@ const FirebaseDB = {
 
   async deleteCart(sessionId) {
     try {
+      console.log('Deleting cart with session ID:', sessionId);
       await db.collection('active_carts').doc(sessionId).delete();
+      console.log('Cart deleted successfully from Firebase');
       return { success: true };
     } catch (error) {
       console.error('Error deleting cart:', error);
-      return { success: false, error: error.message };
+      throw error;
     }
   },
 
