@@ -804,8 +804,11 @@ const AdminApp = {
           hex: presetColorMap[cb.value] || '#000000'
         }));
 
-      // Combine preset colors with custom colors
-      const selectedColors = [...selectedPresetColors, ...(this.customColors || [])];
+      // Combine preset colors with custom colors and remove duplicates
+      const allColors = [...selectedPresetColors, ...(this.customColors || [])];
+      const selectedColors = allColors.filter((color, index, self) =>
+        index === self.findIndex(c => c.name.toLowerCase() === color.name.toLowerCase())
+      );
 
       const shortDesc = document.getElementById('productShortDesc').value;
       const fullDesc = document.getElementById('productFullDesc').value;
