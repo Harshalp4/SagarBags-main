@@ -66,10 +66,12 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   opacity: 1;
   width: 24px;
   height: 24px;
+  filter: invert(1) brightness(0.3);
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator:hover {
   background: linear-gradient(135deg, var(--secondary-light) 0%, var(--secondary) 100%);
+  filter: invert(1) brightness(0.2);
 }
 
 /* -------------------- Hide Animated Particles & Orbs -------------------- */
