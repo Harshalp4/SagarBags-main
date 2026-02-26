@@ -327,33 +327,41 @@
       .products-header {
         flex-direction: column;
         align-items: stretch;
-        gap: 0.75rem;
-        margin-bottom: 1rem;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
       }
 
       .products-filters {
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 0.5rem;
       }
 
+      .products-filters .search-autocomplete-wrapper {
+        grid-column: 1 / -1;
+      }
+
       .search-input {
-        flex: 1;
-        min-width: unset;
-        padding: 0.625rem 1rem;
-        font-size: 0.9375rem;
-        border-radius: var(--radius-full);
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8125rem;
+        border-radius: var(--radius-md);
+        height: 38px;
       }
 
       .filter-select {
-        min-width: 110px;
-        padding: 0.625rem 0.75rem;
-        font-size: 0.875rem;
-        border-radius: var(--radius-full);
+        width: 100%;
+        min-width: unset;
+        padding: 0.5rem 0.5rem;
+        font-size: 0.8125rem;
+        border-radius: var(--radius-md);
+        height: 38px;
       }
 
       .products-count {
         text-align: center;
-        font-size: 0.875rem;
+        font-size: 0.8125rem;
+        color: var(--text-muted);
       }
     }
 
@@ -457,15 +465,37 @@
 
       .search-input {
         min-width: 100%;
+        padding: 0.5rem 0.875rem;
+        font-size: 0.875rem;
+        height: 40px;
       }
 
       .products-header {
         flex-direction: column;
         align-items: stretch;
+        gap: 0.5rem;
       }
 
       .products-filters {
         flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .products-filters .search-autocomplete-wrapper {
+        width: 100%;
+      }
+
+      .products-filters .filter-select {
+        width: 100%;
+        padding: 0.5rem 0.875rem;
+        font-size: 0.875rem;
+        height: 40px;
+        min-width: unset;
+      }
+
+      .products-count {
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
       }
     }
 
