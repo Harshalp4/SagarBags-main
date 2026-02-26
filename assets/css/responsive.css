@@ -378,19 +378,28 @@
     max-width: 300px;
   }
 
-  /* Testimonial Dots - smaller on mobile */
-  .testimonial-dots {
-    gap: 6px;
-    max-width: 180px;
+  /* Testimonial Navigation - compact on mobile */
+  .testimonial-nav {
+    gap: 1rem;
+    margin-top: 1.5rem;
   }
 
-  .testimonial-dots .dot {
-    width: 6px;
-    height: 6px;
+  .testimonial-nav-btn {
+    width: 38px;
+    height: 38px;
   }
 
-  .testimonial-dots .dot.active {
-    transform: scale(1.4);
+  .testimonial-nav-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .testimonial-indicator {
+    font-size: 0.875rem;
+  }
+
+  .testimonial-indicator #testimonialCurrent {
+    font-size: 1rem;
   }
 
   /* Footer */

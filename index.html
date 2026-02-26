@@ -376,8 +376,24 @@
         </div>
       </div>
 
-      <!-- Carousel Dots -->
-      <div class="testimonial-dots" id="testimonialDots"></div>
+      <!-- Carousel Navigation -->
+      <div class="testimonial-nav">
+        <button class="testimonial-nav-btn prev" id="testimonialPrev" aria-label="Previous">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <div class="testimonial-indicator">
+          <span id="testimonialCurrent">1</span>
+          <span class="separator">/</span>
+          <span id="testimonialTotal">1</span>
+        </div>
+        <button class="testimonial-nav-btn next" id="testimonialNext" aria-label="Next">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
     </div>
   </section>
 
@@ -786,84 +802,29 @@
     // Testimonials Carousel
     function initTestimonialsCarousel() {
       const carousel = document.getElementById('testimonialsCarousel');
-      const dotsContainer = document.getElementById('testimonialDots');
+      const prevBtn = document.getElementById('testimonialPrev');
+      const nextBtn = document.getElementById('testimonialNext');
+      const currentIndicator = document.getElementById('testimonialCurrent');
+      const totalIndicator = document.getElementById('testimonialTotal');
+
       if (!carousel) return;
 
       const items = carousel.querySelectorAll('.testimonial-item');
       const itemWidth = 340 + 24; // width + gap
       const totalItems = items.length;
-      const visibleItems = Math.floor(carousel.parentElement.offsetWidth / itemWidth) || 3;
+      const visibleItems = Math.floor(carousel.parentElement.offsetWidth / itemWidth) || 1;
       const totalPages = Math.ceil(totalItems / visibleItems);
 
       let currentPage = 0;
       let autoScrollInterval;
       let isDragging = false;
       let startX = 0;
-      let scrollLeft = 0;
 
-      // Create dots - limit to max 7 visible dots for better mobile UX
-      const maxVisibleDots = 7;
-      dotsContainer.innerHTML = '';
+      // Update indicator
+      if (totalIndicator) totalIndicator.textContent = totalPages;
 
-      function createDots() {
-        dotsContainer.innerHTML = '';
-
-        // If total pages is small, show all dots
-        if (totalPages <= maxVisibleDots) {
-          for (let i = 0; i < totalPages; i++) {
-            const dot = document.createElement('button');
-            dot.className = 'dot' + (i === currentPage ? ' active' : '');
-            dot.addEventListener('click', () => goToPage(i));
-            dotsContainer.appendChild(dot);
-          }
-        } else {
-          // Show limited dots with ellipsis effect
-          // Always show: first, last, current, and neighbors
-          const visibleDots = new Set([0, totalPages - 1, currentPage]);
-
-          // Add neighbors of current
-          if (currentPage > 0) visibleDots.add(currentPage - 1);
-          if (currentPage < totalPages - 1) visibleDots.add(currentPage + 1);
-
-          // Fill remaining with nearby dots
-          let offset = 2;
-          while (visibleDots.size < Math.min(maxVisibleDots, totalPages)) {
-            if (currentPage - offset >= 0) visibleDots.add(currentPage - offset);
-            if (currentPage + offset < totalPages) visibleDots.add(currentPage + offset);
-            offset++;
-          }
-
-          const sortedDots = Array.from(visibleDots).sort((a, b) => a - b);
-
-          sortedDots.forEach((i, idx) => {
-            // Add small gap indicator if there's a jump
-            if (idx > 0 && sortedDots[idx - 1] < i - 1) {
-              const spacer = document.createElement('span');
-              spacer.className = 'dot-spacer';
-              spacer.textContent = '·';
-              spacer.style.cssText = 'color: rgba(255,255,255,0.3); font-size: 10px; line-height: 1;';
-              dotsContainer.appendChild(spacer);
-            }
-
-            const dot = document.createElement('button');
-            dot.className = 'dot' + (i === currentPage ? ' active' : '');
-            dot.addEventListener('click', () => goToPage(i));
-            dotsContainer.appendChild(dot);
-          });
-        }
-      }
-
-      createDots();
-
-      function updateDots() {
-        if (totalPages <= maxVisibleDots) {
-          dotsContainer.querySelectorAll('.dot').forEach((dot, i) => {
-            dot.classList.toggle('active', i === currentPage);
-          });
-        } else {
-          // Recreate dots for proper positioning
-          createDots();
-        }
+      function updateIndicator() {
+        if (currentIndicator) currentIndicator.textContent = currentPage + 1;
       }
 
       function goToPage(page) {
@@ -873,12 +834,20 @@
 
         const scrollAmount = currentPage * visibleItems * itemWidth;
         carousel.style.transform = `translateX(-${scrollAmount}px)`;
-        updateDots();
+        updateIndicator();
       }
 
       function nextPage() {
         goToPage(currentPage + 1);
       }
+
+      function prevPage() {
+        goToPage(currentPage - 1);
+      }
+
+      // Navigation button events
+      if (prevBtn) prevBtn.addEventListener('click', () => { prevPage(); stopAutoScroll(); startAutoScroll(); });
+      if (nextBtn) nextBtn.addEventListener('click', () => { nextPage(); stopAutoScroll(); startAutoScroll(); });
 
       function startAutoScroll() {
         stopAutoScroll();
