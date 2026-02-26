@@ -801,19 +801,69 @@
       let startX = 0;
       let scrollLeft = 0;
 
-      // Create dots
+      // Create dots - limit to max 7 visible dots for better mobile UX
+      const maxVisibleDots = 7;
       dotsContainer.innerHTML = '';
-      for (let i = 0; i < totalPages; i++) {
-        const dot = document.createElement('button');
-        dot.className = 'dot' + (i === 0 ? ' active' : '');
-        dot.addEventListener('click', () => goToPage(i));
-        dotsContainer.appendChild(dot);
+
+      function createDots() {
+        dotsContainer.innerHTML = '';
+
+        // If total pages is small, show all dots
+        if (totalPages <= maxVisibleDots) {
+          for (let i = 0; i < totalPages; i++) {
+            const dot = document.createElement('button');
+            dot.className = 'dot' + (i === currentPage ? ' active' : '');
+            dot.addEventListener('click', () => goToPage(i));
+            dotsContainer.appendChild(dot);
+          }
+        } else {
+          // Show limited dots with ellipsis effect
+          // Always show: first, last, current, and neighbors
+          const visibleDots = new Set([0, totalPages - 1, currentPage]);
+
+          // Add neighbors of current
+          if (currentPage > 0) visibleDots.add(currentPage - 1);
+          if (currentPage < totalPages - 1) visibleDots.add(currentPage + 1);
+
+          // Fill remaining with nearby dots
+          let offset = 2;
+          while (visibleDots.size < Math.min(maxVisibleDots, totalPages)) {
+            if (currentPage - offset >= 0) visibleDots.add(currentPage - offset);
+            if (currentPage + offset < totalPages) visibleDots.add(currentPage + offset);
+            offset++;
+          }
+
+          const sortedDots = Array.from(visibleDots).sort((a, b) => a - b);
+
+          sortedDots.forEach((i, idx) => {
+            // Add small gap indicator if there's a jump
+            if (idx > 0 && sortedDots[idx - 1] < i - 1) {
+              const spacer = document.createElement('span');
+              spacer.className = 'dot-spacer';
+              spacer.textContent = '·';
+              spacer.style.cssText = 'color: rgba(255,255,255,0.3); font-size: 10px; line-height: 1;';
+              dotsContainer.appendChild(spacer);
+            }
+
+            const dot = document.createElement('button');
+            dot.className = 'dot' + (i === currentPage ? ' active' : '');
+            dot.addEventListener('click', () => goToPage(i));
+            dotsContainer.appendChild(dot);
+          });
+        }
       }
 
+      createDots();
+
       function updateDots() {
-        dotsContainer.querySelectorAll('.dot').forEach((dot, i) => {
-          dot.classList.toggle('active', i === currentPage);
-        });
+        if (totalPages <= maxVisibleDots) {
+          dotsContainer.querySelectorAll('.dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentPage);
+          });
+        } else {
+          // Recreate dots for proper positioning
+          createDots();
+        }
       }
 
       function goToPage(page) {

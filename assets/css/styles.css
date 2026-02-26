@@ -3825,28 +3825,34 @@ p {
 .testimonial-dots {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 0.5rem;
   margin-top: 2rem;
+  max-width: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  flex-wrap: wrap;
 }
 
 .testimonial-dots .dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: #ddd;
+  background: rgba(255, 255, 255, 0.3);
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   padding: 0;
+  flex-shrink: 0;
 }
 
 .testimonial-dots .dot:hover {
-  background: #bbb;
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .testimonial-dots .dot.active {
   background: var(--secondary);
-  transform: scale(1.2);
+  transform: scale(1.3);
 }
   font-size: 1.5rem;
 }

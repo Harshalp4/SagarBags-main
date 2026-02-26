@@ -378,6 +378,21 @@
     max-width: 300px;
   }
 
+  /* Testimonial Dots - smaller on mobile */
+  .testimonial-dots {
+    gap: 6px;
+    max-width: 180px;
+  }
+
+  .testimonial-dots .dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .testimonial-dots .dot.active {
+    transform: scale(1.4);
+  }
+
   /* Footer */
   .footer-grid {
     grid-template-columns: 1fr;
