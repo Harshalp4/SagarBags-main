@@ -974,11 +974,11 @@
           image: 'assets/images/testimonials/udayraj-pandey.jpg'
         },
         {
-          name: 'Priya Sharma',
-          company: 'Retail Business',
-          quote: 'We\'ve been ordering for 5 years now. Their jute bags are perfect for our eco-friendly initiative. Fast production and consistent quality every time!',
+          name: 'Mr. Vilas Dalvi',
+          company: 'DMK JAOLI BANK',
+          quote: 'Great experience working with Sagar Bags. Professional service, quality products, and on-time delivery. Highly recommended for corporate bag requirements!',
           rating: 5,
-          image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face'
+          image: ''
         }
       ];
 
@@ -992,7 +992,7 @@
       carousel.innerHTML = testimonials.map(t => `
         <div class="testimonial-item">
           <div class="testimonial-avatar-wrapper">
-            <img src="${t.image || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face'}" alt="${t.name}">
+            ${t.image ? `<img src="${t.image}" alt="${t.name}">` : `<div class="avatar-placeholder">${t.name.split(' ').map(n => n[0]).join('').substring(0,2)}</div>`}
           </div>
           <div class="testimonial-card-v2">
             <h4 class="testimonial-name">${t.name}</h4>
