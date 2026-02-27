@@ -758,22 +758,26 @@
     }
 
     .lightbox-close {
-      position: absolute;
-      top: 2rem;
-      right: 2rem;
+      position: fixed;
+      top: 20px;
+      right: 20px;
       width: 48px;
       height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #fff;
+      background: rgba(255, 255, 255, 0.95);
       border-radius: 50%;
       cursor: pointer;
       transition: all 0.3s ease;
+      z-index: 2001;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      color: #000;
     }
 
     .lightbox-close:hover {
       transform: rotate(90deg);
+      background: var(--secondary);
     }
 
     .lightbox-nav {
