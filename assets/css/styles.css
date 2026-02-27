@@ -5605,8 +5605,16 @@ main {
   }
 
   .login-btn {
-    padding: 0.5rem;
+    width: 40px;
+    height: 40px;
+    padding: 0;
     border-radius: var(--radius-full);
+    justify-content: center;
+  }
+
+  .login-btn svg {
+    width: 20px;
+    height: 20px;
   }
 }
 
