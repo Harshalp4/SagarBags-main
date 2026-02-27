@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="gold15" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Wine / Bottle Bag -->
+  <g transform="translate(18, 8)">
+    <!-- Bag Body - Tall narrow -->
+    <rect x="12" y="24" width="28" height="40" rx="3" fill="url(#gold15)" opacity="0.2"/>
+    <rect x="12" y="24" width="28" height="40" rx="3" fill="none" stroke="url(#gold15)" stroke-width="3"/>
+
+    <!-- Handles -->
+    <path d="M18 24 L18 14 C18 10 22 8 26 8 C30 8 34 10 34 14 L34 24"
+          fill="none" stroke="url(#gold15)" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Bottle outline inside -->
+    <path d="M22 58 L22 40 C22 36 24 34 26 32 C28 34 30 36 30 40 L30 58"
+          fill="none" stroke="url(#gold15)" stroke-width="1.5" opacity="0.5"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="78" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#gold15)" font-weight="700">Bags</tspan></text>
+</svg>

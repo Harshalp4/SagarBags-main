@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 90" width="360" height="90">
+  <defs>
+    <linearGradient id="goldPremium3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f7eba8"/>
+      <stop offset="50%" style="stop-color:#c9a227"/>
+      <stop offset="100%" style="stop-color:#96791a"/>
+    </linearGradient>
+    <linearGradient id="goldVertical3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f7eba8"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect x="0" y="0" width="360" height="90" rx="6" fill="#0a0a0a"/>
+
+  <!-- THE CONCEPT: Negative space bag handle forming abstract mark -->
+  <g transform="translate(12, 7)">
+    <!-- Square container with cut corners (gem-like) -->
+    <path d="M12 8 L58 8 L66 16 L66 60 L58 68 L12 68 L4 60 L4 16 Z"
+          fill="url(#goldPremium3)" opacity="0.1"/>
+    <path d="M12 8 L58 8 L66 16 L66 60 L58 68 L12 68 L4 60 L4 16 Z"
+          fill="none" stroke="url(#goldPremium3)" stroke-width="2"/>
+
+    <!-- Inner design - Bag handle as negative space -->
+    <path d="M20 48 L20 28 C20 20 28 16 35 16 C42 16 50 20 50 28 L50 48"
+          fill="none" stroke="url(#goldVertical3)" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- Bag body hint -->
+    <path d="M16 48 L54 48 L52 60 L18 60 Z"
+          fill="url(#goldPremium3)" opacity="0.3"/>
+    <path d="M16 48 L54 48" stroke="url(#goldPremium3)" stroke-width="2"/>
+
+    <!-- Decorative diamond in center of handle -->
+    <path d="M35 30 L39 34 L35 38 L31 34 Z" fill="url(#goldPremium3)"/>
+  </g>
+
+  <!-- Text with premium spacing -->
+  <text x="95" y="42" font-family="Poppins, sans-serif" font-size="34" font-weight="600" fill="#ffffff" letter-spacing="0">Sagar<tspan fill="url(#goldPremium3)" font-weight="700">Bags</tspan></text>
+
+  <!-- Decorative underline -->
+  <rect x="95" y="52" width="180" height="1" fill="url(#goldPremium3)" opacity="0.3"/>
+
+  <!-- Tagline -->
+  <text x="95" y="68" font-family="Poppins, sans-serif" font-size="9" fill="#777" letter-spacing="4">PREMIUM BAG MANUFACTURER</text>
+</svg>

@@ -1,0 +1,43 @@
+{
+  "name": "Sagar Bags Admin",
+  "short_name": "SB Admin",
+  "description": "Admin panel for Sagar Bags - Manage products, orders, and content",
+  "start_url": "/admin-dashboard.html",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#d4af37",
+  "orientation": "any",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/assets/images/admin-icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/images/admin-icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Products",
+      "short_name": "Products",
+      "description": "Manage products",
+      "url": "/admin-dashboard.html#products",
+      "icons": [{ "src": "/assets/images/admin-icon-192.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Inquiries",
+      "short_name": "Inquiries",
+      "description": "View customer inquiries",
+      "url": "/admin-dashboard.html#inquiries",
+      "icons": [{ "src": "/assets/images/admin-icon-192.svg", "sizes": "192x192" }]
+    }
+  ]
+}

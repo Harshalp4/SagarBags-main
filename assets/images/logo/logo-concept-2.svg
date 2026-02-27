@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 60" width="280" height="60">
+  <defs>
+    <linearGradient id="goldGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8c547"/>
+      <stop offset="50%" style="stop-color:#c9a227"/>
+      <stop offset="100%" style="stop-color:#a68b1f"/>
+    </linearGradient>
+  </defs>
+
+  <!-- SB Monogram in Circle -->
+  <g transform="translate(5, 5)">
+    <!-- Circle Border -->
+    <circle cx="25" cy="25" r="23" fill="none" stroke="url(#goldGrad2)" stroke-width="2"/>
+
+    <!-- Stylized S -->
+    <path d="M18 17 C18 14 21 12 25 12 C29 12 32 14 32 17 C32 20 29 22 25 23 C21 24 18 26 18 29 C18 32 21 34 25 34 C29 34 32 32 32 29"
+          fill="none" stroke="url(#goldGrad2)" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- Small B accent -->
+    <text x="28" y="38" font-family="Poppins, sans-serif" font-size="12" font-weight="700" fill="url(#goldGrad2)">B</text>
+  </g>
+
+  <!-- Text: Sagar -->
+  <text x="60" y="38" font-family="Poppins, sans-serif" font-size="28" font-weight="600" fill="#ffffff">Sagar</text>
+
+  <!-- Text: Bags -->
+  <text x="152" y="38" font-family="Poppins, sans-serif" font-size="28" font-weight="700" fill="url(#goldGrad2)">Bags</text>
+</svg>

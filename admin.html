@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Sagar Bags</title>
+
+  <!-- PWA Meta Tags -->
+  <link rel="manifest" href="admin-manifest.json">
+  <meta name="theme-color" content="#d4af37">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SB Admin">
+  <link rel="apple-touch-icon" href="assets/images/admin-icon-192.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="admin-login-page">
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-logo">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <rect width="48" height="48" rx="12" fill="var(--secondary)"/>
+            <path d="M14 32V20C14 17.7909 15.7909 16 18 16H30C32.2091 16 34 17.7909 34 20V32" stroke="#0d0d0d" stroke-width="2.5" stroke-linecap="round"/>
+            <path d="M18 16V14C18 11.7909 19.7909 10 22 10H26C28.2091 10 30 11.7909 30 14V16" stroke="#0d0d0d" stroke-width="2.5" stroke-linecap="round"/>
+            <rect x="12" y="32" width="24" height="6" rx="2" fill="#0d0d0d"/>
+          </svg>
+        </div>
+        <h1 class="login-title">Sagar Bags</h1>
+        <p class="login-subtitle">Admin Panel</p>
+      </div>
+
+      <form class="login-form" id="loginForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <div class="input-wrapper">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="admin@sagarbags.com"
+              autocomplete="email"
+              required
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter admin password"
+              autocomplete="current-password"
+              required
+            >
+            <button type="button" class="toggle-password" id="togglePassword">
+              <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="eye-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <button type="submit" class="btn-login" id="loginBtn">
+          <span>Login to Dashboard</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <p>First time? Create admin user in Firebase Console</p>
+        <a href="index.html" class="back-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          Back to Website
+        </a>
+      </div>
+    </div>
+
+    <div class="login-bg-pattern"></div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="assets/js/firebase-config.js"></script>
+
+  <script>
+    // Password toggle
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const emailInput = document.getElementById('email');
+    const eyeIcon = togglePassword.querySelector('.eye-icon');
+    const eyeOffIcon = togglePassword.querySelector('.eye-off-icon');
+
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      eyeIcon.style.display = type === 'password' ? 'block' : 'none';
+      eyeOffIcon.style.display = type === 'password' ? 'none' : 'block';
+    });
+
+    // Login form with Firebase Auth
+    const loginForm = document.getElementById('loginForm');
+    const errorMessage = document.getElementById('errorMessage');
+    const loginBtn = document.getElementById('loginBtn');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      // Show loading state
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = '<span>Logging in...</span>';
+
+      try {
+        // Use adminLogin to verify admin privileges
+        const result = await FirebaseAuth.adminLogin(email, password);
+
+        if (result.success) {
+          // Redirect to dashboard
+          window.location.href = 'admin-dashboard.html';
+        } else {
+          throw new Error(result.error);
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+
+        let errorText = error.message || 'Invalid email or password.';
+        if (error.message.includes('user-not-found')) {
+          errorText = 'No admin account found with this email.';
+        } else if (error.message.includes('wrong-password')) {
+          errorText = 'Invalid password. Please try again.';
+        } else if (error.message.includes('invalid-email')) {
+          errorText = 'Invalid email format.';
+        } else if (error.message.includes('too-many-requests')) {
+          errorText = 'Too many attempts. Please try again later.';
+        } else if (error.message.includes('Access denied')) {
+          errorText = 'Access denied. This account does not have admin privileges.';
+        }
+
+        errorMessage.textContent = errorText;
+        errorMessage.classList.add('show');
+        passwordInput.classList.add('error');
+
+        setTimeout(() => {
+          errorMessage.classList.remove('show');
+          passwordInput.classList.remove('error');
+        }, 5000);
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = `<span>Login to Dashboard</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>`;
+      }
+    });
+
+    // Check if already logged in via Firebase AND is admin
+    FirebaseAuth.onAuthStateChanged(async (user) => {
+      if (user) {
+        // Verify admin status before redirect
+        const isAdmin = await FirebaseAuth.isAdmin();
+        if (isAdmin) {
+          window.location.href = 'admin-dashboard.html';
+        }
+      }
+    });
+  </script>
+</body>
+</html>

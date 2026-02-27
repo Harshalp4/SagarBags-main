@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="goldC14" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+    <linearGradient id="goldC14b" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#c9a227"/>
+      <stop offset="100%" style="stop-color:#8b6914"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Combo 14: Brush Stroke Style -->
+  <g transform="translate(6, 10)">
+    <!-- Artistic brush stroke bag shape -->
+    <path d="M12 52 Q8 36 14 24 Q20 12 32 10 Q44 8 52 20 Q60 32 56 48 Q52 60 40 62 Q28 64 16 58 Q10 54 12 52"
+          fill="url(#goldC14)" opacity="0.2" stroke="url(#goldC14)" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Brush stroke handles -->
+    <path d="M20 14 Q18 4 24 2 Q30 0 32 6" fill="none" stroke="url(#goldC14)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M44 12 Q46 4 42 2 Q38 0 36 6" fill="none" stroke="url(#goldC14)" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Ink splatter dots -->
+    <circle cx="58" cy="18" r="2" fill="url(#goldC14)" opacity="0.6"/>
+    <circle cx="62" cy="24" r="1.5" fill="url(#goldC14)" opacity="0.4"/>
+    <circle cx="6" cy="44" r="1.5" fill="url(#goldC14)" opacity="0.5"/>
+    <circle cx="10" cy="58" r="2" fill="url(#goldC14)" opacity="0.4"/>
+
+    <!-- Inner artistic line -->
+    <path d="M24 28 Q32 24 42 30 Q48 36 44 46" fill="none" stroke="url(#goldC14b)" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="82" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#goldC14)" font-weight="700">Bags</tspan></text>
+</svg>

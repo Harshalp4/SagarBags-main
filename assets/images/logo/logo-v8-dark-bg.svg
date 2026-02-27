@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <defs>
+    <linearGradient id="gold8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8c547"/>
+      <stop offset="50%" style="stop-color:#c9a227"/>
+      <stop offset="100%" style="stop-color:#a68b1f"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect x="0" y="0" width="320" height="80" rx="8" fill="#0a0a0a"/>
+
+  <!-- Infinity/Loop Handle forming SB -->
+  <g transform="translate(6, 12)">
+    <!-- Infinity loop that looks like bag handles -->
+    <path d="M20 28 C20 16 28 12 36 12 C44 12 52 16 52 28 C52 40 44 44 36 44 C28 44 20 40 20 28 Z"
+          fill="none" stroke="url(#gold8)" stroke-width="3"/>
+
+    <!-- Second loop -->
+    <path d="M36 28 C36 20 42 16 48 16 C54 16 58 22 58 28 C58 34 54 40 48 40 C42 40 36 36 36 28 Z"
+          fill="none" stroke="url(#gold8)" stroke-width="3"/>
+
+    <!-- Bag bottom hint -->
+    <path d="M16 44 L60 44 L58 54 C58 56 56 58 54 58 L22 58 C20 58 18 56 18 54 Z"
+          fill="url(#gold8)" opacity="0.2"/>
+    <path d="M16 44 L60 44 L58 54 C58 56 56 58 54 58 L22 58 C20 58 18 56 18 54 Z"
+          fill="none" stroke="url(#gold8)" stroke-width="2"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="82" y="48" font-family="Poppins, sans-serif" font-size="30" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#gold8)" font-weight="700">Bags</tspan></text>
+</svg>

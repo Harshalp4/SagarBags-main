@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="goldC3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Combo 3: Side by side - Briefcase + Tote -->
+  <g transform="translate(4, 12)">
+    <!-- Left: Briefcase (smaller) -->
+    <rect x="4" y="18" width="32" height="26" rx="3" fill="url(#goldC3)" opacity="0.2"/>
+    <rect x="4" y="18" width="32" height="26" rx="3" fill="none" stroke="url(#goldC3)" stroke-width="2.5"/>
+    <path d="M12 18 L12 12 L28 12 L28 18" fill="none" stroke="url(#goldC3)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="8" y1="32" x2="32" y2="32" stroke="url(#goldC3)" stroke-width="1.5"/>
+    <circle cx="18" cy="32" r="1.5" fill="url(#goldC3)"/>
+    <circle cx="22" cy="32" r="1.5" fill="url(#goldC3)"/>
+
+    <!-- Right: Shopping Tote (taller) -->
+    <rect x="40" y="10" width="28" height="38" rx="3" fill="url(#goldC3)" opacity="0.2"/>
+    <rect x="40" y="10" width="28" height="38" rx="3" fill="none" stroke="url(#goldC3)" stroke-width="2.5"/>
+    <path d="M48 10 L48 2 C48 -1 51 -3 54 -3 C57 -3 60 -1 60 2 L60 10" fill="none" stroke="url(#goldC3)" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="84" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#goldC3)" font-weight="700">Bags</tspan></text>
+</svg>

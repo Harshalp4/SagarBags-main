@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sagar Bags - Premium Logo Concepts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(180deg, #0a0a0a 0%, #141414 100%);
+      color: #fff;
+      padding: 50px 20px;
+      min-height: 100vh;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    h1 span { color: #c9a227; }
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 15px;
+      font-size: 1rem;
+    }
+    .badge {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .badge span {
+      background: linear-gradient(135deg, #c9a227, #a68b1f);
+      color: #000;
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .section-title {
+      text-align: center;
+      font-size: 1.3rem;
+      color: #c9a227;
+      margin: 60px 0 30px;
+      padding-top: 40px;
+      border-top: 1px solid #222;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    .logo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 30px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .logo-card {
+      background: linear-gradient(145deg, #111 0%, #0a0a0a 100%);
+      border-radius: 20px;
+      padding: 35px;
+      text-align: center;
+      border: 1px solid #1a1a1a;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .logo-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,162,39,0.3), transparent);
+    }
+    .logo-card:hover {
+      border-color: rgba(201, 162, 39, 0.4);
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(201, 162, 39, 0.1);
+    }
+    .logo-card img {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 25px;
+      border-radius: 8px;
+    }
+    .logo-number {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 0.7rem;
+      color: #444;
+      letter-spacing: 1px;
+    }
+    .logo-name {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    .logo-concept {
+      font-size: 0.85rem;
+      color: #c9a227;
+      margin-bottom: 12px;
+      font-style: italic;
+    }
+    .logo-desc {
+      font-size: 0.875rem;
+      color: #777;
+      line-height: 1.6;
+    }
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 15px;
+    }
+    .feature-tag {
+      background: rgba(201, 162, 39, 0.1);
+      border: 1px solid rgba(201, 162, 39, 0.2);
+      color: #c9a227;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      letter-spacing: 0.5px;
+    }
+    .recommendation {
+      background: linear-gradient(135deg, rgba(201,162,39,0.15) 0%, rgba(201,162,39,0.05) 100%);
+      border: 2px solid rgba(201, 162, 39, 0.4);
+    }
+    .recommendation::after {
+      content: '★ RECOMMENDED';
+      position: absolute;
+      top: 15px;
+      left: 20px;
+      font-size: 0.65rem;
+      color: #c9a227;
+      letter-spacing: 1px;
+    }
+    @media (max-width: 480px) {
+      .logo-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 1.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Sagar<span>Bags</span></h1>
+  <p class="subtitle">20 Simple & Clear Logo Designs + 18 Combo Variations</p>
+  <div class="badge"><span>Easy to Understand</span></div>
+
+  <h2 class="section-title">Simple & Clear Collection</h2>
+
+  <div class="logo-grid">
+    <div class="logo-card recommendation">
+      <span class="logo-number">C-01</span>
+      <img src="assets/images/logo/logo-clear-1.svg" alt="Clear Logo 1">
+      <div class="logo-name">Classic Shopping Bag</div>
+      <div class="logo-concept">"Instantly recognizable"</div>
+      <div class="logo-desc">Simple shopping bag icon with handles. Everyone knows what it is at first glance. Clean, professional, timeless.</div>
+      <div class="features">
+        <span class="feature-tag">Simple</span>
+        <span class="feature-tag">Clear</span>
+        <span class="feature-tag">Universal</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-02</span>
+      <img src="assets/images/logo/logo-clear-2.svg" alt="Clear Logo 2">
+      <div class="logo-name">Tote Bag</div>
+      <div class="logo-concept">"Wide & practical"</div>
+      <div class="logo-desc">Wider tote bag shape with long handles. Represents versatility and everyday use. Popular style for promotional bags.</div>
+      <div class="features">
+        <span class="feature-tag">Modern</span>
+        <span class="feature-tag">Versatile</span>
+        <span class="feature-tag">Practical</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-03</span>
+      <img src="assets/images/logo/logo-clear-3.svg" alt="Clear Logo 3">
+      <div class="logo-name">Backpack</div>
+      <div class="logo-concept">"Ready for adventure"</div>
+      <div class="logo-desc">Backpack with straps - perfect if you also make backpacks. Shows range of products. Active, youthful feel.</div>
+      <div class="features">
+        <span class="feature-tag">Active</span>
+        <span class="feature-tag">Youthful</span>
+        <span class="feature-tag">Diverse</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-04</span>
+      <img src="assets/images/logo/logo-clear-4.svg" alt="Clear Logo 4">
+      <div class="logo-name">Paper Bag with S</div>
+      <div class="logo-concept">"Brand initial"</div>
+      <div class="logo-desc">Paper shopping bag with "S" for Sagar. Combines brand identity with product type. Good for retail/shopping context.</div>
+      <div class="features">
+        <span class="feature-tag">Branded</span>
+        <span class="feature-tag">Retail</span>
+        <span class="feature-tag">Memorable</span>
+      </div>
+    </div>
+
+    <div class="logo-card recommendation">
+      <span class="logo-number">C-05</span>
+      <img src="assets/images/logo/logo-clear-5.svg" alt="Clear Logo 5">
+      <div class="logo-name">Circle Badge</div>
+      <div class="logo-concept">"Badge of quality"</div>
+      <div class="logo-desc">Bag inside a circle badge. Professional seal of quality. Works great on packaging, stamps, and business cards.</div>
+      <div class="features">
+        <span class="feature-tag">Professional</span>
+        <span class="feature-tag">Badge</span>
+        <span class="feature-tag">Versatile</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-06</span>
+      <img src="assets/images/logo/logo-clear-6.svg" alt="Clear Logo 6">
+      <div class="logo-name">Handbag / Purse</div>
+      <div class="logo-concept">"Fashion forward"</div>
+      <div class="logo-desc">Stylish handbag with clasp. More fashion-oriented. Good for premium or ladies' bags. Elegant curved handle.</div>
+      <div class="features">
+        <span class="feature-tag">Fashion</span>
+        <span class="feature-tag">Elegant</span>
+        <span class="feature-tag">Premium</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-07</span>
+      <img src="assets/images/logo/logo-clear-7.svg" alt="Clear Logo 7">
+      <div class="logo-name">Gift Bag</div>
+      <div class="logo-concept">"Perfect for gifting"</div>
+      <div class="logo-desc">Gift bag with ribbon/bow. Great for promotional and corporate gifting market. Says "we make gift bags" clearly.</div>
+      <div class="features">
+        <span class="feature-tag">Gifting</span>
+        <span class="feature-tag">Corporate</span>
+        <span class="feature-tag">Festive</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-08</span>
+      <img src="assets/images/logo/logo-clear-8.svg" alt="Clear Logo 8">
+      <div class="logo-name">SB Monogram</div>
+      <div class="logo-concept">"Bold initials"</div>
+      <div class="logo-desc">Bold SB letters in a frame. Simple text-based mark that's very readable. Can work without the icon at small sizes.</div>
+      <div class="features">
+        <span class="feature-tag">Bold</span>
+        <span class="feature-tag">Readable</span>
+        <span class="feature-tag">Text-Based</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-09</span>
+      <img src="assets/images/logo/logo-clear-9.svg" alt="Clear Logo 9">
+      <div class="logo-name">Eco / Jute Bag</div>
+      <div class="logo-concept">"Sustainable choice"</div>
+      <div class="logo-desc">Eco-friendly jute bag with leaf symbol. Perfect if sustainability is part of your brand. Appeals to eco-conscious clients.</div>
+      <div class="features">
+        <span class="feature-tag">Eco-Friendly</span>
+        <span class="feature-tag">Sustainable</span>
+        <span class="feature-tag">Natural</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-10</span>
+      <img src="assets/images/logo/logo-clear-10.svg" alt="Clear Logo 10">
+      <div class="logo-name">Minimal Handle</div>
+      <div class="logo-concept">"Ultra minimal"</div>
+      <div class="logo-desc">Just the iconic bag handle curve - extremely minimal. For those who want absolute simplicity. Very modern aesthetic.</div>
+      <div class="features">
+        <span class="feature-tag">Minimal</span>
+        <span class="feature-tag">Abstract</span>
+        <span class="feature-tag">Modern</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-11</span>
+      <img src="assets/images/logo/logo-clear-11.svg" alt="Clear Logo 11">
+      <div class="logo-name">Duffle / Gym Bag</div>
+      <div class="logo-concept">"Ready to go"</div>
+      <div class="logo-desc">Rounded duffle bag with zipper detail. Perfect for sports/gym bags. Active, dynamic feel with travel appeal.</div>
+      <div class="features">
+        <span class="feature-tag">Sports</span>
+        <span class="feature-tag">Travel</span>
+        <span class="feature-tag">Active</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-12</span>
+      <img src="assets/images/logo/logo-clear-12.svg" alt="Clear Logo 12">
+      <div class="logo-name">Drawstring Pouch</div>
+      <div class="logo-concept">"Pull and go"</div>
+      <div class="logo-desc">Drawstring bag with cord toggles. Popular for promotional giveaways and events. Casual, youthful style.</div>
+      <div class="features">
+        <span class="feature-tag">Promotional</span>
+        <span class="feature-tag">Events</span>
+        <span class="feature-tag">Casual</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-13</span>
+      <img src="assets/images/logo/logo-clear-13.svg" alt="Clear Logo 13">
+      <div class="logo-name">Messenger / Sling Bag</div>
+      <div class="logo-concept">"Cross-body style"</div>
+      <div class="logo-desc">Messenger bag with shoulder strap. Professional yet casual. Good for corporate and everyday use.</div>
+      <div class="features">
+        <span class="feature-tag">Professional</span>
+        <span class="feature-tag">Crossbody</span>
+        <span class="feature-tag">Urban</span>
+      </div>
+    </div>
+
+    <div class="logo-card recommendation">
+      <span class="logo-number">C-14</span>
+      <img src="assets/images/logo/logo-clear-14.svg" alt="Clear Logo 14">
+      <div class="logo-name">Laptop / Briefcase</div>
+      <div class="logo-concept">"Business ready"</div>
+      <div class="logo-desc">Professional laptop/document bag. Corporate appeal with zipper details. Ideal for business clients.</div>
+      <div class="features">
+        <span class="feature-tag">Corporate</span>
+        <span class="feature-tag">Professional</span>
+        <span class="feature-tag">Business</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-15</span>
+      <img src="assets/images/logo/logo-clear-15.svg" alt="Clear Logo 15">
+      <div class="logo-name">Wine / Bottle Bag</div>
+      <div class="logo-concept">"Carry with care"</div>
+      <div class="logo-desc">Tall narrow bag for bottles. Great if you make wine bags or specialty packaging. Premium gifting feel.</div>
+      <div class="features">
+        <span class="feature-tag">Wine</span>
+        <span class="feature-tag">Specialty</span>
+        <span class="feature-tag">Premium</span>
+      </div>
+    </div>
+
+    <div class="logo-card recommendation">
+      <span class="logo-number">C-16</span>
+      <img src="assets/images/logo/logo-clear-16.svg" alt="Clear Logo 16">
+      <div class="logo-name">Two Bags Together</div>
+      <div class="logo-concept">"Variety & choice"</div>
+      <div class="logo-desc">Two overlapping bags showing variety. Says "we make many types of bags". Shows range of products.</div>
+      <div class="features">
+        <span class="feature-tag">Variety</span>
+        <span class="feature-tag">Range</span>
+        <span class="feature-tag">Choice</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-17</span>
+      <img src="assets/images/logo/logo-clear-17.svg" alt="Clear Logo 17">
+      <div class="logo-name">Bag with Star</div>
+      <div class="logo-concept">"Quality assured"</div>
+      <div class="logo-desc">Shopping bag with star emblem. Represents quality and excellence. Star symbolizes premium service.</div>
+      <div class="features">
+        <span class="feature-tag">Quality</span>
+        <span class="feature-tag">Premium</span>
+        <span class="feature-tag">Excellence</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-18</span>
+      <img src="assets/images/logo/logo-clear-18.svg" alt="Clear Logo 18">
+      <div class="logo-name">Hexagon Frame</div>
+      <div class="logo-concept">"Structured & modern"</div>
+      <div class="logo-desc">Bag inside hexagon frame. Geometric, tech-forward look. Works well for modern brand identity.</div>
+      <div class="features">
+        <span class="feature-tag">Geometric</span>
+        <span class="feature-tag">Modern</span>
+        <span class="feature-tag">Tech</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-19</span>
+      <img src="assets/images/logo/logo-clear-19.svg" alt="Clear Logo 19">
+      <div class="logo-name">Bag with Price Tag</div>
+      <div class="logo-concept">"Shop & save"</div>
+      <div class="logo-desc">Shopping bag with attached price tag. Perfect for retail focus. Suggests deals and shopping experience.</div>
+      <div class="features">
+        <span class="feature-tag">Retail</span>
+        <span class="feature-tag">Shopping</span>
+        <span class="feature-tag">Value</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">C-20</span>
+      <img src="assets/images/logo/logo-clear-20.svg" alt="Clear Logo 20">
+      <div class="logo-name">Bucket Bag</div>
+      <div class="logo-concept">"Fashion forward"</div>
+      <div class="logo-desc">Trendy bucket bag style. Fashion-oriented design with curved lines. Stylish and contemporary appeal.</div>
+      <div class="features">
+        <span class="feature-tag">Fashion</span>
+        <span class="feature-tag">Trendy</span>
+        <span class="feature-tag">Contemporary</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">C-14 + C-16 Combinations</h2>
+
+  <div class="logo-grid">
+    <div class="logo-card recommendation">
+      <span class="logo-number">COMBO-1</span>
+      <img src="assets/images/logo/logo-combo-1.svg" alt="Combo Logo 1">
+      <div class="logo-name">Briefcase + Shopping Bag</div>
+      <div class="logo-concept">"Business meets retail"</div>
+      <div class="logo-desc">Professional briefcase in front with shopping bag behind. Shows both corporate and retail capabilities. Best of both worlds.</div>
+      <div class="features">
+        <span class="feature-tag">Corporate</span>
+        <span class="feature-tag">Retail</span>
+        <span class="feature-tag">Versatile</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">COMBO-2</span>
+      <img src="assets/images/logo/logo-combo-2.svg" alt="Combo Logo 2">
+      <div class="logo-name">Stacked Briefcases</div>
+      <div class="logo-concept">"Double the business"</div>
+      <div class="logo-desc">Two briefcases with perspective tilt. Emphasizes volume and bulk orders. Professional corporate focus.</div>
+      <div class="features">
+        <span class="feature-tag">Bulk Orders</span>
+        <span class="feature-tag">Corporate</span>
+        <span class="feature-tag">Volume</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">COMBO-3</span>
+      <img src="assets/images/logo/logo-combo-3.svg" alt="Combo Logo 3">
+      <div class="logo-name">Side by Side</div>
+      <div class="logo-concept">"Equal partners"</div>
+      <div class="logo-desc">Briefcase and tote standing side by side. Clean, balanced composition. Shows product range clearly.</div>
+      <div class="features">
+        <span class="feature-tag">Balanced</span>
+        <span class="feature-tag">Range</span>
+        <span class="feature-tag">Clean</span>
+      </div>
+    </div>
+
+    <div class="logo-card recommendation">
+      <span class="logo-number">COMBO-4</span>
+      <img src="assets/images/logo/logo-combo-4.svg" alt="Combo Logo 4">
+      <div class="logo-name">Three Bag Collection</div>
+      <div class="logo-concept">"Full product range"</div>
+      <div class="logo-desc">Tote, briefcase, and backpack in a row. Shows complete product diversity. Briefcase takes center stage.</div>
+      <div class="features">
+        <span class="feature-tag">Diversity</span>
+        <span class="feature-tag">Complete</span>
+        <span class="feature-tag">Collection</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">COMBO-5</span>
+      <img src="assets/images/logo/logo-combo-5.svg" alt="Combo Logo 5">
+      <div class="logo-name">Layered Overlap</div>
+      <div class="logo-concept">"Depth & variety"</div>
+      <div class="logo-desc">Wide briefcase overlapping tall tote. Creates depth and visual interest. Premium clasp detail adds sophistication.</div>
+      <div class="features">
+        <span class="feature-tag">Premium</span>
+        <span class="feature-tag">Depth</span>
+        <span class="feature-tag">Sophisticated</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">COMBO-6</span>
+      <img src="assets/images/logo/logo-combo-6.svg" alt="Combo Logo 6">
+      <div class="logo-name">Interlocked Abstract</div>
+      <div class="logo-concept">"Modern fusion"</div>
+      <div class="logo-desc">Minimalist overlapping shapes. Abstract yet recognizable. Premium zipper detail. Contemporary and clean.</div>
+      <div class="features">
+        <span class="feature-tag">Abstract</span>
+        <span class="feature-tag">Modern</span>
+        <span class="feature-tag">Minimal</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">COMBO-7</span>
+      <img src="assets/images/logo/logo-combo-7.svg" alt="Combo Logo 7">
+      <div class="logo-name">S-Formation</div>
+      <div class="logo-concept">"Sagar in shape"</div>
+      <div class="logo-desc">Three bags arranged in S-shape for Sagar. Creative brand integration. Briefcase takes center stage with supporting bags.</div>
+      <div class="features">
+        <span class="feature-tag">Creative</span>
+        <span class="feature-tag">Brand</span>
+        <span class="feature-tag">Unique</span>
+      </div>
+    </div>
+
+    <div class="logo-card recommendation">
+      <span class="logo-number">COMBO-8</span>
+      <img src="assets/images/logo/logo-combo-8.svg" alt="Combo Logo 8">
+      <div class="logo-name">Shield of Quality</div>
+      <div class="logo-concept">"Protected excellence"</div>
+      <div class="logo-desc">Briefcase inside shield with star. Symbolizes trust, quality guarantee, and premium service. Very professional.</div>
+      <div class="features">
+        <span class="feature-tag">Trust</span>
+        <span class="feature-tag">Premium</span>
+        <span class="feature-tag">Quality</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">COMBO-9</span>
+      <img src="assets/images/logo/logo-combo-9.svg" alt="Combo Logo 9">
+      <div class="logo-name">Connected Flow</div>
+      <div class="logo-concept">"Seamless service"</div>
+      <div class="logo-desc">Shopping bag and briefcase connected by flowing ribbon. Represents smooth operations and connected services.</div>
+      <div class="features">
+        <span class="feature-tag">Connected</span>
+        <span class="feature-tag">Flow</span>
+        <span class="feature-tag">Service</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">COMBO-10</span>
+      <img src="assets/images/logo/logo-combo-10.svg" alt="Combo Logo 10">
+      <div class="logo-name">Diamond Stack</div>
+      <div class="logo-concept">"Vertical excellence"</div>
+      <div class="logo-desc">Main briefcase with mini bags above and below. Diamond-like arrangement. Shows growth and variety.</div>
+      <div class="features">
+        <span class="feature-tag">Growth</span>
+        <span class="feature-tag">Variety</span>
+        <span class="feature-tag">Elegant</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">COMBO-11</span>
+      <img src="assets/images/logo/logo-combo-11.svg" alt="Combo Logo 11">
+      <div class="logo-name">Infinity Loop</div>
+      <div class="logo-concept">"Endless possibilities"</div>
+      <div class="logo-desc">Two bags within infinity symbol. Represents endless options and continuous service. Modern and conceptual.</div>
+      <div class="features">
+        <span class="feature-tag">Infinite</span>
+        <span class="feature-tag">Modern</span>
+        <span class="feature-tag">Conceptual</span>
+      </div>
+    </div>
+
+    <div class="logo-card recommendation">
+      <span class="logo-number">COMBO-12</span>
+      <img src="assets/images/logo/logo-combo-12.svg" alt="Combo Logo 12">
+      <div class="logo-name">Crown Premium</div>
+      <div class="logo-concept">"Royal quality"</div>
+      <div class="logo-desc">Briefcase with crown on top. Ultimate premium positioning. Says "king of bags" without words. Luxurious feel.</div>
+      <div class="features">
+        <span class="feature-tag">Royal</span>
+        <span class="feature-tag">Luxury</span>
+        <span class="feature-tag">Premium</span>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Artistic Collection</h2>
+
+  <div class="logo-grid">
+    <div class="logo-card recommendation">
+      <span class="logo-number">COMBO-13</span>
+      <img src="assets/images/logo/logo-combo-13.svg" alt="Combo Logo 13">
+      <div class="logo-name">Origami Fold</div>
+      <div class="logo-concept">"Paper art meets bags"</div>
+      <div class="logo-desc">Japanese origami-inspired folded bag. Geometric facets with shine effects. Artistic, unique, and memorable.</div>
+      <div class="features">
+        <span class="feature-tag">Origami</span>
+        <span class="feature-tag">Artistic</span>
+        <span class="feature-tag">Unique</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">COMBO-14</span>
+      <img src="assets/images/logo/logo-combo-14.svg" alt="Combo Logo 14">
+      <div class="logo-name">Brush Stroke</div>
+      <div class="logo-concept">"Hand-painted feel"</div>
+      <div class="logo-desc">Artistic brush stroke style with ink splatter. Organic, hand-crafted aesthetic. Perfect for artisan bags.</div>
+      <div class="features">
+        <span class="feature-tag">Handcrafted</span>
+        <span class="feature-tag">Organic</span>
+        <span class="feature-tag">Artisan</span>
+      </div>
+    </div>
+
+    <div class="logo-card recommendation">
+      <span class="logo-number">COMBO-15</span>
+      <img src="assets/images/logo/logo-combo-15.svg" alt="Combo Logo 15">
+      <div class="logo-name">Art Deco Frame</div>
+      <div class="logo-concept">"1920s elegance"</div>
+      <div class="logo-desc">Geometric Art Deco style with hexagonal frame. Classic elegance with golden era vibes. Timeless luxury.</div>
+      <div class="features">
+        <span class="feature-tag">Art Deco</span>
+        <span class="feature-tag">Vintage</span>
+        <span class="feature-tag">Elegant</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">COMBO-16</span>
+      <img src="assets/images/logo/logo-combo-16.svg" alt="Combo Logo 16">
+      <div class="logo-name">Continuous Line</div>
+      <div class="logo-concept">"One stroke art"</div>
+      <div class="logo-desc">Single continuous line drawing style. Minimalist yet artistic. Modern illustration aesthetic with flourish.</div>
+      <div class="features">
+        <span class="feature-tag">Line Art</span>
+        <span class="feature-tag">Minimal</span>
+        <span class="feature-tag">Modern</span>
+      </div>
+    </div>
+
+    <div class="logo-card recommendation">
+      <span class="logo-number">COMBO-17</span>
+      <img src="assets/images/logo/logo-combo-17.svg" alt="Combo Logo 17">
+      <div class="logo-name">3D Isometric</div>
+      <div class="logo-concept">"Dimensional depth"</div>
+      <div class="logo-desc">3D isometric perspective bag. Adds depth and dimension. Modern tech-forward look with artistic flair.</div>
+      <div class="features">
+        <span class="feature-tag">3D</span>
+        <span class="feature-tag">Isometric</span>
+        <span class="feature-tag">Modern</span>
+      </div>
+    </div>
+
+    <div class="logo-card">
+      <span class="logo-number">COMBO-18</span>
+      <img src="assets/images/logo/logo-combo-18.svg" alt="Combo Logo 18">
+      <div class="logo-name">Mandala Circle</div>
+      <div class="logo-concept">"Sacred geometry"</div>
+      <div class="logo-desc">Bag within mandala-inspired circular pattern. Spiritual, balanced, and harmonious. Indian artistic heritage.</div>
+      <div class="features">
+        <span class="feature-tag">Mandala</span>
+        <span class="feature-tag">Spiritual</span>
+        <span class="feature-tag">Heritage</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

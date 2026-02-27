@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="goldC2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Combo 2: Two briefcases stacked perspective -->
+  <g transform="translate(8, 10)">
+    <!-- Back briefcase (tilted/smaller) -->
+    <g transform="rotate(-8, 45, 35)">
+      <rect x="24" y="18" width="40" height="30" rx="3" fill="url(#goldC2)" opacity="0.1"/>
+      <rect x="24" y="18" width="40" height="30" rx="3" fill="none" stroke="url(#goldC2)" stroke-width="2"/>
+      <path d="M36 18 L36 12 L52 12 L52 18" fill="none" stroke="url(#goldC2)" stroke-width="2" stroke-linecap="round"/>
+    </g>
+
+    <!-- Front briefcase -->
+    <rect x="4" y="22" width="48" height="36" rx="4" fill="url(#goldC2)" opacity="0.2"/>
+    <rect x="4" y="22" width="48" height="36" rx="4" fill="none" stroke="url(#goldC2)" stroke-width="3"/>
+    <path d="M18 22 L18 12 L38 12 L38 22" fill="none" stroke="url(#goldC2)" stroke-width="3" stroke-linecap="round"/>
+    <line x1="10" y1="42" x2="46" y2="42" stroke="url(#goldC2)" stroke-width="2"/>
+    <circle cx="25" cy="42" r="2.5" fill="url(#goldC2)"/>
+    <circle cx="31" cy="42" r="2.5" fill="url(#goldC2)"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="78" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#goldC2)" font-weight="700">Bags</tspan></text>
+</svg>

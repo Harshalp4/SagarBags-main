@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="goldC6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Combo 6: Interlocked bags - abstract/minimal -->
+  <g transform="translate(8, 14)">
+    <!-- Abstract overlapping shapes -->
+    <!-- Back shape - tote outline -->
+    <path d="M30 10 L30 48 Q30 52 34 52 L58 52 Q62 52 62 48 L62 10"
+          fill="url(#goldC6)" opacity="0.1" stroke="url(#goldC6)" stroke-width="2"/>
+    <path d="M38 10 L38 2 C38 -1 42 -3 46 -3 C50 -3 54 -1 54 2 L54 10"
+          fill="none" stroke="url(#goldC6)" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Front shape - briefcase -->
+    <rect x="2" y="16" width="46" height="32" rx="4" fill="url(#goldC6)" opacity="0.2"/>
+    <rect x="2" y="16" width="46" height="32" rx="4" fill="none" stroke="url(#goldC6)" stroke-width="3"/>
+    <path d="M16 16 L16 8 L34 8 L34 16" fill="none" stroke="url(#goldC6)" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Premium zipper detail -->
+    <line x1="8" y1="34" x2="42" y2="34" stroke="url(#goldC6)" stroke-width="2"/>
+    <rect x="21" y="31" width="8" height="6" rx="1" fill="url(#goldC6)" opacity="0.6"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="82" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#goldC6)" font-weight="700">Bags</tspan></text>
+</svg>

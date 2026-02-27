@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="goldC11" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Combo 11: Infinity loop with bags -->
+  <g transform="translate(6, 14)">
+    <!-- Infinity path -->
+    <path d="M16 26 C16 14 28 14 34 26 C40 38 52 38 52 26 C52 14 40 14 34 26 C28 38 16 38 16 26"
+          fill="none" stroke="url(#goldC11)" stroke-width="2" opacity="0.3"/>
+
+    <!-- Left bag in loop -->
+    <rect x="8" y="16" width="22" height="24" rx="3" fill="url(#goldC11)" opacity="0.2"/>
+    <rect x="8" y="16" width="22" height="24" rx="3" fill="none" stroke="url(#goldC11)" stroke-width="2.5"/>
+    <path d="M14 16 L14 8 C14 5 16 3 19 3 C22 3 24 5 24 8 L24 16" fill="none" stroke="url(#goldC11)" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- Right briefcase in loop -->
+    <rect x="38" y="18" width="26" height="20" rx="3" fill="url(#goldC11)" opacity="0.2"/>
+    <rect x="38" y="18" width="26" height="20" rx="3" fill="none" stroke="url(#goldC11)" stroke-width="2.5"/>
+    <path d="M46 18 L46 12 L56 12 L56 18" fill="none" stroke="url(#goldC11)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="42" y1="28" x2="60" y2="28" stroke="url(#goldC11)" stroke-width="1.5"/>
+    <circle cx="49" cy="28" r="1.5" fill="url(#goldC11)"/>
+    <circle cx="53" cy="28" r="1.5" fill="url(#goldC11)"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="82" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#goldC11)" font-weight="700">Bags</tspan></text>
+</svg>

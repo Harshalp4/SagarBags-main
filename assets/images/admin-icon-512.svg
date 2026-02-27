@@ -1,0 +1,29 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="#1a1a2e"/>
+
+  <!-- Gradient Definition -->
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#d4af37"/>
+      <stop offset="50%" style="stop-color:#f4d03f"/>
+      <stop offset="100%" style="stop-color:#d4af37"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Bag Icon -->
+  <g transform="translate(96, 80)">
+    <!-- Bag Body -->
+    <path d="M64 256V128C64 104.804 82.804 86 106 86H214C237.196 86 256 104.804 256 128V256" stroke="url(#goldGradient)" stroke-width="20" stroke-linecap="round"/>
+
+    <!-- Bag Handles -->
+    <path d="M106 86V64C106 40.804 124.804 22 148 22H172C195.196 22 214 40.804 214 64V86" stroke="url(#goldGradient)" stroke-width="20" stroke-linecap="round"/>
+
+    <!-- Bag Base -->
+    <rect x="42" y="256" width="236" height="44" rx="14" fill="url(#goldGradient)"/>
+  </g>
+
+  <!-- Admin Badge -->
+  <circle cx="408" cy="408" r="72" fill="#d4af37"/>
+  <text x="408" y="430" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#1a1a2e" text-anchor="middle">A</text>
+</svg>

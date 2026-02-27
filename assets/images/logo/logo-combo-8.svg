@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="goldC8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0d860"/>
+      <stop offset="100%" style="stop-color:#c9a227"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Dark Background -->
+  <rect width="340" height="80" rx="6" fill="#0a0a0a"/>
+
+  <!-- Combo 8: Briefcase inside shield/badge -->
+  <g transform="translate(8, 6)">
+    <!-- Shield outline -->
+    <path d="M32 2 L56 8 L56 40 C56 52 44 62 32 66 C20 62 8 52 8 40 L8 8 Z"
+          fill="url(#goldC8)" opacity="0.1" stroke="url(#goldC8)" stroke-width="2.5"/>
+
+    <!-- Briefcase inside shield -->
+    <rect x="16" y="20" width="32" height="22" rx="3" fill="url(#goldC8)" opacity="0.3"/>
+    <rect x="16" y="20" width="32" height="22" rx="3" fill="none" stroke="url(#goldC8)" stroke-width="2"/>
+    <path d="M24 20 L24 14 L40 14 L40 20" fill="none" stroke="url(#goldC8)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="20" y1="32" x2="44" y2="32" stroke="url(#goldC8)" stroke-width="1.5"/>
+    <circle cx="30" cy="32" r="1.5" fill="url(#goldC8)"/>
+    <circle cx="34" cy="32" r="1.5" fill="url(#goldC8)"/>
+
+    <!-- Star at top -->
+    <polygon points="32,6 34,11 39,11 35,14 37,19 32,16 27,19 29,14 25,11 30,11"
+             fill="url(#goldC8)"/>
+  </g>
+
+  <!-- Text: SagarBags -->
+  <text x="78" y="50" font-family="Poppins, sans-serif" font-size="32" font-weight="600" fill="#ffffff">Sagar<tspan fill="url(#goldC8)" font-weight="700">Bags</tspan></text>
+</svg>
