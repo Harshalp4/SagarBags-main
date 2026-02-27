@@ -2745,7 +2745,7 @@ p {
   height: 55px;
   min-width: 130px;
   padding: 0.5rem 1.25rem;
-  background: rgba(250, 250, 250, 0.95);
+  background: rgba(255, 255, 255, 0.95);
   border-radius: var(--radius-lg);
   transition: all var(--transition);
 }
@@ -2765,6 +2765,18 @@ p {
 
 .client-logo-item:hover img {
   transform: scale(1.05);
+}
+
+/* Dark background logos - keep their dark bg visible */
+.client-logo-item.dark-bg {
+  background: transparent;
+  padding: 0.25rem;
+}
+
+.client-logo-item.dark-bg img {
+  max-height: 50px;
+  max-width: 140px;
+  border-radius: var(--radius-md);
 }
 
 /* Text-only client names */
