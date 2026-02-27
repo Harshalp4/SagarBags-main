@@ -990,8 +990,23 @@
         }
       ];
 
-      // Use hardcoded testimonials directly
-      let testimonials = defaultTestimonials;
+      let testimonials = [];
+
+      try {
+        // Try to load from Firebase
+        if (typeof FirebaseDB !== 'undefined') {
+          const firebaseTestimonials = await FirebaseDB.getTestimonials();
+          // Filter only published testimonials
+          testimonials = firebaseTestimonials.filter(t => t.status === 'published');
+        }
+      } catch (error) {
+        console.error('Error loading testimonials:', error);
+      }
+
+      // Use default testimonials if none from Firebase
+      if (testimonials.length === 0) {
+        testimonials = defaultTestimonials;
+      }
 
       // Sort by order number (lower number first)
       testimonials.sort((a, b) => (a.order || 99) - (b.order || 99));
