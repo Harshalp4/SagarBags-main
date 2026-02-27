@@ -197,8 +197,11 @@
               <div class="client-logo-item dark-bg">
                 <img src="assets/images/clients/bit2sky.jpg" alt="Bit2Sky">
               </div>
-              <div class="client-logo-item text-only">
-                <span class="client-text-logo">Pankaj Classes</span>
+              <div class="client-logo-item">
+                <img src="assets/images/clients/dhanvarsha.jpg" alt="Dhanvarsha Nagari Sahakari Patsanstha">
+              </div>
+              <div class="client-logo-item">
+                <img src="assets/images/clients/ninaidevi.jpg" alt="Shri Ninaidevi Sahakari Patsanstha">
               </div>
               <!-- Duplicate set for seamless loop -->
               <div class="client-logo-item">
@@ -222,8 +225,11 @@
               <div class="client-logo-item dark-bg">
                 <img src="assets/images/clients/bit2sky.jpg" alt="Bit2Sky">
               </div>
-              <div class="client-logo-item text-only">
-                <span class="client-text-logo">Pankaj Classes</span>
+              <div class="client-logo-item">
+                <img src="assets/images/clients/dhanvarsha.jpg" alt="Dhanvarsha Nagari Sahakari Patsanstha">
+              </div>
+              <div class="client-logo-item">
+                <img src="assets/images/clients/ninaidevi.jpg" alt="Shri Ninaidevi Sahakari Patsanstha">
               </div>
             </div>
           </div>
@@ -955,45 +961,10 @@
       const carousel = document.getElementById('testimonialsCarousel');
       if (!carousel) return;
 
-      // Default testimonials (fallback)
-      const defaultTestimonials = [
-        {
-          name: 'Mr. Sunil Shinde',
-          company: 'Tanvi Engineering Pvt Ltd',
-          position: 'Founder & CEO',
-          quote: 'Outstanding quality and exceptional service! Sagar Bags has been our trusted partner. Attention to detail and timely delivery - the best!',
-          rating: 5,
-          image: 'assets/images/testimonials/sunil-shinde.jpg'
-        },
-        {
-          name: 'Mr. Udayraj Pandey',
-          company: 'EYERO INDIA PVT LTD',
-          position: 'Director',
-          quote: 'Excellent quality bags with great finishing. Sagar Bags has been our go-to supplier for corporate gifting. Their commitment to quality and timely delivery is truly commendable!',
-          rating: 5,
-          image: 'assets/images/testimonials/udayraj-pandey.jpg'
-        },
-        {
-          name: 'Mr. Vilas Dalvi',
-          company: 'DMK JAOLI BANK',
-          quote: 'Great experience working with Sagar Bags. Professional service, quality products, and on-time delivery. Highly recommended for corporate bag requirements!',
-          rating: 5,
-          image: ''
-        },
-        {
-          name: 'Mr. Aabasaheb Shedge',
-          company: 'Ninayidevi Sahakari Patsanstha Maryadit, Mumbai',
-          position: 'Chairman',
-          quote: 'Sagar Bags delivered exceptional quality bags for our organization. Their professionalism and dedication to customer satisfaction is remarkable. Truly a reliable partner!',
-          rating: 5,
-          image: ''
-        }
-      ];
-
       let testimonials = [];
 
       try {
-        // Try to load from Firebase
+        // Load from Firebase
         if (typeof FirebaseDB !== 'undefined') {
           const firebaseTestimonials = await FirebaseDB.getTestimonials();
           // Filter only published testimonials
@@ -1003,9 +974,10 @@
         console.error('Error loading testimonials:', error);
       }
 
-      // Use default testimonials if none from Firebase
+      // Show message if no testimonials
       if (testimonials.length === 0) {
-        testimonials = defaultTestimonials;
+        carousel.innerHTML = '<p style="text-align:center;color:#888;padding:2rem;">No testimonials available.</p>';
+        return;
       }
 
       // Sort by order number (lower number first)
