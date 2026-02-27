@@ -678,15 +678,15 @@ p {
 
 /* -------------------- Section Styles -------------------- */
 .section {
-  padding: 5rem 0;
-}
-
-.section-sm {
   padding: 3rem 0;
 }
 
+.section-sm {
+  padding: 2rem 0;
+}
+
 .section-lg {
-  padding: 7rem 0;
+  padding: 4rem 0;
 }
 
 .section-title {
@@ -700,11 +700,11 @@ p {
   color: var(--text-secondary);
   text-align: center;
   max-width: 600px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 2rem;
 }
 
 .section-header {
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
 }
 
 /* -------------------- Background Colors -------------------- */
@@ -3020,7 +3020,7 @@ p {
 
 /* Featured Product 360° Section */
 .featured-360-section {
-  padding: 5rem 0;
+  padding: 3rem 0;
   background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
 }
 
@@ -3411,7 +3411,7 @@ p {
 
 /* -------------------- USP Section -------------------- */
 .usp-section {
-  padding: 4rem 0;
+  padding: 2.5rem 0;
   background-color: var(--bg-card);
   margin-top: -60px;
   position: relative;
@@ -3470,7 +3470,7 @@ p {
 
 /* -------------------- Categories Section -------------------- */
 .categories-section {
-  padding: 5rem 0;
+  padding: 3rem 0;
   background-color: var(--gray-50);
 }
 
@@ -3543,7 +3543,7 @@ p {
 
 /* -------------------- Why Choose Us Section -------------------- */
 .why-section {
-  padding: 5rem 0;
+  padding: 3rem 0;
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
 }
 
@@ -3678,8 +3678,8 @@ p {
 /* -------------------- Testimonials Section -------------------- */
 /* -------------------- Testimonials Section V2 -------------------- */
 .testimonials-section {
-  padding: 5rem 0 4rem;
-  margin-bottom: 3rem;
+  padding: 3rem 0 2.5rem;
+  margin-bottom: 2rem;
   background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-dark) 100%);
   overflow: hidden;
 }
@@ -3698,14 +3698,14 @@ p {
 .testimonials-section .section-title {
   color: var(--text-primary);
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
   font-size: 2.5rem;
 }
 
 /* Carousel Wrapper */
 .testimonials-carousel-wrapper {
   overflow: hidden;
-  padding: 70px 0 1rem;
+  padding: 40px 0 1rem;
   margin: 0 -1rem;
 }
 
@@ -3916,15 +3916,15 @@ p {
 
 /* -------------------- CTA Section -------------------- */
 .cta-section {
-  padding: 5rem 0;
-  margin-bottom: 3rem;
+  padding: 3rem 0;
+  margin-bottom: 2rem;
   background-color: var(--bg-dark);
 }
 
 .cta-container {
   background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-dark) 100%);
   border-radius: var(--radius-xl);
-  padding: 4rem;
+  padding: 2.5rem;
   text-align: center;
 }
 
@@ -4008,8 +4008,8 @@ p {
 .footer {
   background-color: var(--bg-card);
   color: var(--text-secondary);
-  padding-top: 5rem;
-  margin-top: 2rem;
+  padding-top: 3rem;
+  margin-top: 1.5rem;
   border-top: 1px solid var(--border-gold);
 }
 
@@ -4557,7 +4557,7 @@ p {
 
 /* -------------------- Page Header (for inner pages) -------------------- */
 .page-header {
-  padding: 4rem 0 2rem;
+  padding: 2.5rem 0 1.5rem;
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   text-align: center;
   margin-top: var(--header-height);
@@ -5811,7 +5811,7 @@ img[loading="lazy"]:not([src]) {
 
 /* -------------------- Legal Pages Styles -------------------- */
 .legal-page {
-  padding: 4rem 0;
+  padding: 2.5rem 0;
   background: var(--background);
   min-height: calc(100vh - 200px);
 }
