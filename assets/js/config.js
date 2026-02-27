@@ -18,15 +18,15 @@ const APP_CONFIG = {
   company: {
     name: 'Sagar Bags',
     tagline: 'Premium Bag Manufacturer',
-    phone: ['+91 98707 92636', '+91 86930 00756'],
+    phone: ['+91 86930 00756', '+91 98695 09070', '+91 98707 02636'],
     email: 'info@sagarbags.com',
-    whatsapp: '+919870792636',
+    whatsapp: '+918693000756',
     address: {
-      line1: 'Sagar Compound, M. Phule Road',
-      line2: 'Mulund West',
+      line1: 'Shop A-1, Laxmi Niwas CHS',
+      line2: 'N M Joshi Marg, Byculla West',
       city: 'Mumbai',
       state: 'Maharashtra',
-      pincode: '400080',
+      pincode: '400027',
       country: 'India'
     }
   },
