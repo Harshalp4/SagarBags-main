@@ -2743,26 +2743,21 @@ p {
   align-items: center;
   justify-content: center;
   height: 60px;
-  min-width: 140px;
-  padding: 0.5rem 1.25rem;
-  background: #ffffff;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle);
+  min-width: 120px;
+  padding: 0.5rem 1rem;
   transition: all var(--transition);
 }
 
 .client-logo-item:hover {
-  border-color: var(--secondary);
-  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
 .client-logo-item img {
-  max-height: 45px;
-  max-width: 120px;
+  max-height: 50px;
+  max-width: 140px;
   width: auto;
   object-fit: contain;
-  opacity: 0.8;
+  opacity: 0.85;
   transition: all var(--transition);
 }
 
@@ -2770,18 +2765,29 @@ p {
   opacity: 1;
 }
 
+/* Text-only client names get the box style */
+.client-logo-item.text-only {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  padding: 0.5rem 1.25rem;
+}
+
+.client-logo-item.text-only:hover {
+  border-color: var(--secondary);
+  box-shadow: var(--shadow-md);
+}
+
 .client-text-logo {
   font-size: 0.85rem;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--gray-300);
   white-space: nowrap;
-  opacity: 0.7;
   transition: all var(--transition);
 }
 
 .client-logo-item:hover .client-text-logo {
   color: var(--secondary);
-  opacity: 1;
 }
 
 @keyframes marqueeScroll {
