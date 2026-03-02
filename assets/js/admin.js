@@ -93,6 +93,7 @@ const AdminApp = {
     const titles = {
       dashboard: 'Dashboard',
       products: 'Products',
+      'bulk-upload': 'Bulk Upload',
       categories: 'Categories',
       testimonials: 'Testimonials',
       homepage: 'Homepage Settings',
@@ -141,6 +142,12 @@ const AdminApp = {
         break;
       case 'settings':
         this.loadSettings();
+        break;
+      case 'bulk-upload':
+        // Bulk upload has its own init in admin-dashboard.html
+        if (typeof BulkUpload !== 'undefined') {
+          BulkUpload.init();
+        }
         break;
     }
   },

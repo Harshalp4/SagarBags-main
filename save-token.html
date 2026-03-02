@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Save SAS Token</title>
+  <style>
+    body { font-family: Arial; padding: 50px; text-align: center; background: #1a1a2e; color: #fff; }
+    .success { color: #0f0; font-size: 20px; }
+    .error { color: #f44; }
+    input { padding: 10px; width: 300px; margin: 10px; background: #0f3460; border: 1px solid #333; color: #fff; border-radius: 6px; }
+    button { padding: 12px 24px; background: #2d8a7b; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 5px; }
+    .card { background: #16213e; padding: 30px; border-radius: 12px; max-width: 500px; margin: 0 auto; }
+    .divider { margin: 20px 0; border-top: 1px solid #333; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Save SAS Token</h1>
+
+    <div class="divider"></div>
+
+    <h3>Option 1: Login with existing account</h3>
+    <input type="email" id="email" placeholder="Admin Email" value="admin@sagarbags.com"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="loginAndSave()">Login & Save Token</button>
+
+    <div class="divider"></div>
+
+    <h3>Option 2: Create new admin & save</h3>
+    <input type="email" id="newEmail" placeholder="New Admin Email"><br>
+    <input type="password" id="newPassword" placeholder="New Password (min 6 chars)"><br>
+    <button onclick="createAndSave()">Create Account & Save Token</button>
+
+    <div class="divider"></div>
+
+    <h3>Option 3: Reset password</h3>
+    <input type="email" id="resetEmail" placeholder="Email" value="admin@sagarbags.com"><br>
+    <button onclick="resetPassword()">Send Password Reset Email</button>
+
+    <p id="status" style="margin-top: 20px;"></p>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAW2A_Y4VoKX3y5AzTjGVhqX9ZnXXTWcUY",
+      authDomain: "sagar-bags.firebaseapp.com",
+      projectId: "sagar-bags",
+      storageBucket: "sagar-bags.firebasestorage.app",
+      messagingSenderId: "655112218935",
+      appId: "1:655112218935:web:9167abdd24b228c08792b2"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    const sasToken = "sv=2024-11-04&ss=bfqt&srt=co&sp=rwdlacupiytfx&se=2027-12-31T16:09:28Z&st=2026-03-02T07:54:28Z&spr=https&sig=z%2FCEiQXe%2F7RRo9fJZ1yVGYIlE1xL9wobSHH0WDCNsKU%3D";
+
+    async function saveToken() {
+      await db.collection('settings').doc('azure_sas_token').set({ value: sasToken });
+      await db.collection('settings').doc('azureSasToken').set({ value: sasToken });
+    }
+
+    async function loginAndSave() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const status = document.getElementById('status');
+
+      status.innerHTML = 'Logging in...';
+
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        status.innerHTML = 'Saving token...';
+        await saveToken();
+        status.innerHTML = '<span class="success">✓ SAS Token saved successfully!<br><br>You can now use the bulk upload tool.</span>';
+      } catch (error) {
+        status.innerHTML = '<span class="error">Error: ' + error.message + '</span>';
+      }
+    }
+
+    async function createAndSave() {
+      const email = document.getElementById('newEmail').value;
+      const password = document.getElementById('newPassword').value;
+      const status = document.getElementById('status');
+
+      if (!email || !password) {
+        status.innerHTML = '<span class="error">Please enter email and password</span>';
+        return;
+      }
+
+      status.innerHTML = 'Creating account...';
+
+      try {
+        await auth.createUserWithEmailAndPassword(email, password);
+        status.innerHTML = 'Saving token...';
+        await saveToken();
+        status.innerHTML = '<span class="success">✓ Account created & SAS Token saved!<br><br>You can now use the bulk upload tool.</span>';
+      } catch (error) {
+        status.innerHTML = '<span class="error">Error: ' + error.message + '</span>';
+      }
+    }
+
+    async function resetPassword() {
+      const email = document.getElementById('resetEmail').value;
+      const status = document.getElementById('status');
+
+      try {
+        await auth.sendPasswordResetEmail(email);
+        status.innerHTML = '<span class="success">✓ Password reset email sent to ' + email + '<br>Check your inbox and reset password, then login.</span>';
+      } catch (error) {
+        status.innerHTML = '<span class="error">Error: ' + error.message + '</span>';
+      }
+    }
+  </script>
+</body>
+</html>

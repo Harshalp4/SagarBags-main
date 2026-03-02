@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Set Azure SAS Token</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; background: #1a1a2e; color: #fff; }
+    h1 { color: #2d8a7b; }
+    .card { background: #16213e; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+    input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #333; border-radius: 6px; background: #0f3460; color: #fff; font-size: 14px; }
+    button { padding: 12px 24px; background: #2d8a7b; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+    button:hover { background: #236b5f; }
+    .success { color: #0f0; }
+    .error { color: #f44; }
+    .info { color: #888; margin-top: 10px; }
+    code { background: #0f3460; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Set Azure SAS Token</h1>
+
+  <div class="card">
+    <h3>Option 1: Paste SAS Token directly</h3>
+    <p class="info">If you have the SAS token, paste it here:</p>
+    <textarea id="sasToken" rows="3" placeholder="sv=2022-11-02&ss=b&srt=sco&sp=rwdlacyx..."></textarea>
+    <button onclick="saveSasToken()">Save SAS Token to Firebase</button>
+    <p id="status"></p>
+  </div>
+
+  <div class="card">
+    <h3>Option 2: Generate from Azure Portal</h3>
+    <ol style="line-height: 2;">
+      <li>Go to <a href="https://portal.azure.com" target="_blank" style="color: #2d8a7b;">Azure Portal</a></li>
+      <li>Navigate to Storage Account: <code>sagarbags</code></li>
+      <li>Click <strong>"Shared access signature"</strong> in left menu</li>
+      <li>Set permissions: <strong>Read, Write, Create, Add</strong></li>
+      <li>Set allowed services: <strong>Blob</strong></li>
+      <li>Set expiry date (e.g., 1 year from now)</li>
+      <li>Click <strong>"Generate SAS and connection string"</strong></li>
+      <li>Copy the <strong>SAS token</strong> (starts with <code>sv=</code>)</li>
+      <li>Paste above and click Save</li>
+    </ol>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAW2A_Y4VoKX3y5AzTjGVhqX9ZnXXTWcUY",
+      authDomain: "sagar-bags.firebaseapp.com",
+      projectId: "sagar-bags",
+      storageBucket: "sagar-bags.firebasestorage.app",
+      messagingSenderId: "655112218935",
+      appId: "1:655112218935:web:9167abdd24b228c08792b2"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function saveSasToken() {
+      const token = document.getElementById('sasToken').value.trim();
+      const status = document.getElementById('status');
+
+      if (!token) {
+        status.innerHTML = '<span class="error">Please enter a SAS token</span>';
+        return;
+      }
+
+      try {
+        // Save to Firebase settings
+        await db.collection('settings').doc('azure_sas_token').set({ value: token });
+
+        // Also save with alternate key for compatibility
+        await db.collection('settings').doc('azureSasToken').set({ value: token });
+
+        status.innerHTML = '<span class="success">✓ SAS Token saved successfully! You can now use the bulk upload tool.</span>';
+      } catch (error) {
+        status.innerHTML = `<span class="error">Error: ${error.message}</span>`;
+      }
+    }
+
+    // Check if token exists
+    async function checkToken() {
+      try {
+        const doc = await db.collection('settings').doc('azure_sas_token').get();
+        if (doc.exists && doc.data().value) {
+          document.getElementById('status').innerHTML = '<span class="success">✓ SAS Token already configured</span>';
+          document.getElementById('sasToken').value = doc.data().value;
+        }
+      } catch (e) {}
+    }
+    checkToken();
+  </script>
+</body>
+</html>

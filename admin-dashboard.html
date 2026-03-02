@@ -66,6 +66,14 @@
             </svg>
             <span>Products</span>
           </div>
+          <div class="nav-item" data-section="bulk-upload">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span>Bulk Upload</span>
+          </div>
           <div class="nav-item" data-section="categories">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
@@ -288,6 +296,85 @@
                 <!-- Filled by JS -->
               </tbody>
             </table>
+          </div>
+        </section>
+
+        <!-- Bulk Upload Section -->
+        <section class="admin-section" id="section-bulk-upload">
+          <div class="admin-card" style="margin-bottom: 1.5rem;">
+            <div class="card-header">
+              <h3 class="card-title">Bulk Product Upload</h3>
+            </div>
+            <div class="card-body">
+              <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Upload multiple product images at once. Select images, group them into products, and upload to Azure Blob Storage.
+              </p>
+
+              <!-- Step 1: Select Images -->
+              <div class="bulk-upload-step">
+                <h4 style="margin-bottom: 1rem; color: var(--text-primary);">
+                  <span class="step-number">1</span> Select Images
+                </h4>
+                <div class="bulk-image-upload-area" id="bulkImageUploadArea">
+                  <input type="file" id="bulkImageInput" accept="image/*" multiple hidden>
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                  </svg>
+                  <p>Click to select images or drag & drop</p>
+                  <small>Select all product images from your folder</small>
+                </div>
+                <div id="selectedImagesCount" style="margin-top: 1rem; color: var(--text-muted); display: none;">
+                  <span id="imageCount">0</span> images selected
+                </div>
+              </div>
+
+              <!-- Step 2: Preview & Group Images -->
+              <div class="bulk-upload-step" id="step2Container" style="display: none; margin-top: 2rem;">
+                <h4 style="margin-bottom: 1rem; color: var(--text-primary);">
+                  <span class="step-number">2</span> Group Images into Products
+                </h4>
+                <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.875rem;">
+                  Click on images to select them, then click "Create Product" to group them together.
+                </p>
+
+                <div class="bulk-actions" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <button class="btn btn-secondary btn-sm" onclick="BulkUpload.selectAll()">Select All</button>
+                  <button class="btn btn-secondary btn-sm" onclick="BulkUpload.deselectAll()">Deselect All</button>
+                  <button class="btn btn-primary btn-sm" onclick="BulkUpload.createProductFromSelected()" id="createProductBtn" disabled>
+                    Create Product from Selected (<span id="selectedCount">0</span>)
+                  </button>
+                </div>
+
+                <div class="bulk-images-grid" id="bulkImagesGrid">
+                  <!-- Images will be rendered here -->
+                </div>
+              </div>
+
+              <!-- Step 3: Products to Upload -->
+              <div class="bulk-upload-step" id="step3Container" style="display: none; margin-top: 2rem;">
+                <h4 style="margin-bottom: 1rem; color: var(--text-primary);">
+                  <span class="step-number">3</span> Review Products
+                </h4>
+
+                <div id="productsToUpload">
+                  <!-- Product cards will be rendered here -->
+                </div>
+
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem; align-items: center;">
+                  <button class="btn btn-primary" onclick="BulkUpload.uploadAll()" id="uploadAllBtn" disabled>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/>
+                      <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    Upload All Products (<span id="productCount">0</span>)
+                  </button>
+                  <span id="uploadProgress" style="color: var(--text-muted);"></span>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -1100,6 +1187,183 @@
       color: var(--text-muted);
       font-size: 0.8125rem;
     }
+
+    /* Bulk Upload Styles */
+    .bulk-upload-step {
+      padding: 1.5rem;
+      background: var(--bg-elevated);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: var(--secondary);
+      color: #000;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+
+    .bulk-image-upload-area {
+      border: 2px dashed var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .bulk-image-upload-area:hover {
+      border-color: var(--secondary);
+      background: rgba(212, 175, 55, 0.05);
+    }
+
+    .bulk-image-upload-area.dragover {
+      border-color: var(--secondary);
+      background: rgba(212, 175, 55, 0.1);
+    }
+
+    .bulk-image-upload-area svg {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .bulk-image-upload-area p {
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .bulk-image-upload-area small {
+      color: var(--text-muted);
+    }
+
+    .bulk-images-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 1rem;
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 0.5rem;
+    }
+
+    .bulk-image-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .bulk-image-item:hover {
+      transform: scale(1.02);
+    }
+
+    .bulk-image-item.selected {
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+    }
+
+    .bulk-image-item.used {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .bulk-image-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .bulk-image-item .check-mark {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      background: var(--secondary);
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bulk-image-item.selected .check-mark {
+      display: flex;
+    }
+
+    .bulk-image-item .used-label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-size: 0.625rem;
+      padding: 4px;
+      text-align: center;
+      display: none;
+    }
+
+    .bulk-image-item.used .used-label {
+      display: block;
+    }
+
+    .product-card-preview {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .product-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .product-card-images {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .product-card-images img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .product-card-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .product-card-form .form-group {
+      margin-bottom: 0;
+    }
+
+    .product-card-form .full-width {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 768px) {
+      .product-card-form {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 
   <script>
@@ -1344,6 +1608,419 @@
         PWAInstall.init();
       });
     }
+  </script>
+
+  <!-- Bulk Upload Script -->
+  <script>
+    const BulkUpload = {
+      images: [],
+      selectedImages: new Set(),
+      products: [],
+      sasToken: null,
+      storageAccount: 'sagarbags',
+      containerName: 'product-images',
+
+      init() {
+        const uploadArea = document.getElementById('bulkImageUploadArea');
+        const input = document.getElementById('bulkImageInput');
+
+        if (!uploadArea || !input) return;
+
+        uploadArea.addEventListener('click', () => input.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+          uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+          e.preventDefault();
+          uploadArea.classList.remove('dragover');
+          if (e.dataTransfer.files.length) {
+            this.handleFiles(e.dataTransfer.files);
+          }
+        });
+
+        input.addEventListener('change', (e) => {
+          if (e.target.files.length) {
+            this.handleFiles(e.target.files);
+          }
+        });
+
+        // Load SAS token
+        this.loadSasToken();
+      },
+
+      async loadSasToken() {
+        try {
+          const doc = await firebase.firestore().collection('settings').doc('azure_sas_token').get();
+          if (doc.exists && doc.data().value) {
+            this.sasToken = doc.data().value;
+          }
+        } catch (e) {
+          console.error('Error loading SAS token:', e);
+        }
+      },
+
+      handleFiles(files) {
+        const imageFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+
+        imageFiles.forEach(file => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.images.push({
+              id: Date.now() + Math.random(),
+              file: file,
+              preview: e.target.result,
+              name: file.name,
+              used: false
+            });
+            this.renderImages();
+          };
+          reader.readAsDataURL(file);
+        });
+
+        document.getElementById('selectedImagesCount').style.display = 'block';
+        document.getElementById('step2Container').style.display = 'block';
+      },
+
+      renderImages() {
+        const grid = document.getElementById('bulkImagesGrid');
+        const countEl = document.getElementById('imageCount');
+
+        countEl.textContent = this.images.length;
+
+        grid.innerHTML = this.images.map(img => `
+          <div class="bulk-image-item ${this.selectedImages.has(img.id) ? 'selected' : ''} ${img.used ? 'used' : ''}"
+               data-id="${img.id}" onclick="BulkUpload.toggleSelect('${img.id}')">
+            <img src="${img.preview}" alt="${img.name}">
+            <div class="check-mark">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <div class="used-label">Added to product</div>
+          </div>
+        `).join('');
+
+        this.updateSelectedCount();
+      },
+
+      toggleSelect(id) {
+        id = parseFloat(id);
+        const img = this.images.find(i => i.id === id);
+        if (img && img.used) return;
+
+        if (this.selectedImages.has(id)) {
+          this.selectedImages.delete(id);
+        } else {
+          this.selectedImages.add(id);
+        }
+        this.renderImages();
+      },
+
+      selectAll() {
+        this.images.forEach(img => {
+          if (!img.used) this.selectedImages.add(img.id);
+        });
+        this.renderImages();
+      },
+
+      deselectAll() {
+        this.selectedImages.clear();
+        this.renderImages();
+      },
+
+      updateSelectedCount() {
+        const count = this.selectedImages.size;
+        document.getElementById('selectedCount').textContent = count;
+        document.getElementById('createProductBtn').disabled = count === 0;
+      },
+
+      createProductFromSelected() {
+        if (this.selectedImages.size === 0) return;
+
+        const selectedImgs = this.images.filter(img => this.selectedImages.has(img.id));
+
+        // Auto-detect category from filename
+        const category = this.detectCategory(selectedImgs[0].name);
+        const description = this.generateDescription(category);
+
+        const product = {
+          id: Date.now(),
+          images: selectedImgs,
+          name: '',
+          category: category,
+          description: description,
+          minOrder: 100
+        };
+
+        this.products.push(product);
+
+        // Mark images as used
+        selectedImgs.forEach(img => {
+          img.used = true;
+        });
+
+        this.selectedImages.clear();
+        this.renderImages();
+        this.renderProducts();
+
+        document.getElementById('step3Container').style.display = 'block';
+      },
+
+      detectCategory(filename) {
+        const lower = filename.toLowerCase();
+        if (lower.includes('tote')) return 'tote-bags';
+        if (lower.includes('laptop')) return 'laptop-bags';
+        if (lower.includes('backpack') || lower.includes('bag pack')) return 'backpacks';
+        if (lower.includes('duffle') || lower.includes('duffel')) return 'duffle-bags';
+        if (lower.includes('jute')) return 'jute-bags';
+        if (lower.includes('canvas')) return 'canvas-bags';
+        if (lower.includes('leather')) return 'leather-bags';
+        if (lower.includes('cotton')) return 'cotton-bags';
+        if (lower.includes('cooler') || lower.includes('lunch')) return 'cooler-bags';
+        if (lower.includes('travel')) return 'travel-bags';
+        if (lower.includes('gym') || lower.includes('sports')) return 'gym-bags';
+        if (lower.includes('messenger')) return 'messenger-bags';
+        if (lower.includes('drawstring')) return 'drawstring-bags';
+        if (lower.includes('pouch')) return 'pouches';
+        if (lower.includes('shopping')) return 'shopping-bags';
+        if (lower.includes('conference') || lower.includes('seminar')) return 'conference-bags';
+        if (lower.includes('non woven') || lower.includes('nonwoven')) return 'non-woven-bags';
+        return 'promotional-bags';
+      },
+
+      generateDescription(category) {
+        const descriptions = {
+          'tote-bags': 'Premium quality tote bag perfect for shopping, daily use, and promotional events. Durable construction with reinforced handles.',
+          'laptop-bags': 'Professional laptop bag with padded compartment for device protection. Multiple pockets for accessories and documents.',
+          'backpacks': 'Ergonomic backpack with comfortable padded straps. Spacious main compartment with multiple organizational pockets.',
+          'duffle-bags': 'Versatile duffle bag ideal for travel, gym, or weekend getaways. Sturdy construction with adjustable shoulder strap.',
+          'jute-bags': 'Eco-friendly jute bag made from natural fibers. Perfect for sustainable branding and corporate gifting.',
+          'canvas-bags': 'Heavy-duty canvas bag built to last. Classic design suitable for daily use and promotional purposes.',
+          'leather-bags': 'Premium leather bag with elegant finish. Executive style perfect for corporate gifting and business use.',
+          'cotton-bags': 'Soft cotton bag ideal for shopping and daily errands. Eco-friendly and reusable with customizable print area.',
+          'cooler-bags': 'Insulated cooler bag to keep contents fresh. Perfect for picnics, lunch, and outdoor activities.',
+          'travel-bags': 'Spacious travel bag designed for convenience. Multiple compartments for organized packing.',
+          'gym-bags': 'Sporty gym bag with separate shoe compartment. Water-resistant material for active lifestyles.',
+          'messenger-bags': 'Stylish messenger bag with adjustable strap. Perfect for professionals and students.',
+          'drawstring-bags': 'Lightweight drawstring bag for events and giveaways. Easy to customize with your logo.',
+          'pouches': 'Compact pouch for organizing essentials. Versatile design for multiple uses.',
+          'shopping-bags': 'Reusable shopping bag with sturdy handles. Eco-conscious choice for retail and promotional use.',
+          'conference-bags': 'Professional conference bag for seminars and events. Document-friendly design with pen loops.',
+          'non-woven-bags': 'Cost-effective non-woven bag for bulk promotional needs. Lightweight yet durable construction.',
+          'promotional-bags': 'Customizable promotional bag perfect for brand visibility. Quality construction with ample print space.'
+        };
+        return descriptions[category] || descriptions['promotional-bags'];
+      },
+
+      renderProducts() {
+        const container = document.getElementById('productsToUpload');
+        document.getElementById('productCount').textContent = this.products.length;
+        document.getElementById('uploadAllBtn').disabled = this.products.length === 0;
+
+        container.innerHTML = this.products.map((product, index) => `
+          <div class="product-card-preview" data-product-id="${product.id}">
+            <div class="product-card-header">
+              <h5 style="margin: 0; color: var(--text-primary);">Product ${index + 1}</h5>
+              <button class="btn btn-danger btn-sm" onclick="BulkUpload.removeProduct(${product.id})">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                </svg>
+                Remove
+              </button>
+            </div>
+            <div class="product-card-images">
+              ${product.images.map(img => `<img src="${img.preview}" alt="">`).join('')}
+            </div>
+            <div class="product-card-form">
+              <div class="form-group">
+                <label>Product Name *</label>
+                <input type="text" class="form-input" value="${product.name}"
+                       onchange="BulkUpload.updateProduct(${product.id}, 'name', this.value)"
+                       placeholder="Enter product name" required>
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select class="form-select" onchange="BulkUpload.updateProduct(${product.id}, 'category', this.value)">
+                  <option value="tote-bags" ${product.category === 'tote-bags' ? 'selected' : ''}>Tote Bags</option>
+                  <option value="laptop-bags" ${product.category === 'laptop-bags' ? 'selected' : ''}>Laptop Bags</option>
+                  <option value="backpacks" ${product.category === 'backpacks' ? 'selected' : ''}>Backpacks</option>
+                  <option value="duffle-bags" ${product.category === 'duffle-bags' ? 'selected' : ''}>Duffle Bags</option>
+                  <option value="jute-bags" ${product.category === 'jute-bags' ? 'selected' : ''}>Jute Bags</option>
+                  <option value="canvas-bags" ${product.category === 'canvas-bags' ? 'selected' : ''}>Canvas Bags</option>
+                  <option value="leather-bags" ${product.category === 'leather-bags' ? 'selected' : ''}>Leather Bags</option>
+                  <option value="cotton-bags" ${product.category === 'cotton-bags' ? 'selected' : ''}>Cotton Bags</option>
+                  <option value="cooler-bags" ${product.category === 'cooler-bags' ? 'selected' : ''}>Cooler Bags</option>
+                  <option value="travel-bags" ${product.category === 'travel-bags' ? 'selected' : ''}>Travel Bags</option>
+                  <option value="gym-bags" ${product.category === 'gym-bags' ? 'selected' : ''}>Gym Bags</option>
+                  <option value="messenger-bags" ${product.category === 'messenger-bags' ? 'selected' : ''}>Messenger Bags</option>
+                  <option value="drawstring-bags" ${product.category === 'drawstring-bags' ? 'selected' : ''}>Drawstring Bags</option>
+                  <option value="pouches" ${product.category === 'pouches' ? 'selected' : ''}>Pouches</option>
+                  <option value="shopping-bags" ${product.category === 'shopping-bags' ? 'selected' : ''}>Shopping Bags</option>
+                  <option value="conference-bags" ${product.category === 'conference-bags' ? 'selected' : ''}>Conference Bags</option>
+                  <option value="non-woven-bags" ${product.category === 'non-woven-bags' ? 'selected' : ''}>Non-Woven Bags</option>
+                  <option value="promotional-bags" ${product.category === 'promotional-bags' ? 'selected' : ''}>Promotional Bags</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Min Order Qty</label>
+                <input type="number" class="form-input" value="${product.minOrder}"
+                       onchange="BulkUpload.updateProduct(${product.id}, 'minOrder', parseInt(this.value))" min="1">
+              </div>
+              <div class="form-group full-width">
+                <label>Description</label>
+                <textarea class="form-textarea" rows="2"
+                          onchange="BulkUpload.updateProduct(${product.id}, 'description', this.value)">${product.description}</textarea>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      },
+
+      updateProduct(id, field, value) {
+        const product = this.products.find(p => p.id === id);
+        if (product) {
+          product[field] = value;
+          if (field === 'category') {
+            product.description = this.generateDescription(value);
+            this.renderProducts();
+          }
+        }
+      },
+
+      removeProduct(id) {
+        const product = this.products.find(p => p.id === id);
+        if (product) {
+          // Mark images as unused
+          product.images.forEach(img => {
+            const original = this.images.find(i => i.id === img.id);
+            if (original) original.used = false;
+          });
+        }
+        this.products = this.products.filter(p => p.id !== id);
+        this.renderImages();
+        this.renderProducts();
+      },
+
+      async uploadAll() {
+        if (!this.sasToken) {
+          AdminApp.showToast('SAS Token not found. Please set it in Settings.', 'error');
+          return;
+        }
+
+        // Validate all products have names
+        const invalid = this.products.find(p => !p.name.trim());
+        if (invalid) {
+          AdminApp.showToast('Please enter names for all products', 'error');
+          return;
+        }
+
+        const overlay = document.getElementById('loadingOverlay');
+        const loadingText = document.getElementById('loadingText');
+        overlay.style.display = 'flex';
+
+        let uploaded = 0;
+        const total = this.products.length;
+
+        try {
+          for (const product of this.products) {
+            loadingText.textContent = `Uploading ${++uploaded}/${total}: ${product.name}...`;
+
+            // Upload images to Azure
+            const imageUrls = [];
+            for (const img of product.images) {
+              const url = await this.uploadImageToAzure(img.file, product.name);
+              if (url) imageUrls.push(url);
+            }
+
+            if (imageUrls.length === 0) {
+              console.error('No images uploaded for:', product.name);
+              continue;
+            }
+
+            // Create product in Firebase
+            const productData = {
+              name: product.name,
+              category: product.category,
+              description: product.description,
+              shortDescription: product.description.substring(0, 100) + '...',
+              minOrder: product.minOrder,
+              images: imageUrls,
+              status: 'active',
+              features: [
+                'Premium quality material',
+                'Custom branding available',
+                'Bulk order discounts'
+              ],
+              colors: ['black', 'navy', 'grey'],
+              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            await firebase.firestore().collection('products').add(productData);
+          }
+
+          overlay.style.display = 'none';
+          AdminApp.showToast(`Successfully uploaded ${total} products!`, 'success');
+
+          // Reset
+          this.images = [];
+          this.selectedImages.clear();
+          this.products = [];
+          this.renderImages();
+          this.renderProducts();
+          document.getElementById('step2Container').style.display = 'none';
+          document.getElementById('step3Container').style.display = 'none';
+          document.getElementById('selectedImagesCount').style.display = 'none';
+
+        } catch (error) {
+          overlay.style.display = 'none';
+          console.error('Upload error:', error);
+          AdminApp.showToast('Error uploading: ' + error.message, 'error');
+        }
+      },
+
+      async uploadImageToAzure(file, productName) {
+        const safeName = productName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const timestamp = Date.now();
+        const ext = file.name.split('.').pop();
+        const blobName = `${safeName}-${timestamp}-${Math.random().toString(36).substr(2, 5)}.${ext}`;
+
+        const url = `https://${this.storageAccount}.blob.core.windows.net/${this.containerName}/${blobName}?${this.sasToken}`;
+
+        try {
+          const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+              'x-ms-blob-type': 'BlockBlob',
+              'Content-Type': file.type
+            },
+            body: file
+          });
+
+          if (response.ok) {
+            return `https://${this.storageAccount}.blob.core.windows.net/${this.containerName}/${blobName}`;
+          } else {
+            console.error('Azure upload failed:', response.status);
+            return null;
+          }
+        } catch (e) {
+          console.error('Azure upload error:', e);
+          return null;
+        }
+      }
+    };
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      BulkUpload.init();
+    });
   </script>
 </body>
 </html>

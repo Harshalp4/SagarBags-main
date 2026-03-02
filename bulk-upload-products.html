@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bulk Upload Products - Sagar Bags</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 20px;
+      background: #1a1a2e;
+      color: #fff;
+      min-height: 100vh;
+    }
+    h1 { color: #2d8a7b; margin-bottom: 10px; }
+    h2 { color: #fff; margin: 20px 0 10px; }
+    .subtitle { color: #888; margin-bottom: 20px; }
+
+    .card {
+      background: #16213e;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* Image Grid */
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .image-item {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.3s;
+    }
+    .image-item:hover { border-color: #2d8a7b; }
+    .image-item.selected { border-color: #0f0; }
+    .image-item img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    .image-item .check {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 24px;
+      height: 24px;
+      background: #0f0;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-weight: bold;
+    }
+    .image-item.selected .check { display: flex; }
+
+    /* Product Form */
+    .product-form {
+      background: #0f3460;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .product-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .product-images-preview {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+    }
+    .product-images-preview img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
+    .form-group { flex: 1; }
+    .form-group label { display: block; margin-bottom: 5px; color: #aaa; font-size: 14px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #333;
+      border-radius: 6px;
+      background: #1a1a2e;
+      color: #fff;
+      font-size: 14px;
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    /* Buttons */
+    button {
+      padding: 12px 24px;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    .btn-primary { background: #2d8a7b; color: white; }
+    .btn-primary:hover { background: #236b5f; }
+    .btn-success { background: #28a745; color: white; }
+    .btn-danger { background: #dc3545; color: white; font-size: 12px; padding: 8px 16px; }
+    .btn-secondary { background: #6c757d; color: white; }
+    .btn-outline { background: transparent; border: 2px solid #2d8a7b; color: #2d8a7b; }
+
+    /* Status */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-pending { background: #ffc107; color: #000; }
+    .status-uploading { background: #17a2b8; color: #fff; }
+    .status-done { background: #28a745; color: #fff; }
+    .status-error { background: #dc3545; color: #fff; }
+
+    /* Log */
+    #log {
+      background: #000;
+      border-radius: 8px;
+      padding: 15px;
+      font-family: monospace;
+      font-size: 13px;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+    .log-success { color: #0f0; }
+    .log-error { color: #f44; }
+    .log-info { color: #0af; }
+
+    /* File Input */
+    .file-input-wrapper {
+      border: 2px dashed #444;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .file-input-wrapper:hover { border-color: #2d8a7b; background: rgba(45,138,123,0.1); }
+    .file-input-wrapper input { display: none; }
+
+    .hidden { display: none; }
+    .action-bar {
+      position: sticky;
+      bottom: 0;
+      background: #1a1a2e;
+      padding: 15px 0;
+      border-top: 1px solid #333;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    #products-list { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Sagar Bags - Product Upload Tool</h1>
+  <p class="subtitle">Upload multiple products with images to Azure & Firebase</p>
+
+  <!-- Login Section -->
+  <div class="card" id="loginSection">
+    <h2>🔐 Admin Login Required</h2>
+    <p style="color: #888; margin-bottom: 15px;">Please login to upload products</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" value="admin@sagarbags.com" placeholder="admin@sagarbags.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter password">
+      </div>
+    </div>
+    <button class="btn-primary" onclick="loginAdmin()">Login</button>
+    <span id="loginStatus" style="margin-left: 15px; color: #888;"></span>
+  </div>
+
+  <!-- Main Content (hidden until logged in) -->
+  <div id="mainContent" class="hidden">
+
+  <!-- Step 1: Select Images -->
+  <div class="card" id="step1">
+    <h2>Step 1: Select All Images</h2>
+    <div class="file-input-wrapper" onclick="document.getElementById('folderInput').click()">
+      <input type="file" id="folderInput" webkitdirectory multiple accept="image/*">
+      <p style="font-size: 18px; margin-bottom: 10px;">📁 Click to select product images folder</p>
+      <p style="color: #888;">Select: /Users/harshal/Desktop/logoclient/product images</p>
+    </div>
+  </div>
+
+  <!-- Step 2: View All Images -->
+  <div class="card hidden" id="step2">
+    <h2>Step 2: Select Images for a Product</h2>
+    <p style="color: #888; margin-bottom: 15px;">Click images that belong to the SAME product, then click "Create Product"</p>
+    <div class="image-grid" id="imageGrid"></div>
+    <div style="margin-top: 15px;">
+      <button class="btn-primary" onclick="createProductFromSelected()">Create Product from Selected Images</button>
+      <button class="btn-secondary" onclick="clearSelection()">Clear Selection</button>
+      <span style="margin-left: 15px; color: #888;" id="selectedCount">0 images selected</span>
+    </div>
+  </div>
+
+  <!-- Step 3: Products List -->
+  <div class="card hidden" id="step3">
+    <h2>Step 3: Products to Upload (<span id="productCount">0</span>)</h2>
+    <div id="products-list"></div>
+  </div>
+
+  <!-- Action Bar -->
+  <div class="action-bar hidden" id="actionBar">
+    <button class="btn-success" onclick="uploadAllProducts()">🚀 Upload All Products to Azure & Firebase</button>
+    <button class="btn-secondary" onclick="location.reload()">🔄 Reset</button>
+  </div>
+
+  <!-- Log -->
+  <div class="card" style="margin-top: 20px;">
+    <h2>Upload Log</h2>
+    <div id="log"></div>
+  </div>
+
+  </div> <!-- End mainContent -->
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAW2A_Y4VoKX3y5AzTjGVhqX9ZnXXTWcUY",
+      authDomain: "sagar-bags.firebaseapp.com",
+      projectId: "sagar-bags",
+      storageBucket: "sagar-bags.firebasestorage.app",
+      messagingSenderId: "655112218935",
+      appId: "1:655112218935:web:9167abdd24b228c08792b2"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+
+    // Azure config
+    const azureConfig = {
+      accountName: 'sagarbags',
+      containerName: 'product-images'
+    };
+
+    // State
+    let allImages = [];
+    let selectedImages = [];
+    let products = [];
+    let sasToken = '';
+    let productIdCounter = 1;
+
+    // Descriptions based on category (using short category IDs)
+    const descriptions = {
+      'travel': 'Premium quality travel bag with spacious compartments, durable fabric, and comfortable handles. Perfect for weekend trips and short travels. Custom branding available.',
+      'trolley': 'Heavy-duty trolley bag with smooth rolling wheels, extendable handle, and multiple pockets. Ideal for business trips and vacations. Customizable with your logo.',
+      'duffle': 'Stylish duffle bag made from high-quality material. Features large main compartment, side pockets, and adjustable shoulder strap. Great for gym or travel.',
+      'backpack': 'Ergonomic backpack with padded straps, laptop compartment, and multiple organizer pockets. Perfect for students, professionals, and daily use. Custom printing available.',
+      'laptop': 'Professional laptop bag with padded protection, organized compartments, and sleek design. Fits up to 15.6" laptops. Ideal for corporate gifting.',
+      'handbag': 'Elegant ladies handbag with premium finish, multiple compartments, and stylish design. Perfect for daily use and special occasions.',
+      'shopping': 'Eco-friendly shopping bag made from durable non-woven fabric. Reusable, washable, and customizable with your brand logo.',
+      'promotional': 'Custom promotional bag perfect for events, exhibitions, and marketing campaigns. Available in various sizes and colors with full branding options.',
+      'jute': 'Eco-friendly jute bag with natural finish. Sustainable, durable, and perfect for grocery shopping or promotional use. Customizable.',
+      'corporate': 'Premium corporate bag designed for professional gifting. High-quality materials with subtle branding options. Perfect for conferences and client gifts.',
+      'tote': 'Versatile tote bag with spacious interior and sturdy handles. Perfect for shopping, daily use, and promotional events. Customizable.',
+      'canvas': 'Durable canvas bag with classic design. Sturdy construction perfect for everyday use and branding.',
+      'nonwoven': 'Lightweight non-woven bag ideal for retail and promotional use. Cost-effective and fully customizable.'
+    };
+
+    // Log function
+    function log(message, type = 'info') {
+      const logDiv = document.getElementById('log');
+      const p = document.createElement('p');
+      p.className = `log-${type}`;
+      p.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logDiv.appendChild(p);
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    // Get SAS token
+    async function getSasToken() {
+      try {
+        const doc = await db.collection('settings').doc('azureSasToken').get();
+        if (doc.exists) {
+          sasToken = doc.data().value;
+          log('SAS token retrieved', 'success');
+          return true;
+        }
+        log('SAS token not found. Set it in admin dashboard.', 'error');
+        return false;
+      } catch (error) {
+        log(`Error: ${error.message}`, 'error');
+        return false;
+      }
+    }
+
+    // Upload to Azure
+    async function uploadToAzure(file) {
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substring(2, 8);
+      const ext = file.name.split('.').pop().toLowerCase();
+      const fileName = `${timestamp}_${random}.${ext}`;
+      const cleanToken = sasToken.startsWith('?') ? sasToken.substring(1) : sasToken;
+      const blobUrl = `https://${azureConfig.accountName}.blob.core.windows.net/${azureConfig.containerName}/${fileName}?${cleanToken}`;
+
+      const response = await fetch(blobUrl, {
+        method: 'PUT',
+        headers: {
+          'x-ms-blob-type': 'BlockBlob',
+          'x-ms-version': '2022-11-02',
+          'Content-Type': file.type || 'image/jpeg'
+        },
+        body: file
+      });
+
+      if (!response.ok) throw new Error(`Upload failed: ${response.statusText}`);
+      return `https://${azureConfig.accountName}.blob.core.windows.net/${azureConfig.containerName}/${fileName}`;
+    }
+
+    // Handle folder selection
+    document.getElementById('folderInput').addEventListener('change', (e) => {
+      const files = Array.from(e.target.files).filter(f => f.type.startsWith('image/'));
+      log(`Found ${files.length} images`, 'info');
+
+      allImages = files.map((file, index) => ({
+        id: index,
+        file: file,
+        url: URL.createObjectURL(file),
+        used: false
+      }));
+
+      renderImageGrid();
+      document.getElementById('step2').classList.remove('hidden');
+    });
+
+    // Render image grid
+    function renderImageGrid() {
+      const grid = document.getElementById('imageGrid');
+      grid.innerHTML = '';
+
+      allImages.filter(img => !img.used).forEach(img => {
+        const div = document.createElement('div');
+        div.className = `image-item ${selectedImages.includes(img.id) ? 'selected' : ''}`;
+        div.onclick = () => toggleImage(img.id);
+        div.innerHTML = `
+          <img src="${img.url}" alt="Product image">
+          <div class="check">✓</div>
+        `;
+        grid.appendChild(div);
+      });
+
+      updateSelectedCount();
+    }
+
+    // Toggle image selection
+    function toggleImage(id) {
+      const idx = selectedImages.indexOf(id);
+      if (idx > -1) {
+        selectedImages.splice(idx, 1);
+      } else {
+        selectedImages.push(id);
+      }
+      renderImageGrid();
+    }
+
+    // Update selected count
+    function updateSelectedCount() {
+      document.getElementById('selectedCount').textContent = `${selectedImages.length} images selected`;
+    }
+
+    // Clear selection
+    function clearSelection() {
+      selectedImages = [];
+      renderImageGrid();
+    }
+
+    // Create product from selected images
+    function createProductFromSelected() {
+      if (selectedImages.length === 0) {
+        alert('Please select at least one image');
+        return;
+      }
+
+      const images = selectedImages.map(id => allImages.find(img => img.id === id));
+
+      // Mark images as used
+      selectedImages.forEach(id => {
+        const img = allImages.find(i => i.id === id);
+        if (img) img.used = true;
+      });
+
+      const product = {
+        id: productIdCounter++,
+        name: `Product ${products.length + 1}`,
+        category: 'promotional',
+        description: descriptions['promotional'],
+        price: '',
+        moq: 50,
+        images: images,
+        status: 'pending'
+      };
+
+      products.push(product);
+      selectedImages = [];
+
+      renderImageGrid();
+      renderProducts();
+
+      document.getElementById('step3').classList.remove('hidden');
+      document.getElementById('actionBar').classList.remove('hidden');
+
+      log(`Product ${product.id} created with ${images.length} images`, 'success');
+    }
+
+    // Render products list
+    function renderProducts() {
+      const list = document.getElementById('products-list');
+      document.getElementById('productCount').textContent = products.length;
+
+      list.innerHTML = products.map(p => `
+        <div class="product-form" id="product-${p.id}">
+          <div class="product-header">
+            <h3>Product ${p.id} <span class="status-badge status-${p.status}" id="status-${p.id}">${p.status}</span></h3>
+            <button class="btn-danger" onclick="removeProduct(${p.id})">Remove</button>
+          </div>
+          <div class="product-images-preview">
+            ${p.images.map(img => `<img src="${img.url}" alt="Preview">`).join('')}
+          </div>
+          <p style="color: #888; margin-bottom: 15px;">${p.images.length} image(s)</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Product Name *</label>
+              <input type="text" id="name-${p.id}" value="${p.name}" placeholder="e.g., Premium Travel Bag">
+            </div>
+            <div class="form-group">
+              <label>Category *</label>
+              <select id="category-${p.id}" onchange="updateDescription(${p.id})">
+                <option value="travel" ${p.category === 'travel' ? 'selected' : ''}>Travel Bags</option>
+                <option value="trolley" ${p.category === 'trolley' ? 'selected' : ''}>Trolley Bags</option>
+                <option value="duffle" ${p.category === 'duffle' ? 'selected' : ''}>Duffle Bags</option>
+                <option value="backpack" ${p.category === 'backpack' ? 'selected' : ''}>Backpacks</option>
+                <option value="laptop" ${p.category === 'laptop' ? 'selected' : ''}>Laptop Bags</option>
+                <option value="handbag" ${p.category === 'handbag' ? 'selected' : ''}>Handbags</option>
+                <option value="shopping" ${p.category === 'shopping' ? 'selected' : ''}>Shopping Bags</option>
+                <option value="promotional" ${p.category === 'promotional' ? 'selected' : ''}>Promotional Bags</option>
+                <option value="jute" ${p.category === 'jute' ? 'selected' : ''}>Jute Bags</option>
+                <option value="corporate" ${p.category === 'corporate' ? 'selected' : ''}>Corporate Bags</option>
+                <option value="tote" ${p.category === 'tote' ? 'selected' : ''}>Tote Bags</option>
+                <option value="canvas" ${p.category === 'canvas' ? 'selected' : ''}>Canvas Bags</option>
+                <option value="nonwoven" ${p.category === 'nonwoven' ? 'selected' : ''}>Non-Woven Bags</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Price (₹) - Optional</label>
+              <input type="number" id="price-${p.id}" value="${p.price}" placeholder="e.g., 499">
+            </div>
+            <div class="form-group">
+              <label>MOQ (Minimum Order)</label>
+              <input type="number" id="moq-${p.id}" value="${p.moq}" placeholder="e.g., 50">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="desc-${p.id}" rows="3">${p.description}</textarea>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Update description based on category
+    function updateDescription(productId) {
+      const category = document.getElementById(`category-${productId}`).value;
+      document.getElementById(`desc-${productId}`).value = descriptions[category] || '';
+    }
+
+    // Remove product
+    function removeProduct(id) {
+      const product = products.find(p => p.id === id);
+      if (product) {
+        // Mark images as unused
+        product.images.forEach(img => {
+          const origImg = allImages.find(i => i.id === img.id);
+          if (origImg) origImg.used = false;
+        });
+      }
+      products = products.filter(p => p.id !== id);
+      renderProducts();
+      renderImageGrid();
+
+      if (products.length === 0) {
+        document.getElementById('step3').classList.add('hidden');
+        document.getElementById('actionBar').classList.add('hidden');
+      }
+    }
+
+    // Upload all products
+    async function uploadAllProducts() {
+      if (products.length === 0) {
+        alert('No products to upload');
+        return;
+      }
+
+      log('Starting upload...', 'info');
+
+      if (!sasToken) {
+        const result = await getSasToken();
+        if (!result) {
+          alert('Cannot upload: SAS token not found');
+          return;
+        }
+      }
+
+      for (const product of products) {
+        try {
+          document.getElementById(`status-${product.id}`).textContent = 'uploading';
+          document.getElementById(`status-${product.id}`).className = 'status-badge status-uploading';
+
+          const name = document.getElementById(`name-${product.id}`).value || `Product ${product.id}`;
+          const category = document.getElementById(`category-${product.id}`).value;
+          const price = document.getElementById(`price-${product.id}`).value;
+          const moq = document.getElementById(`moq-${product.id}`).value || 50;
+          const description = document.getElementById(`desc-${product.id}`).value;
+
+          log(`Uploading "${name}" (${product.images.length} images)...`, 'info');
+
+          // Upload images
+          const imageUrls = [];
+          for (let i = 0; i < product.images.length; i++) {
+            const img = product.images[i];
+            log(`  Image ${i + 1}/${product.images.length}...`, 'info');
+            const url = await uploadToAzure(img.file);
+            imageUrls.push(url);
+          }
+
+          // Save to Firebase (matching admin panel structure)
+          const productData = {
+            name,
+            category,
+            fullDesc: description,
+            shortDesc: description.substring(0, 100) + (description.length > 100 ? '...' : ''),
+            price: price ? parseFloat(price) : null,
+            minOrder: parseInt(moq),
+            images: imageUrls,
+            features: ['Premium quality material', 'Custom branding available', 'Bulk order discounts'],
+            colors: [],
+            badge: '',
+            status: 'active',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+
+          const docRef = await db.collection('products').add(productData);
+          log(`✓ "${name}" uploaded (ID: ${docRef.id})`, 'success');
+
+          document.getElementById(`status-${product.id}`).textContent = 'done';
+          document.getElementById(`status-${product.id}`).className = 'status-badge status-done';
+
+        } catch (error) {
+          log(`✗ Error: ${error.message}`, 'error');
+          document.getElementById(`status-${product.id}`).textContent = 'error';
+          document.getElementById(`status-${product.id}`).className = 'status-badge status-error';
+        }
+      }
+
+      log('=== Upload Complete ===', 'success');
+      alert('Upload complete! Check log for details.');
+    }
+
+    // Login function
+    async function loginAdmin() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      const status = document.getElementById('loginStatus');
+
+      if (!email || !password) {
+        status.textContent = 'Please enter email and password';
+        status.style.color = '#f44';
+        return;
+      }
+
+      status.textContent = 'Logging in...';
+      status.style.color = '#888';
+
+      try {
+        await auth.signInWithEmailAndPassword(email, password);
+        status.textContent = '✓ Logged in!';
+        status.style.color = '#0f0';
+
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('mainContent').classList.remove('hidden');
+
+        log('Logged in as ' + email, 'success');
+        log('Select the product images folder to begin', 'info');
+      } catch (error) {
+        status.textContent = 'Error: ' + error.message;
+        status.style.color = '#f44';
+      }
+    }
+
+    // Check if already logged in
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('mainContent').classList.remove('hidden');
+        log('Already logged in as ' + user.email, 'success');
+        log('Select the product images folder to begin', 'info');
+      }
+    });
+
+    // Init
+    log('Product Upload Tool Ready', 'success');
+    log('Please login to continue', 'info');
+  </script>
+</body>
+</html>
