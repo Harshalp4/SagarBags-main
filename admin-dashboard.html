@@ -960,11 +960,11 @@
             <label>Customer Photo</label>
             <div class="testimonial-image-upload" id="testimonialImageUpload" style="border: 2px dashed var(--border-subtle); border-radius: 8px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.3s ease;">
               <div id="testimonialImagePreview" style="margin-bottom: 1rem;">
-                <img id="testimonialPreviewImg" src="" alt="" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; display: none; margin: 0 auto;">
+                <img id="testimonialPreviewImg" src="" alt="" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; display: none; margin: 0 auto;">
               </div>
               <input type="file" id="testimonialImageInput" accept="image/*" style="display: none;">
               <p style="margin: 0; color: var(--text-muted); font-size: 0.875rem;">Click to upload photo or drag & drop</p>
-              <small style="color: var(--text-muted); font-size: 0.75rem;">Recommended: Square image, max 2MB</small>
+              <small style="color: var(--text-muted); font-size: 0.75rem;">Photo will be cropped to circle - adjust position after upload</small>
             </div>
             <input type="hidden" id="testimonialImage" value="">
           </div>
@@ -1025,8 +1025,53 @@
     </div>
   </div>
 
+  <!-- Image Crop Modal -->
+  <div class="modal-overlay" id="cropModal">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Crop Photo</h3>
+        <button class="modal-close" onclick="ImageCropper.close()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.875rem;">
+          Drag to reposition. Use scroll/pinch to zoom. Make sure the face is centered.
+        </p>
+        <div id="cropContainer" style="width: 100%; height: 350px; background: #000; border-radius: 8px; overflow: hidden; position: relative;">
+          <img id="cropImage" src="" style="max-width: 100%; display: block;">
+        </div>
+        <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1rem;">
+          <button class="btn btn-secondary btn-sm" onclick="ImageCropper.zoomOut()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/>
+            </svg>
+            Zoom Out
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="ImageCropper.zoomIn()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+            </svg>
+            Zoom In
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="ImageCropper.close()">Cancel</button>
+        <button class="btn btn-primary" onclick="ImageCropper.crop()">Apply Crop</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Cropper.js Library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -1384,6 +1429,132 @@
     });
   </script>
 
+  <!-- Image Cropper Script -->
+  <script>
+    const ImageCropper = {
+      cropper: null,
+      originalFile: null,
+      callback: null,
+
+      open(file, callback) {
+        this.originalFile = file;
+        this.callback = callback;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = document.getElementById('cropImage');
+          img.src = e.target.result;
+
+          document.getElementById('cropModal').classList.add('active');
+
+          // Initialize Cropper after image loads
+          img.onload = () => {
+            if (this.cropper) {
+              this.cropper.destroy();
+            }
+            this.cropper = new Cropper(img, {
+              aspectRatio: 1,
+              viewMode: 1,
+              dragMode: 'move',
+              autoCropArea: 0.9,
+              restore: false,
+              guides: true,
+              center: true,
+              highlight: false,
+              cropBoxMovable: false,
+              cropBoxResizable: false,
+              toggleDragModeOnDblclick: false,
+              minContainerWidth: 300,
+              minContainerHeight: 300,
+            });
+          };
+        };
+        reader.readAsDataURL(file);
+      },
+
+      zoomIn() {
+        if (this.cropper) {
+          this.cropper.zoom(0.1);
+        }
+      },
+
+      zoomOut() {
+        if (this.cropper) {
+          this.cropper.zoom(-0.1);
+        }
+      },
+
+      crop() {
+        if (!this.cropper) return;
+
+        const canvas = this.cropper.getCroppedCanvas({
+          width: 300,
+          height: 300,
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: 'high',
+        });
+
+        canvas.toBlob((blob) => {
+          // Create a new file from the cropped blob
+          const croppedFile = new File([blob], this.originalFile.name, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+          });
+
+          // Get data URL for preview
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+
+          if (this.callback) {
+            this.callback(croppedFile, dataUrl);
+          }
+
+          this.close();
+        }, 'image/jpeg', 0.9);
+      },
+
+      close() {
+        if (this.cropper) {
+          this.cropper.destroy();
+          this.cropper = null;
+        }
+        document.getElementById('cropModal').classList.remove('active');
+        document.getElementById('cropImage').src = '';
+      }
+    };
+
+    // Override testimonial image upload to use cropper
+    document.addEventListener('DOMContentLoaded', () => {
+      const testimonialInput = document.getElementById('testimonialImageInput');
+      const testimonialUpload = document.getElementById('testimonialImageUpload');
+
+      if (testimonialInput && testimonialUpload) {
+        testimonialUpload.onclick = () => testimonialInput.click();
+
+        testimonialInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          // Open cropper
+          ImageCropper.open(file, (croppedFile, dataUrl) => {
+            // Show preview
+            const previewImg = document.getElementById('testimonialPreviewImg');
+            previewImg.src = dataUrl;
+            previewImg.style.display = 'block';
+
+            // Store data URL
+            document.getElementById('testimonialImage').value = dataUrl;
+
+            // Store file for upload
+            AdminApp.testimonialImageFile = croppedFile;
+          });
+
+          // Reset input
+          testimonialInput.value = '';
+        });
+      }
+    });
+  </script>
+
   <!-- PWA Service Worker Registration & Install Prompt -->
   <div id="pwaInstallBanner" class="pwa-install-banner" style="display: none;">
     <div class="pwa-install-content">
@@ -1519,6 +1690,31 @@
       body.pwa-banner-visible .admin-dashboard {
         padding-top: 40px;
       }
+    }
+
+    /* Crop Modal Styles */
+    #cropModal .cropper-view-box,
+    #cropModal .cropper-face {
+      border-radius: 50%;
+    }
+
+    #cropModal .cropper-view-box {
+      outline: 2px solid var(--secondary);
+      outline-offset: -2px;
+    }
+
+    #cropModal .cropper-dashed {
+      border-radius: 50%;
+    }
+
+    #cropContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #cropContainer img {
+      max-height: 350px;
     }
   </style>
 
