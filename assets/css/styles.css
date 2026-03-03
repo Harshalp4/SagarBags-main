@@ -2742,12 +2742,13 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 80px;
-  min-width: 180px;
-  padding: 0.75rem 1.25rem;
-  background: rgba(255, 255, 255, 0.98);
+  height: 90px;
+  min-width: 200px;
+  padding: 0.75rem 1.5rem;
+  background: #f5f5f5;
   border-radius: var(--radius-lg);
   transition: all var(--transition);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .client-logo-item:hover {
@@ -2756,9 +2757,9 @@ p {
 }
 
 .client-logo-item img {
-  height: 50px;
+  height: 60px;
   width: auto;
-  max-width: 150px;
+  max-width: 170px;
   object-fit: contain;
   transition: all var(--transition);
 }
@@ -2767,16 +2768,16 @@ p {
   transform: scale(1.05);
 }
 
-/* All logos get white background for consistency and readability */
+/* All logos get light gray background for consistency and readability */
 .client-logo-item.dark-bg {
-  background: rgba(255, 255, 255, 0.98);
+  background: #f5f5f5;
   padding: 0.75rem 1.25rem;
 }
 
 .client-logo-item.dark-bg img {
-  height: 50px;
+  height: 60px;
   width: auto;
-  max-width: 150px;
+  max-width: 170px;
   border-radius: 0;
 }
 
