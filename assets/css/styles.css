@@ -111,6 +111,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   --secondary-dark: #a68b1f;
 
   /* Background Colors */
+  --bg-primary: #0a0a0a;
   --bg-dark: #0a0a0a;
   --bg-card: #141414;
   --bg-elevated: #1f1f1f;
@@ -1372,14 +1373,14 @@ p {
 }
 
 /* Hero Background Video */
-.hero-video {
+section.hero-video {
   background:
     radial-gradient(ellipse at 20% 80%, rgba(201, 162, 39, 0.15) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 20%, rgba(201, 162, 39, 0.1) 0%, transparent 50%),
     radial-gradient(ellipse at 50% 50%, rgba(30, 30, 30, 1) 0%, rgba(10, 10, 10, 1) 100%) !important;
 }
 
-.hero-video::before {
+section.hero-video::before {
   display: none !important;
 }
 
@@ -2733,8 +2734,11 @@ p {
   width: max-content;
 }
 
-.clients-marquee-track:hover {
-  animation-play-state: paused;
+/* Only pause on hover for devices with a mouse pointer (not touch) */
+@media (hover: hover) and (pointer: fine) {
+  .clients-marquee-track:hover {
+    animation-play-state: paused;
+  }
 }
 
 .client-logo-item {

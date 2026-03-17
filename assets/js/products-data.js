@@ -566,3 +566,4 @@ if (document.readyState === 'loading') {
 } else {
   tryInitFirebase();
 }
+

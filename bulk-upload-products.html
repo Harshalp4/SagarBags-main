@@ -13,7 +13,7 @@
       color: #fff;
       min-height: 100vh;
     }
-    h1 { color: #2d8a7b; margin-bottom: 10px; }
+    h1 { color: #c9a227; margin-bottom: 10px; }
     h2 { color: #fff; margin: 20px 0 10px; }
     .subtitle { color: #888; margin-bottom: 20px; }
 
@@ -39,7 +39,7 @@
       border: 3px solid transparent;
       transition: all 0.3s;
     }
-    .image-item:hover { border-color: #2d8a7b; }
+    .image-item:hover { border-color: #c9a227; }
     .image-item.selected { border-color: #0f0; }
     .image-item img {
       width: 100%;
@@ -111,12 +111,12 @@
       font-weight: 600;
       transition: all 0.3s;
     }
-    .btn-primary { background: #2d8a7b; color: white; }
-    .btn-primary:hover { background: #236b5f; }
+    .btn-primary { background: #c9a227; color: #000; }
+    .btn-primary:hover { background: #a68b1f; }
     .btn-success { background: #28a745; color: white; }
     .btn-danger { background: #dc3545; color: white; font-size: 12px; padding: 8px 16px; }
     .btn-secondary { background: #6c757d; color: white; }
-    .btn-outline { background: transparent; border: 2px solid #2d8a7b; color: #2d8a7b; }
+    .btn-warning { background: #ffc107; color: #000; }
 
     /* Status */
     .status-badge {
@@ -144,6 +144,7 @@
     .log-success { color: #0f0; }
     .log-error { color: #f44; }
     .log-info { color: #0af; }
+    .log-warn { color: #ffc107; }
 
     /* File Input */
     .file-input-wrapper {
@@ -154,7 +155,7 @@
       cursor: pointer;
       transition: all 0.3s;
     }
-    .file-input-wrapper:hover { border-color: #2d8a7b; background: rgba(45,138,123,0.1); }
+    .file-input-wrapper:hover { border-color: #c9a227; background: rgba(201,162,39,0.1); }
     .file-input-wrapper input { display: none; }
 
     .hidden { display: none; }
@@ -170,16 +171,36 @@
     }
 
     #products-list { margin-top: 20px; }
+
+    .danger-zone {
+      border: 1px solid #dc3545;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      background: rgba(220, 53, 69, 0.1);
+    }
+    .danger-zone h3 { color: #dc3545; margin-bottom: 10px; }
+
+    .info-box {
+      background: rgba(201, 162, 39, 0.1);
+      border: 1px solid rgba(201, 162, 39, 0.3);
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      font-size: 14px;
+      color: #ccc;
+    }
+    .info-box strong { color: #c9a227; }
   </style>
 </head>
 <body>
-  <h1>Sagar Bags - Product Upload Tool</h1>
-  <p class="subtitle">Upload multiple products with images to Azure & Firebase</p>
+  <h1>Sagar Bags - Bulk Product Upload</h1>
+  <p class="subtitle">Upload products — images saved automatically to project folder</p>
 
   <!-- Login Section -->
   <div class="card" id="loginSection">
-    <h2>🔐 Admin Login Required</h2>
-    <p style="color: #888; margin-bottom: 15px;">Please login to upload products</p>
+    <h2>Admin Login Required</h2>
+    <p style="color: #888; margin-bottom: 15px;">Please login to manage products</p>
     <div class="form-row">
       <div class="form-group">
         <label>Email</label>
@@ -197,13 +218,27 @@
   <!-- Main Content (hidden until logged in) -->
   <div id="mainContent" class="hidden">
 
+  <!-- Danger Zone: Delete existing products -->
+  <div class="danger-zone">
+    <h3>Clean Up Existing Data</h3>
+    <p style="color: #aaa; margin-bottom: 10px;">Delete all existing products from Firebase that have broken Azure image URLs.</p>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <button class="btn-danger" style="font-size: 14px; padding: 12px 24px;" onclick="deleteAllProducts()">Delete All Products from Firebase</button>
+      <span id="deleteStatus" style="color: #888;"></span>
+    </div>
+  </div>
+
+  <div class="info-box">
+    <strong>How it works:</strong> Select images → group them into products → save. Images are <strong>automatically saved</strong> to <code>assets/images/products/&lt;category&gt;/</code> in the project. Just commit &amp; deploy to Vercel when done.
+  </div>
+
   <!-- Step 1: Select Images -->
   <div class="card" id="step1">
     <h2>Step 1: Select All Images</h2>
     <div class="file-input-wrapper" onclick="document.getElementById('folderInput').click()">
       <input type="file" id="folderInput" webkitdirectory multiple accept="image/*">
-      <p style="font-size: 18px; margin-bottom: 10px;">📁 Click to select product images folder</p>
-      <p style="color: #888;">Select: /Users/harshal/Desktop/logoclient/product images</p>
+      <p style="font-size: 18px; margin-bottom: 10px;">Click to select product images folder</p>
+      <p style="color: #888;">Select a folder containing all your product images</p>
     </div>
   </div>
 
@@ -221,19 +256,19 @@
 
   <!-- Step 3: Products List -->
   <div class="card hidden" id="step3">
-    <h2>Step 3: Products to Upload (<span id="productCount">0</span>)</h2>
+    <h2>Step 3: Review Products (<span id="productCount">0</span>)</h2>
     <div id="products-list"></div>
   </div>
 
   <!-- Action Bar -->
   <div class="action-bar hidden" id="actionBar">
-    <button class="btn-success" onclick="uploadAllProducts()">🚀 Upload All Products to Azure & Firebase</button>
-    <button class="btn-secondary" onclick="location.reload()">🔄 Reset</button>
+    <button class="btn-success" onclick="saveAllProducts()">Save All Products to Firebase</button>
+    <button class="btn-secondary" onclick="location.reload()">Reset</button>
   </div>
 
   <!-- Log -->
   <div class="card" style="margin-top: 20px;">
-    <h2>Upload Log</h2>
+    <h2>Log</h2>
     <div id="log"></div>
   </div>
 
@@ -258,35 +293,124 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // Azure config
-    const azureConfig = {
-      accountName: 'sagarbags',
-      containerName: 'product-images'
-    };
-
     // State
     let allImages = [];
     let selectedImages = [];
     let products = [];
-    let sasToken = '';
     let productIdCounter = 1;
+    let categoriesFromDB = [];
 
-    // Descriptions based on category (using short category IDs)
-    const descriptions = {
-      'travel': 'Premium quality travel bag with spacious compartments, durable fabric, and comfortable handles. Perfect for weekend trips and short travels. Custom branding available.',
-      'trolley': 'Heavy-duty trolley bag with smooth rolling wheels, extendable handle, and multiple pockets. Ideal for business trips and vacations. Customizable with your logo.',
-      'duffle': 'Stylish duffle bag made from high-quality material. Features large main compartment, side pockets, and adjustable shoulder strap. Great for gym or travel.',
-      'backpack': 'Ergonomic backpack with padded straps, laptop compartment, and multiple organizer pockets. Perfect for students, professionals, and daily use. Custom printing available.',
-      'laptop': 'Professional laptop bag with padded protection, organized compartments, and sleek design. Fits up to 15.6" laptops. Ideal for corporate gifting.',
-      'handbag': 'Elegant ladies handbag with premium finish, multiple compartments, and stylish design. Perfect for daily use and special occasions.',
-      'shopping': 'Eco-friendly shopping bag made from durable non-woven fabric. Reusable, washable, and customizable with your brand logo.',
-      'promotional': 'Custom promotional bag perfect for events, exhibitions, and marketing campaigns. Available in various sizes and colors with full branding options.',
-      'jute': 'Eco-friendly jute bag with natural finish. Sustainable, durable, and perfect for grocery shopping or promotional use. Customizable.',
-      'corporate': 'Premium corporate bag designed for professional gifting. High-quality materials with subtle branding options. Perfect for conferences and client gifts.',
-      'tote': 'Versatile tote bag with spacious interior and sturdy handles. Perfect for shopping, daily use, and promotional events. Customizable.',
-      'canvas': 'Durable canvas bag with classic design. Sturdy construction perfect for everyday use and branding.',
-      'nonwoven': 'Lightweight non-woven bag ideal for retail and promotional use. Cost-effective and fully customizable.'
+    // Category slug map for folder names
+    const categorySlugMap = {
+      'corporate': 'corporate-bags',
+      'laptop-school': 'laptop-school-bags',
+      'non-woven': 'non-woven-bags',
+      'travel-duffel': 'travel-duffel-bags',
+      'jute-cotton': 'jute-cotton-bags',
+      'thamboolam-canvas': 'thamboolam-canvas-bags',
+      'thaily': 'thaily-bags',
+      'purse-pouch': 'hand-purse-pouch',
+      'complementary': 'complementary-items',
+      'customised': 'customised-bags',
+      // Additional common categories
+      'travel': 'travel-duffel-bags',
+      'trolley': 'travel-duffel-bags',
+      'duffle': 'travel-duffel-bags',
+      'backpack': 'corporate-bags',
+      'laptop': 'laptop-school-bags',
+      'handbag': 'hand-purse-pouch',
+      'shopping': 'non-woven-bags',
+      'promotional': 'customised-bags',
+      'jute': 'jute-cotton-bags',
+      'tote': 'jute-cotton-bags',
+      'canvas': 'thamboolam-canvas-bags',
+      'nonwoven': 'non-woven-bags'
     };
+
+    // Descriptions based on category
+    const descriptions = {
+      'corporate': 'Premium corporate bag designed for professional gifting. High-quality materials with subtle branding options. Perfect for conferences and client gifts.',
+      'laptop-school': 'Professional laptop & school bag with padded protection, organized compartments, and sleek design. Ideal for students and professionals.',
+      'non-woven': 'Eco-friendly non-woven bag. Reusable, washable, and customizable with your brand logo. Perfect for retail and promotional use.',
+      'travel-duffel': 'Premium quality travel/duffel bag with spacious compartments, durable fabric, and comfortable handles. Perfect for weekend trips.',
+      'jute-cotton': 'Eco-friendly jute/cotton bag with natural finish. Sustainable, durable, and perfect for grocery shopping or promotional use.',
+      'thamboolam-canvas': 'Traditional thamboolam/canvas bag available in various designs. Perfect for weddings, functions, and daily use.',
+      'thaily': 'Quality thaily bag for retail use. Available in multiple sizes with full branding options.',
+      'purse-pouch': 'Elegant purse/pouch with premium finish, multiple compartments, and stylish design. Perfect for gifting.',
+      'complementary': 'Complementary accessory item. High quality materials with customization options available.',
+      'customised': 'Fully customizable bag designed to your exact specifications. Custom branding, materials, and sizes available.',
+      'travel': 'Premium quality travel bag with spacious compartments, durable fabric, and comfortable handles.',
+      'trolley': 'Heavy-duty trolley bag with smooth rolling wheels, extendable handle, and multiple pockets.',
+      'duffle': 'Stylish duffle bag made from high-quality material. Features large main compartment and adjustable shoulder strap.',
+      'backpack': 'Ergonomic backpack with padded straps, laptop compartment, and multiple organizer pockets.',
+      'laptop': 'Professional laptop bag with padded protection. Fits up to 15.6" laptops. Ideal for corporate gifting.',
+      'handbag': 'Elegant ladies handbag with premium finish, multiple compartments, and stylish design.',
+      'shopping': 'Eco-friendly shopping bag made from durable non-woven fabric. Reusable and customizable.',
+      'promotional': 'Custom promotional bag perfect for events, exhibitions, and marketing campaigns.',
+      'jute': 'Eco-friendly jute bag with natural finish. Sustainable, durable, and customizable.',
+      'tote': 'Versatile tote bag with spacious interior and sturdy handles. Perfect for shopping and daily use.',
+      'canvas': 'Durable canvas bag with classic design. Sturdy construction perfect for everyday use.',
+      'nonwoven': 'Lightweight non-woven bag ideal for retail and promotional use. Cost-effective and customizable.'
+    };
+
+    // Generate clean filename
+    function generateFileName(originalName) {
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substring(2, 8);
+      const ext = originalName.split('.').pop().toLowerCase();
+      const validExt = ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext) ? ext : 'jpg';
+      return `${timestamp}_${random}.${validExt}`;
+    }
+
+    // Get category slug for folder name
+    function getCategoryFolder(categoryId) {
+      if (categorySlugMap[categoryId]) return categorySlugMap[categoryId];
+      // Try to find from DB categories
+      const cat = categoriesFromDB.find(c => c.id === categoryId);
+      if (cat && cat.slug) return cat.slug;
+      if (cat && cat.name) return cat.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+      return categoryId.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+
+    // Compress image and return base64
+    function compressImageToBase64(file, maxWidth = 1200, quality = 0.85) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let w = img.width, h = img.height;
+            if (w > maxWidth) { h = (h * maxWidth) / w; w = maxWidth; }
+            canvas.width = w;
+            canvas.height = h;
+            canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = reject;
+          img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // Upload image to local server — saves directly to project folder
+    async function uploadImageToServer(file, categoryFolder, fileName) {
+      const base64 = await compressImageToBase64(file, 1200, 0.85);
+      const response = await fetch('/upload-image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          category: categoryFolder,
+          fileName: fileName,
+          imageData: base64
+        })
+      });
+      const result = await response.json();
+      if (!result.success) throw new Error(result.error);
+      return result.path;
+    }
 
     // Log function
     function log(message, type = 'info') {
@@ -298,44 +422,81 @@
       logDiv.scrollTop = logDiv.scrollHeight;
     }
 
-    // Get SAS token
-    async function getSasToken() {
+    // Delete all existing products from Firebase
+    async function deleteAllProducts() {
+      if (!confirm('Are you sure you want to DELETE ALL products from Firebase? This cannot be undone.')) return;
+      if (!confirm('This will permanently remove all product data. Continue?')) return;
+
+      const status = document.getElementById('deleteStatus');
+      status.textContent = 'Deleting...';
+      status.style.color = '#ffc107';
+
       try {
-        const doc = await db.collection('settings').doc('azureSasToken').get();
-        if (doc.exists) {
-          sasToken = doc.data().value;
-          log('SAS token retrieved', 'success');
-          return true;
+        const snapshot = await db.collection('products').get();
+        const total = snapshot.docs.length;
+
+        if (total === 0) {
+          status.textContent = 'No products found';
+          status.style.color = '#888';
+          log('No products to delete', 'info');
+          return;
         }
-        log('SAS token not found. Set it in admin dashboard.', 'error');
-        return false;
+
+        log(`Deleting ${total} products...`, 'warn');
+
+        // Delete in batches of 500 (Firestore limit)
+        const batch = db.batch();
+        snapshot.docs.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+
+        status.textContent = `Deleted ${total} products`;
+        status.style.color = '#0f0';
+        log(`Successfully deleted ${total} products from Firebase`, 'success');
       } catch (error) {
-        log(`Error: ${error.message}`, 'error');
-        return false;
+        status.textContent = 'Error: ' + error.message;
+        status.style.color = '#f44';
+        log('Error deleting products: ' + error.message, 'error');
       }
     }
 
-    // Upload to Azure
-    async function uploadToAzure(file) {
-      const timestamp = Date.now();
-      const random = Math.random().toString(36).substring(2, 8);
-      const ext = file.name.split('.').pop().toLowerCase();
-      const fileName = `${timestamp}_${random}.${ext}`;
-      const cleanToken = sasToken.startsWith('?') ? sasToken.substring(1) : sasToken;
-      const blobUrl = `https://${azureConfig.accountName}.blob.core.windows.net/${azureConfig.containerName}/${fileName}?${cleanToken}`;
+    // Load categories from Firebase
+    async function loadCategories() {
+      try {
+        const snapshot = await db.collection('categories').get();
+        categoriesFromDB = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        log(`Loaded ${categoriesFromDB.length} categories from Firebase`, 'success');
+      } catch (err) {
+        log('Could not load categories: ' + err.message, 'error');
+      }
+    }
 
-      const response = await fetch(blobUrl, {
-        method: 'PUT',
-        headers: {
-          'x-ms-blob-type': 'BlockBlob',
-          'x-ms-version': '2022-11-02',
-          'Content-Type': file.type || 'image/jpeg'
-        },
-        body: file
+    // Build category options HTML
+    function getCategoryOptions(selected) {
+      // Combine DB categories with hardcoded ones
+      const allCategories = [
+        { value: 'corporate', label: 'Corporate Bags' },
+        { value: 'laptop-school', label: 'Laptop & School Bags' },
+        { value: 'non-woven', label: 'Non-Woven Bags' },
+        { value: 'travel-duffel', label: 'Travel & Duffel Bags' },
+        { value: 'jute-cotton', label: 'Jute, Cotton & D-Cut Bags' },
+        { value: 'thamboolam-canvas', label: 'Thamboolam & Canvas Bags' },
+        { value: 'thaily', label: 'Thaily Bags' },
+        { value: 'purse-pouch', label: 'Hand Purse & Pouch' },
+        { value: 'complementary', label: 'Complementary Items' },
+        { value: 'customised', label: 'Customised Bags' }
+      ];
+
+      // Add any DB categories not already in the list
+      categoriesFromDB.forEach(cat => {
+        const catId = cat.id || cat.slug;
+        if (!allCategories.find(c => c.value === catId)) {
+          allCategories.push({ value: catId, label: cat.name || catId });
+        }
       });
 
-      if (!response.ok) throw new Error(`Upload failed: ${response.statusText}`);
-      return `https://${azureConfig.accountName}.blob.core.windows.net/${azureConfig.containerName}/${fileName}`;
+      return allCategories.map(c =>
+        `<option value="${c.value}" ${selected === c.value ? 'selected' : ''}>${c.label}</option>`
+      ).join('');
     }
 
     // Handle folder selection
@@ -346,6 +507,7 @@
       allImages = files.map((file, index) => ({
         id: index,
         file: file,
+        name: file.name,
         url: URL.createObjectURL(file),
         used: false
       }));
@@ -373,23 +535,17 @@
       updateSelectedCount();
     }
 
-    // Toggle image selection
     function toggleImage(id) {
       const idx = selectedImages.indexOf(id);
-      if (idx > -1) {
-        selectedImages.splice(idx, 1);
-      } else {
-        selectedImages.push(id);
-      }
+      if (idx > -1) selectedImages.splice(idx, 1);
+      else selectedImages.push(id);
       renderImageGrid();
     }
 
-    // Update selected count
     function updateSelectedCount() {
       document.getElementById('selectedCount').textContent = `${selectedImages.length} images selected`;
     }
 
-    // Clear selection
     function clearSelection() {
       selectedImages = [];
       renderImageGrid();
@@ -404,7 +560,6 @@
 
       const images = selectedImages.map(id => allImages.find(img => img.id === id));
 
-      // Mark images as used
       selectedImages.forEach(id => {
         const img = allImages.find(i => i.id === id);
         if (img) img.used = true;
@@ -413,8 +568,8 @@
       const product = {
         id: productIdCounter++,
         name: `Product ${products.length + 1}`,
-        category: 'promotional',
-        description: descriptions['promotional'],
+        category: 'corporate',
+        description: descriptions['corporate'],
         price: '',
         moq: 50,
         images: images,
@@ -456,19 +611,7 @@
             <div class="form-group">
               <label>Category *</label>
               <select id="category-${p.id}" onchange="updateDescription(${p.id})">
-                <option value="travel" ${p.category === 'travel' ? 'selected' : ''}>Travel Bags</option>
-                <option value="trolley" ${p.category === 'trolley' ? 'selected' : ''}>Trolley Bags</option>
-                <option value="duffle" ${p.category === 'duffle' ? 'selected' : ''}>Duffle Bags</option>
-                <option value="backpack" ${p.category === 'backpack' ? 'selected' : ''}>Backpacks</option>
-                <option value="laptop" ${p.category === 'laptop' ? 'selected' : ''}>Laptop Bags</option>
-                <option value="handbag" ${p.category === 'handbag' ? 'selected' : ''}>Handbags</option>
-                <option value="shopping" ${p.category === 'shopping' ? 'selected' : ''}>Shopping Bags</option>
-                <option value="promotional" ${p.category === 'promotional' ? 'selected' : ''}>Promotional Bags</option>
-                <option value="jute" ${p.category === 'jute' ? 'selected' : ''}>Jute Bags</option>
-                <option value="corporate" ${p.category === 'corporate' ? 'selected' : ''}>Corporate Bags</option>
-                <option value="tote" ${p.category === 'tote' ? 'selected' : ''}>Tote Bags</option>
-                <option value="canvas" ${p.category === 'canvas' ? 'selected' : ''}>Canvas Bags</option>
-                <option value="nonwoven" ${p.category === 'nonwoven' ? 'selected' : ''}>Non-Woven Bags</option>
+                ${getCategoryOptions(p.category)}
               </select>
             </div>
           </div>
@@ -490,17 +633,14 @@
       `).join('');
     }
 
-    // Update description based on category
     function updateDescription(productId) {
       const category = document.getElementById(`category-${productId}`).value;
       document.getElementById(`desc-${productId}`).value = descriptions[category] || '';
     }
 
-    // Remove product
     function removeProduct(id) {
       const product = products.find(p => p.id === id);
       if (product) {
-        // Mark images as unused
         product.images.forEach(img => {
           const origImg = allImages.find(i => i.id === img.id);
           if (origImg) origImg.used = false;
@@ -516,26 +656,19 @@
       }
     }
 
-    // Upload all products
-    async function uploadAllProducts() {
+    // Save all products - upload images to project folder + save to Firebase
+    async function saveAllProducts() {
       if (products.length === 0) {
-        alert('No products to upload');
+        alert('No products to save');
         return;
       }
 
-      log('Starting upload...', 'info');
+      log('Starting save process...', 'info');
 
-      if (!sasToken) {
-        const result = await getSasToken();
-        if (!result) {
-          alert('Cannot upload: SAS token not found');
-          return;
-        }
-      }
-
+      let successCount = 0;
       for (const product of products) {
         try {
-          document.getElementById(`status-${product.id}`).textContent = 'uploading';
+          document.getElementById(`status-${product.id}`).textContent = 'saving';
           document.getElementById(`status-${product.id}`).className = 'status-badge status-uploading';
 
           const name = document.getElementById(`name-${product.id}`).value || `Product ${product.id}`;
@@ -544,26 +677,31 @@
           const moq = document.getElementById(`moq-${product.id}`).value || 50;
           const description = document.getElementById(`desc-${product.id}`).value;
 
-          log(`Uploading "${name}" (${product.images.length} images)...`, 'info');
+          const categoryFolder = getCategoryFolder(category);
+          log(`Saving "${name}" (${product.images.length} images) → ${categoryFolder}/`, 'info');
 
-          // Upload images
-          const imageUrls = [];
+          // Upload each image to local server (saves to project folder automatically)
+          const localPaths = [];
           for (let i = 0; i < product.images.length; i++) {
             const img = product.images[i];
-            log(`  Image ${i + 1}/${product.images.length}...`, 'info');
-            const url = await uploadToAzure(img.file);
-            imageUrls.push(url);
+            const fileName = generateFileName(img.name || `image_${i}.jpg`);
+
+            const savedPath = await uploadImageToServer(img.file, categoryFolder, fileName);
+            localPaths.push(savedPath);
+
+            log(`  Image ${i + 1}/${product.images.length}: ${savedPath}`, 'success');
           }
 
-          // Save to Firebase (matching admin panel structure)
+          // Save to Firebase with local paths
           const productData = {
             name,
             category,
             fullDesc: description,
             shortDesc: description.substring(0, 100) + (description.length > 100 ? '...' : ''),
+            description: description,
             price: price ? parseFloat(price) : null,
             minOrder: parseInt(moq),
-            images: imageUrls,
+            images: localPaths,
             features: ['Premium quality material', 'Custom branding available', 'Bulk order discounts'],
             colors: [],
             badge: '',
@@ -573,20 +711,22 @@
           };
 
           const docRef = await db.collection('products').add(productData);
-          log(`✓ "${name}" uploaded (ID: ${docRef.id})`, 'success');
+          log(`"${name}" saved! (Firebase ID: ${docRef.id})`, 'success');
 
           document.getElementById(`status-${product.id}`).textContent = 'done';
           document.getElementById(`status-${product.id}`).className = 'status-badge status-done';
+          successCount++;
 
         } catch (error) {
-          log(`✗ Error: ${error.message}`, 'error');
+          log(`Error with product ${product.id}: ${error.message}`, 'error');
           document.getElementById(`status-${product.id}`).textContent = 'error';
           document.getElementById(`status-${product.id}`).className = 'status-badge status-error';
         }
       }
 
-      log('=== Upload Complete ===', 'success');
-      alert('Upload complete! Check log for details.');
+      log(`=== Done! ${successCount}/${products.length} products saved ===`, 'success');
+      log('Images saved to project folder automatically. Just commit & deploy!', 'success');
+      alert(`Done! ${successCount} products saved. Images are already in the project folder. Just commit & deploy to Vercel.`);
     }
 
     // Login function
@@ -606,14 +746,15 @@
 
       try {
         await auth.signInWithEmailAndPassword(email, password);
-        status.textContent = '✓ Logged in!';
+        status.textContent = 'Logged in!';
         status.style.color = '#0f0';
 
         document.getElementById('loginSection').classList.add('hidden');
         document.getElementById('mainContent').classList.remove('hidden');
 
         log('Logged in as ' + email, 'success');
-        log('Select the product images folder to begin', 'info');
+        await loadCategories();
+        log('Ready. Select product images folder or clean up existing data first.', 'info');
       } catch (error) {
         status.textContent = 'Error: ' + error.message;
         status.style.color = '#f44';
@@ -621,17 +762,17 @@
     }
 
     // Check if already logged in
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(async (user) => {
       if (user) {
         document.getElementById('loginSection').classList.add('hidden');
         document.getElementById('mainContent').classList.remove('hidden');
         log('Already logged in as ' + user.email, 'success');
-        log('Select the product images folder to begin', 'info');
+        await loadCategories();
+        log('Ready. Select product images folder or clean up existing data first.', 'info');
       }
     });
 
-    // Init
-    log('Product Upload Tool Ready', 'success');
+    log('Bulk Product Upload Tool Ready', 'success');
     log('Please login to continue', 'info');
   </script>
 </body>

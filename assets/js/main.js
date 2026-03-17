@@ -17,9 +17,31 @@ document.addEventListener('DOMContentLoaded', () => {
 // -------------------- Hero Video Speed Control --------------------
 function initHeroVideo() {
   const heroVideo = document.getElementById('heroVideo');
-  if (heroVideo) {
-    // Slow down video to 50% speed (0.5 = half speed)
+  if (!heroVideo) return;
+
+  // Set playback rate after video is ready to play
+  heroVideo.addEventListener('canplay', function() {
     heroVideo.playbackRate = 0.5;
+  }, { once: true });
+
+  // Ensure video plays on mobile (some browsers need explicit play call)
+  const playVideo = function() {
+    const playPromise = heroVideo.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(function() {
+        // Autoplay was prevented, try again on user interaction
+        document.addEventListener('touchstart', function() {
+          heroVideo.play();
+        }, { once: true });
+      });
+    }
+  };
+
+  if (heroVideo.readyState >= 3) {
+    heroVideo.playbackRate = 0.5;
+    playVideo();
+  } else {
+    heroVideo.addEventListener('loadeddata', playVideo, { once: true });
   }
 }
 

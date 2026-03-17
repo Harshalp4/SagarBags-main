@@ -7,8 +7,7 @@ const AdminApp = {
   currentSection: 'dashboard',
   editingItem: null,
   uploadedImages: [], // Store uploaded images for current product
-  uploadedImageFiles: [], // Store actual file objects for Azure upload
-  sasToken: null, // Azure SAS token for image uploads
+  uploadedImageFiles: [], // Store actual file objects for local save
   productsCache: [], // Cache products from Firebase
   categoriesCache: [], // Cache categories from Firebase
   testimonialsCache: [], // Cache testimonials from Firebase
@@ -21,7 +20,6 @@ const AdminApp = {
     this.setupImageUpload();
     this.setupCategoryImageUpload();
     this.initCustomColorInputs();
-    await this.loadSasToken();
     await this.loadDashboard();
     this.setupEventListeners();
     this.updateInquiryBadge();
@@ -38,17 +36,6 @@ const AdminApp = {
     }
     if (this.testimonialsCache.length > 0) {
       localStorage.setItem('sagarbags_testimonials', JSON.stringify(this.testimonialsCache));
-    }
-  },
-
-  // Load SAS token from Firebase settings
-  async loadSasToken() {
-    if (typeof FirebaseDB !== 'undefined') {
-      try {
-        this.sasToken = await FirebaseDB.getSetting('azure_sas_token');
-      } catch (err) {
-        console.log('Could not load SAS token:', err);
-      }
     }
   },
 
@@ -763,28 +750,34 @@ const AdminApp = {
     }
 
     // Show loading overlay
-    this.showLoading('Uploading images and saving product...');
+    this.showLoading('Saving product...');
 
     try {
       // Separate existing URLs from new preview objects
       const existingUrls = this.uploadedImages
         .filter(img => typeof img === 'string' && !img.startsWith('blob:'));
 
-      // Upload new images to Azure if there are files to upload
+      // Save new images to project folder via local server
       const newUrls = [];
-      if (this.uploadedImageFiles.length > 0 && this.sasToken && typeof AzureStorage !== 'undefined') {
+      if (this.uploadedImageFiles.length > 0) {
+        const categorySlug = this.getCategorySlug(category);
         for (const file of this.uploadedImageFiles) {
-          const result = await AzureStorage.uploadImage(file, this.sasToken);
-          if (result.success) {
-            newUrls.push(result.url);
-          } else {
-            this.showToast('Failed to upload image: ' + result.error, 'error');
+          const fileName = this.generateLocalFileName(file.name);
+          try {
+            const savedPath = await this.uploadImageToServer(file, categorySlug, fileName);
+            newUrls.push(savedPath);
+          } catch (err) {
+            // Fallback: store local path and download file
+            const localPath = `assets/images/products/${categorySlug}/${fileName}`;
+            this.downloadFile(file, fileName);
+            newUrls.push(localPath);
+            console.log('Server upload failed, downloaded file instead:', err);
           }
         }
-        this.uploadedImageFiles = []; // Clear after upload
+        this.uploadedImageFiles = []; // Clear after save
       }
 
-      // Combine existing URLs with newly uploaded URLs
+      // Combine existing URLs with new local paths
       const finalImages = [...existingUrls, ...newUrls];
 
       // Get selected preset colors with their hex values
@@ -902,6 +895,102 @@ const AdminApp = {
     });
   },
 
+  // Compress image file for local storage
+  compressImageFile(file, maxWidth = 1200, quality = 0.85) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => {
+              const compressedFile = new File([blob], file.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+              });
+              resolve(compressedFile);
+            },
+            'image/jpeg',
+            quality
+          );
+        };
+        img.onerror = reject;
+        img.src = e.target.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  },
+
+  // Generate a clean filename for local storage
+  generateLocalFileName(originalName) {
+    const timestamp = Date.now();
+    const random = Math.random().toString(36).substring(2, 8);
+    const extension = originalName.split('.').pop().toLowerCase();
+    const validExt = ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(extension) ? extension : 'jpg';
+    return `${timestamp}_${random}.${validExt}`;
+  },
+
+  // Generate category slug from name or ID
+  getCategorySlug(categoryId) {
+    // Try to find category in cache and get slug
+    const cat = this.categoriesCache.find(c => c.id === categoryId);
+    if (cat && cat.slug) return cat.slug;
+    if (cat && cat.name) return cat.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    // Fallback: use category ID as slug
+    return categoryId.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  },
+
+  // Upload image to local server — saves directly to project folder
+  async uploadImageToServer(file, categoryFolder, fileName) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const response = await fetch('/upload-image', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              category: categoryFolder,
+              fileName: fileName,
+              imageData: e.target.result
+            })
+          });
+          const result = await response.json();
+          if (result.success) resolve(result.path);
+          else reject(new Error(result.error));
+        } catch (err) {
+          reject(err);
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  },
+
+  // Download a file to user's computer with specific filename (fallback)
+  downloadFile(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
+
   async handleImageFiles(files) {
     const maxImages = 5;
     const maxSize = 5 * 1024 * 1024; // 5MB
@@ -911,7 +1000,6 @@ const AdminApp = {
     console.log('Processing', fileArray.length, 'files');
 
     for (const file of fileArray) {
-      // Count only actual images (not counting uploadedImageFiles separately as they're already in uploadedImages as previews)
       if (this.uploadedImages.length >= maxImages) {
         this.showToast(`Maximum ${maxImages} images allowed`, 'warning');
         break;
@@ -928,21 +1016,14 @@ const AdminApp = {
       }
 
       try {
-        // If Azure is available and SAS token exists, store file for later upload
-        if (this.sasToken && typeof AzureStorage !== 'undefined') {
-          // Compress image before storing
-          const compressedFile = await AzureStorage.compressImage(file, 1200, 0.85);
-          this.uploadedImageFiles.push(compressedFile);
+        // Compress image for local storage
+        const compressedFile = await this.compressImageFile(file, 1200, 0.85);
+        this.uploadedImageFiles.push(compressedFile);
 
-          // Create preview URL
-          const previewUrl = URL.createObjectURL(compressedFile);
-          this.uploadedImages.push({ preview: previewUrl, isNew: true });
-          console.log('Added image preview:', previewUrl);
-        } else {
-          // Fallback to base64 (localStorage approach)
-          const base64 = await AdminData.compressImage(file, 800, 0.8);
-          this.uploadedImages.push(base64);
-        }
+        // Create preview URL
+        const previewUrl = URL.createObjectURL(compressedFile);
+        this.uploadedImages.push({ preview: previewUrl, isNew: true });
+        console.log('Added image preview:', previewUrl);
       } catch (error) {
         this.showToast('Failed to process image: ' + file.name, 'error');
         console.error('Image upload error:', error);
@@ -1261,14 +1342,10 @@ const AdminApp = {
       return;
     }
 
-    // Compress image if Azure is available
-    if (this.sasToken && typeof AzureStorage !== 'undefined') {
-      try {
-        this.categoryImageFile = await AzureStorage.compressImage(file, 800, 0.85);
-      } catch (err) {
-        this.categoryImageFile = file;
-      }
-    } else {
+    // Compress image for local storage
+    try {
+      this.categoryImageFile = await this.compressImageFile(file, 800, 0.85);
+    } catch (err) {
       this.categoryImageFile = file;
     }
 
@@ -1315,21 +1392,23 @@ const AdminApp = {
 
     let imageUrl = document.getElementById('categoryImageUrl').value;
 
-    // Upload image to Azure if file is selected
-    if (this.categoryImageFile && this.sasToken && typeof AzureStorage !== 'undefined') {
-      this.showLoading('Uploading image...');
+    // Save category image to project folder via local server
+    if (this.categoryImageFile) {
+      this.showLoading('Saving image...');
       try {
-        const result = await AzureStorage.uploadImage(this.categoryImageFile, this.sasToken);
-        if (result.success) {
-          imageUrl = result.url;
-        } else {
-          this.hideLoading();
-          this.showToast('Failed to upload image: ' + result.error, 'error');
-          return;
+        const compressedFile = await this.compressImageFile(this.categoryImageFile, 1200, 0.85);
+        const categoryName = document.getElementById('categoryName').value;
+        const categorySlug = categoryName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        const fileName = this.generateLocalFileName(this.categoryImageFile.name);
+        try {
+          imageUrl = await this.uploadImageToServer(compressedFile, categorySlug, fileName);
+        } catch (err) {
+          imageUrl = `assets/images/products/${categorySlug}/${fileName}`;
+          this.downloadFile(compressedFile, fileName);
         }
       } catch (err) {
         this.hideLoading();
-        this.showToast('Failed to upload image', 'error');
+        this.showToast('Failed to process image', 'error');
         return;
       }
       this.hideLoading();
@@ -1641,13 +1720,19 @@ const AdminApp = {
     try {
       let imageUrl = document.getElementById('testimonialImage').value || '';
 
-      // Upload image if new file selected
-      if (this.testimonialImageFile && this.sasToken && typeof AzureStorage !== 'undefined') {
-        const result = await AzureStorage.uploadImage(this.testimonialImageFile, this.sasToken);
-        if (result.success) {
-          imageUrl = result.url;
-        } else {
-          this.showToast('Failed to upload image, saving without image', 'warning');
+      // Save testimonial image to project folder via local server
+      if (this.testimonialImageFile) {
+        try {
+          const compressedFile = await this.compressImageFile(this.testimonialImageFile, 400, 0.85);
+          const fileName = this.generateLocalFileName(this.testimonialImageFile.name);
+          try {
+            imageUrl = await this.uploadImageToServer(compressedFile, 'testimonials', fileName);
+          } catch (err) {
+            imageUrl = `assets/images/testimonials/${fileName}`;
+            this.downloadFile(compressedFile, fileName);
+          }
+        } catch (err) {
+          this.showToast('Failed to process image, saving without image', 'warning');
         }
       }
 
