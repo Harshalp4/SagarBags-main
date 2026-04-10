@@ -757,21 +757,17 @@ const AdminApp = {
       const existingUrls = this.uploadedImages
         .filter(img => typeof img === 'string' && !img.startsWith('blob:'));
 
-      // Save new images to project folder via local server
+      // Upload new images to Cloudinary
       const newUrls = [];
       if (this.uploadedImageFiles.length > 0) {
         const categorySlug = this.getCategorySlug(category);
         for (const file of this.uploadedImageFiles) {
-          const fileName = this.generateLocalFileName(file.name);
           try {
-            const savedPath = await this.uploadImageToServer(file, categorySlug, fileName);
-            newUrls.push(savedPath);
+            const cloudinaryUrl = await this.uploadToCloudinary(file, categorySlug);
+            newUrls.push(cloudinaryUrl);
           } catch (err) {
-            // Fallback: store local path and download file
-            const localPath = `assets/images/products/${categorySlug}/${fileName}`;
-            this.downloadFile(file, fileName);
-            newUrls.push(localPath);
-            console.log('Server upload failed, downloaded file instead:', err);
+            console.error('Cloudinary upload failed:', err);
+            throw new Error('Image upload to Cloudinary failed. Please try again.');
           }
         }
         this.uploadedImageFiles = []; // Clear after save
@@ -855,7 +851,7 @@ const AdminApp = {
       this.loadDashboard();
     } catch (error) {
       console.error('Error saving product:', error);
-      this.showToast('Failed to save product', 'error');
+      this.showToast(error && error.message ? error.message : 'Failed to save product', 'error');
     } finally {
       this.hideLoading();
     }
@@ -933,62 +929,32 @@ const AdminApp = {
     });
   },
 
-  // Generate a clean filename for local storage
-  generateLocalFileName(originalName) {
-    const timestamp = Date.now();
-    const random = Math.random().toString(36).substring(2, 8);
-    const extension = originalName.split('.').pop().toLowerCase();
-    const validExt = ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(extension) ? extension : 'jpg';
-    return `${timestamp}_${random}.${validExt}`;
-  },
-
-  // Generate category slug from name or ID
+  // Generate category slug from name or ID (used for Cloudinary folder names)
   getCategorySlug(categoryId) {
-    // Try to find category in cache and get slug
     const cat = this.categoriesCache.find(c => c.id === categoryId);
     if (cat && cat.slug) return cat.slug;
     if (cat && cat.name) return cat.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    // Fallback: use category ID as slug
     return categoryId.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   },
 
-  // Upload image to local server — saves directly to project folder
-  async uploadImageToServer(file, categoryFolder, fileName) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        try {
-          const response = await fetch('/upload-image', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              category: categoryFolder,
-              fileName: fileName,
-              imageData: e.target.result
-            })
-          });
-          const result = await response.json();
-          if (result.success) resolve(result.path);
-          else reject(new Error(result.error));
-        } catch (err) {
-          reject(err);
-        }
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  },
+  // Upload image to Cloudinary
+  async uploadToCloudinary(file, folder) {
+    const CLOUD_NAME = 'dnlxxm13q';
+    const UPLOAD_PRESET = 'sagarbags_upload';
 
-  // Download a file to user's computer with specific filename (fallback)
-  downloadFile(blob, filename) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', UPLOAD_PRESET);
+    if (folder) formData.append('folder', `sagarbags/${folder}`);
+
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!response.ok) throw new Error('Cloudinary upload failed');
+    const result = await response.json();
+    return result.secure_url;
   },
 
   async handleImageFiles(files) {
@@ -1392,23 +1358,17 @@ const AdminApp = {
 
     let imageUrl = document.getElementById('categoryImageUrl').value;
 
-    // Save category image to project folder via local server
+    // Upload category image to Cloudinary
     if (this.categoryImageFile) {
-      this.showLoading('Saving image...');
+      this.showLoading('Uploading image...');
       try {
         const compressedFile = await this.compressImageFile(this.categoryImageFile, 1200, 0.85);
         const categoryName = document.getElementById('categoryName').value;
         const categorySlug = categoryName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-        const fileName = this.generateLocalFileName(this.categoryImageFile.name);
-        try {
-          imageUrl = await this.uploadImageToServer(compressedFile, categorySlug, fileName);
-        } catch (err) {
-          imageUrl = `assets/images/products/${categorySlug}/${fileName}`;
-          this.downloadFile(compressedFile, fileName);
-        }
+        imageUrl = await this.uploadToCloudinary(compressedFile, `categories/${categorySlug}`);
       } catch (err) {
         this.hideLoading();
-        this.showToast('Failed to process image', 'error');
+        this.showToast('Image upload failed. Please try again.', 'error');
         return;
       }
       this.hideLoading();
@@ -1720,19 +1680,15 @@ const AdminApp = {
     try {
       let imageUrl = document.getElementById('testimonialImage').value || '';
 
-      // Save testimonial image to project folder via local server
+      // Upload testimonial image to Cloudinary
       if (this.testimonialImageFile) {
         try {
           const compressedFile = await this.compressImageFile(this.testimonialImageFile, 400, 0.85);
-          const fileName = this.generateLocalFileName(this.testimonialImageFile.name);
-          try {
-            imageUrl = await this.uploadImageToServer(compressedFile, 'testimonials', fileName);
-          } catch (err) {
-            imageUrl = `assets/images/testimonials/${fileName}`;
-            this.downloadFile(compressedFile, fileName);
-          }
+          imageUrl = await this.uploadToCloudinary(compressedFile, 'testimonials');
         } catch (err) {
-          this.showToast('Failed to process image, saving without image', 'warning');
+          this.hideLoading();
+          this.showToast('Image upload failed. Please try again.', 'error');
+          return;
         }
       }
 

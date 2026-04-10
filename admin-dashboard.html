@@ -1085,6 +1085,31 @@
   <script src="assets/js/azure-storage.js"></script>
   <script src="assets/js/admin.js"></script>
 
+  <!-- Localhost guard: admin panel writes images to disk via server.js and only works locally. -->
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var isLocal = host === 'localhost' || host === '127.0.0.1' || host === '' || host === '0.0.0.0';
+      if (isLocal) return;
+      var banner = document.createElement('div');
+      banner.setAttribute('role', 'alert');
+      banner.style.cssText =
+        'position:fixed;top:0;left:0;right:0;z-index:999999;' +
+        'background:#b91c1c;color:#fff;padding:14px 20px;' +
+        'font-family:Inter,system-ui,sans-serif;font-size:14px;line-height:1.5;' +
+        'box-shadow:0 2px 8px rgba(0,0,0,.3);text-align:center;';
+      banner.innerHTML =
+        '<strong>Admin panel is a LOCAL-DEV tool.</strong> ' +
+        'Image uploads write to the project folder via <code>server.js</code> and will FAIL on this deployed site. ' +
+        'Run <code>node server.js</code> locally and open <code>http://localhost:8080/admin-dashboard.html</code>, ' +
+        'then commit &amp; deploy. Saves attempted here will be rejected.';
+      document.addEventListener('DOMContentLoaded', function () {
+        document.body.appendChild(banner);
+        document.body.style.paddingTop = (banner.offsetHeight || 60) + 'px';
+      });
+    })();
+  </script>
+
   <!-- Loading Overlay -->
   <div id="loadingOverlay" class="loading-overlay" style="display: none;">
     <div class="loading-spinner">

@@ -195,7 +195,7 @@
 </head>
 <body>
   <h1>Sagar Bags - Bulk Product Upload</h1>
-  <p class="subtitle">Upload products — images saved automatically to project folder</p>
+  <p class="subtitle">Upload products — images saved automatically to Cloudinary</p>
 
   <!-- Login Section -->
   <div class="card" id="loginSection">
@@ -229,7 +229,7 @@
   </div>
 
   <div class="info-box">
-    <strong>How it works:</strong> Select images → group them into products → save. Images are <strong>automatically saved</strong> to <code>assets/images/products/&lt;category&gt;/</code> in the project. Just commit &amp; deploy to Vercel when done.
+    <strong>How it works:</strong> Select images → group them into products → save. Images are <strong>automatically uploaded</strong> to Cloudinary cloud storage. Works from both localhost and live site.
   </div>
 
   <!-- Step 1: Select Images -->
@@ -395,21 +395,27 @@
       });
     }
 
-    // Upload image to local server — saves directly to project folder
-    async function uploadImageToServer(file, categoryFolder, fileName) {
+    // Upload image to Cloudinary
+    async function uploadToCloudinary(file, folder) {
+      const CLOUD_NAME = 'dnlxxm13q';
+      const UPLOAD_PRESET = 'sagarbags_upload';
+
+      // Compress first
       const base64 = await compressImageToBase64(file, 1200, 0.85);
-      const response = await fetch('/upload-image', {
+
+      const formData = new FormData();
+      formData.append('file', base64);
+      formData.append('upload_preset', UPLOAD_PRESET);
+      if (folder) formData.append('folder', `sagarbags/${folder}`);
+
+      const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          category: categoryFolder,
-          fileName: fileName,
-          imageData: base64
-        })
+        body: formData
       });
+
+      if (!response.ok) throw new Error('Cloudinary upload failed');
       const result = await response.json();
-      if (!result.success) throw new Error(result.error);
-      return result.path;
+      return result.secure_url;
     }
 
     // Log function
@@ -678,21 +684,20 @@
           const description = document.getElementById(`desc-${product.id}`).value;
 
           const categoryFolder = getCategoryFolder(category);
-          log(`Saving "${name}" (${product.images.length} images) → ${categoryFolder}/`, 'info');
+          log(`Uploading "${name}" (${product.images.length} images) → Cloudinary/${categoryFolder}/`, 'info');
 
-          // Upload each image to local server (saves to project folder automatically)
-          const localPaths = [];
+          // Upload each image to Cloudinary
+          const imageUrls = [];
           for (let i = 0; i < product.images.length; i++) {
             const img = product.images[i];
-            const fileName = generateFileName(img.name || `image_${i}.jpg`);
 
-            const savedPath = await uploadImageToServer(img.file, categoryFolder, fileName);
-            localPaths.push(savedPath);
+            const cloudinaryUrl = await uploadToCloudinary(img.file, categoryFolder);
+            imageUrls.push(cloudinaryUrl);
 
-            log(`  Image ${i + 1}/${product.images.length}: ${savedPath}`, 'success');
+            log(`  Image ${i + 1}/${product.images.length}: uploaded ✓`, 'success');
           }
 
-          // Save to Firebase with local paths
+          // Save to Firebase with Cloudinary URLs
           const productData = {
             name,
             category,
@@ -701,7 +706,7 @@
             description: description,
             price: price ? parseFloat(price) : null,
             minOrder: parseInt(moq),
-            images: localPaths,
+            images: imageUrls,
             features: ['Premium quality material', 'Custom branding available', 'Bulk order discounts'],
             colors: [],
             badge: '',
@@ -725,8 +730,8 @@
       }
 
       log(`=== Done! ${successCount}/${products.length} products saved ===`, 'success');
-      log('Images saved to project folder automatically. Just commit & deploy!', 'success');
-      alert(`Done! ${successCount} products saved. Images are already in the project folder. Just commit & deploy to Vercel.`);
+      log('Images uploaded to Cloudinary. Products are live!', 'success');
+      alert(`Done! ${successCount} products saved. Images uploaded to Cloudinary and saved to Firebase.`);
     }
 
     // Login function
