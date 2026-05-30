@@ -522,7 +522,16 @@ function getCategoryById(id) {
 }
 
 function getCategoryBySlug(slug) {
-  return categoriesData.find(c => c.slug === slug);
+  if (!slug) return undefined;
+  const toSlug = name => (name || '').toString().toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const target = toSlug(slug);
+  return categoriesData.find(c =>
+    c.slug === slug ||
+    toSlug(c.slug) === target ||
+    toSlug(c.name) === target ||
+    c.id === slug ||
+    toSlug(c.id) === target
+  );
 }
 
 function getFeaturedProducts() {
